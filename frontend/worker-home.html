@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Tasks - GarmentFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#F8FAFC] text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Top Navbar Only (No Sidebar for Workers) -->
+  <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-xl">🧵</span>
+        <span class="font-bold text-gray-900 tracking-tight">GarmentFlow</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="worker-header-name" class="text-sm font-medium text-gray-600 hidden md:inline">—</span>
+        <button id="logout-btn" class="text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Worker Dashboard Contents -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">My Tasks</h1>
+      <span id="tasks-count" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">0 Assigned</span>
+    </div>
+
+    <!-- Quick stats grid -->
+    <div class="grid grid-cols-3 gap-2 text-center bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-xs md:text-sm">
+      <div>
+        <div class="text-gray-500 font-medium">Pending</div>
+        <div id="stat-pending" class="text-lg font-bold text-amber-600 mt-0.5">0</div>
+      </div>
+      <div class="border-l border-r border-gray-100">
+        <div class="text-gray-500 font-medium">Completed</div>
+        <div id="stat-completed" class="text-lg font-bold text-green-600 mt-0.5">0</div>
+      </div>
+      <div>
+        <div class="text-gray-500 font-medium">Not Done</div>
+        <div id="stat-not-completed" class="text-lg font-bold text-red-600 mt-0.5">0</div>
+      </div>
+    </div>
+
+    <!-- Task Cards Container -->
+    <div id="worker-tasks-list" class="grid grid-cols-1 gap-4">
+      <div class="text-center text-gray-400 py-12">Loading assigned tasks...</div>
+    </div>
+  </main>
+
+  <script type="module" src="js/worker-home.js"></script>
+</body>
+</html>

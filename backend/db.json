@@ -1,0 +1,80 @@
+{
+  "users": [
+    {
+      "name": "Admin User",
+      "email": "admin@garmentflow.com",
+      "password_hash": "$2b$12$2aNIFBNnnDLeHK.9UrO7U.ODaDPPpUjnUHyGvD9J7EgoEdAClZaUy",
+      "role": "ADMIN",
+      "department": null,
+      "phone": "9999999999",
+      "_id": "39c2a542-d957-41e9-a7a1-375836d3aea0"
+    },
+    {
+      "name": "Ravi Kumar",
+      "email": "ravi@garmentflow.com",
+      "password_hash": "$2b$12$M0jLWbtmxbORcfAvE1ERJO5Qhez2VLtRk0UG6SvhvglIYkbP44tYy",
+      "role": "WORKER",
+      "department": "Cutting",
+      "phone": "9876543210",
+      "_id": "704afb6b-5442-4991-8f20-a7e870229c9a"
+    },
+    {
+      "name": "Priya Sharma",
+      "email": "priya@garmentflow.com",
+      "password_hash": "$2b$12$BhE.PojgliOxbmDWlSCZ6OYCqJqIIjELsVMa3tm/eyR3YIZ8eVfAO",
+      "role": "WORKER",
+      "department": "Stitching",
+      "phone": "9876543211",
+      "_id": "551683f7-1a07-4a5a-862b-1df5dd364592"
+    },
+    {
+      "name": "Arjun Patel",
+      "email": "arjun@garmentflow.com",
+      "password_hash": "$2b$12$WFBku9/Wmxv1zMqpeP.p2.qcF4TWD..5Hoe29FhC/IrBoxiA4JsUW",
+      "role": "WORKER",
+      "department": "Quality Check",
+      "phone": "9876543212",
+      "_id": "1fa5030b-839a-46b2-b07a-647b2d414646"
+    },
+    {
+      "name": "Test Worker",
+      "email": "worker_test@garmentflow.com",
+      "password_hash": "$2b$12$UWNH3.Ht.KpFJEDs3JrU2OSpQaMZs9Nx5LgJB2Setw.JojaArOE.2",
+      "role": "WORKER",
+      "department": "Stitching",
+      "phone": "9876543210",
+      "_id": "7a67736b-b2fa-43ff-b422-c1e44f47bef9"
+    }
+  ],
+  "departments": [
+    {
+      "name": "Cutting",
+      "_id": "bd0679c5-702e-4897-b80f-cb2f4c302f23"
+    },
+    {
+      "name": "Stitching",
+      "_id": "79c4c290-9ed0-4c7c-80f9-8475d6c83688"
+    },
+    {
+      "name": "Printing",
+      "_id": "495ffb13-ac9c-463a-b512-ad8db243f927"
+    },
+    {
+      "name": "Embroidery",
+      "_id": "1429dda8-0df6-4075-8eb7-f31e4d5c5594"
+    },
+    {
+      "name": "Packing",
+      "_id": "a9805770-71ac-460b-915b-623772b866f9"
+    },
+    {
+      "name": "Quality Check",
+      "_id": "e0dd833a-52e9-4206-882a-d15e258d3775"
+    },
+    {
+      "name": "Finishing",
+      "_id": "6bd9cb06-605e-4f24-bfb4-fb1415a9f303"
+    }
+  ],
+  "tasks": []
+}

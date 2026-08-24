@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F8FAFC;
+  color: #1E293B;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom colors and styles matching specifications */
+.bg-primary { background-color: #2563EB; }
+.text-primary { color: #2563EB; }
+.border-primary { border-color: #2563EB; }
+
+.status-pending { background-color: #FFF7ED; color: #EA580C; border: 1px solid #FED7AA; }
+.status-completed { background-color: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+.status-not-completed { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FEE2E2; }
+.status-reviewed { background-color: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+
+.priority-low { background-color: #F1F5F9; color: #475569; }
+.priority-medium { background-color: #EFF6FF; color: #2563EB; }
+.priority-high { background-color: #FEF2F2; color: #DC2626; }
+
+/* Micro-interactions: small hover effects only */
+.hover-effect {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hover-effect:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

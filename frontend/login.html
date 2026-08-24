@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - GarmentFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+    <div class="text-center mb-6">
+      <div class="text-3xl mb-2">🧵</div>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">GarmentFlow</h1>
+      <p class="text-sm text-gray-500 mt-1">Sign in to manage factory tasks</p>
+    </div>
+
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label for="email" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Email Address</label>
+        <input type="email" id="email" required placeholder="admin@garmentflow.com" 
+          class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+      </div>
+
+      <div>
+        <label for="password" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Password</label>
+        <input type="password" id="password" required placeholder="••••••••" 
+          class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+      </div>
+
+      <div id="error-message" class="hidden text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
+        <!-- Error message -->
+      </div>
+
+      <button type="submit" id="submit-btn"
+        class="w-full bg-[#2563EB] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors duration-150">
+        Sign In
+      </button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { apiFetch, setSession, getUser } from './js/api.js';
+
+    const user = getUser();
+    if (user) {
+      window.location.href = user.role === 'ADMIN' ? '/dashboard.html' : '/worker-home.html';
+    }
+
+    const form = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorMsg = document.getElementById('error-message');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Signing In...';
+
+      try {
+        const res = await apiFetch('/login', {
+          method: 'POST',
+          body: {
+            email: emailInput.value.trim(),
+            password: passwordInput.value
+          }
+        });
+
+        setSession(res.access_token, res.user);
+
+        if (res.user.role === 'ADMIN') {
+          window.location.href = '/dashboard.html';
+        } else {
+          window.location.href = '/worker-home.html';
+        }
+      } catch (err) {
+        errorMsg.innerText = err.message || 'Login failed. Please check your credentials.';
+        errorMsg.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>
