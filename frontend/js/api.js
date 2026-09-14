@@ -1,4 +1,6 @@
-const BASE_URL = 'https://garmentflow.onrender.com';
+export const BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000'
+  : 'https://garments-workflow.onrender.com';
 
 export function getToken() {
   return localStorage.getItem('gf_token') || '';

@@ -1,4 +1,4 @@
-import { apiFetch, getUser, logout, showToast } from './api.js';
+import { apiFetch, getUser, logout, showToast, BASE_URL } from './api.js';
 
 const user = getUser();
 if (!user || user.role !== 'WORKER') {
@@ -59,7 +59,7 @@ async function loadTaskDetails(taskId) {
 
     // Reference Image
     if (task.image) {
-      document.getElementById('task-image').src = `http://localhost:8000${task.image}`;
+      document.getElementById('task-image').src = `${BASE_URL}${task.image}`;
       document.getElementById('image-container').classList.remove('hidden');
     }
 

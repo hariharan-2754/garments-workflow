@@ -1,4 +1,4 @@
-import { apiFetch, getUser, logout, showToast } from './api.js';
+import { apiFetch, getUser, logout, showToast, BASE_URL } from './api.js';
 
 const user = getUser();
 if (!user || user.role !== 'ADMIN') {
@@ -83,7 +83,7 @@ async function loadTasks() {
           <td class="px-6 py-4">
             <div class="font-semibold text-gray-900">${escapeHtml(t.title)}</div>
             <div class="text-xs text-gray-500 mt-0.5 max-w-xs truncate">${escapeHtml(t.description)}</div>
-            ${t.image ? `<a href="http://localhost:8000${t.image}" target="_blank" class="text-xs text-blue-500 hover:underline flex items-center mt-1">🖼 View Reference</a>` : ''}
+            ${t.image ? `<a href="${BASE_URL}${t.image}" target="_blank" class="text-xs text-blue-500 hover:underline flex items-center mt-1">🖼 View Reference</a>` : ''}
           </td>
           <td class="px-6 py-4 text-gray-700 font-medium">${escapeHtml(t.workerName || '—')}</td>
           <td class="px-6 py-4 text-gray-600">${escapeHtml(t.department)}</td>

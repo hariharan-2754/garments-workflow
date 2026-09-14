@@ -216,13 +216,50 @@ class MockDatabase:
     def __getattr__(self, name):
         return MockCollection(self, name)
 
-db_instance = MockDatabase()
+client = None
+db_instance = None
 
 def get_db():
+    global db_instance
+    if db_instance is None:
+        mock = MockDatabase()
+        mock.load()
+        db_instance = mock
     return db_instance
 
 async def connect_db():
-    db_instance.load()
+    global client, db_instance
+    mongo_url = settings.get_mongo_url or os.getenv("MONGO_URL", "") or os.getenv("MONGODB_URI", "")
+    if mongo_url and ("mongodb://" in mongo_url or "mongodb+srv://" in mongo_url):
+        try:
+            import motor.motor_asyncio
+            import logging
+            log = logging.getLogger(__name__)
+            log.info("Connecting to MongoDB Atlas...")
+            client = motor.motor_asyncio.AsyncIOMotorClient(
+                mongo_url,
+                serverSelectionTimeoutMS=5000
+            )
+            # Test ping
+            await client.admin.command('ping')
+            db_name = settings.mongo_db_name or "garmentflow"
+            db_instance = client[db_name]
+            log.info(f"Successfully connected to MongoDB Atlas: {db_name}")
+            return
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Failed to connect to MongoDB ({e}). Falling back to local mock DB.")
+    
+    mock = MockDatabase()
+    mock.load()
+    db_instance = mock
+    import logging
+    logging.getLogger(__name__).info("Using local JSON Mock Database.")
 
 async def disconnect_db():
-    db_instance.save()
+    global client, db_instance
+    if client:
+        client.close()
+    elif isinstance(db_instance, MockDatabase):
+        db_instance.save()
+

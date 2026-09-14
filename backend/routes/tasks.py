@@ -11,6 +11,11 @@ from models.task import TaskResponse, TaskStatusUpdateRequest
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
+def _make_id_query(id_str: str) -> dict:
+    if ObjectId.is_valid(id_str):
+        return {"$or": [{"_id": ObjectId(id_str)}, {"_id": id_str}]}
+    return {"_id": id_str}
+
 def _doc_to_response(doc: dict) -> dict:
     return {
         "id": str(doc["_id"]),
@@ -43,7 +48,7 @@ async def list_tasks(db=Depends(get_db), current_user=Depends(get_current_user))
 
 @router.get("/{task_id}", response_model=TaskResponse)
 async def get_task(task_id: str, db=Depends(get_db), current_user=Depends(get_current_user)):
-    task = await db.tasks.find_one({"_id": task_id})
+    task = await db.tasks.find_one(_make_id_query(task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
@@ -109,7 +114,7 @@ async def update_task(
     db=Depends(get_db),
     admin=Depends(require_admin)
 ):
-    task = await db.tasks.find_one({"_id": task_id})
+    task = await db.tasks.find_one(_make_id_query(task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
@@ -143,9 +148,9 @@ async def update_task(
         
     if update_fields:
         update_fields["updatedAt"] = datetime.now(timezone.utc)
-        await db.tasks.update_one({"_id": task_id}, {"$set": update_fields})
+        await db.tasks.update_one(_make_id_query(task_id), {"$set": update_fields})
         
-    updated_task = await db.tasks.find_one({"_id": task_id})
+    updated_task = await db.tasks.find_one(_make_id_query(task_id))
     return _doc_to_response(updated_task)
 
 @router.put("/{task_id}/status", response_model=TaskResponse)
@@ -155,7 +160,7 @@ async def update_task_status(
     db=Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    task = await db.tasks.find_one({"_id": task_id})
+    task = await db.tasks.find_one(_make_id_query(task_id))
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     
@@ -175,14 +180,14 @@ async def update_task_status(
         update_data["workerId"] = str(current_user["_id"])
         update_data["workerName"] = current_user["name"]
     
-    await db.tasks.update_one({"_id": task_id}, {"$set": update_data})
+    await db.tasks.update_one(_make_id_query(task_id), {"$set": update_data})
     
-    updated_task = await db.tasks.find_one({"_id": task_id})
+    updated_task = await db.tasks.find_one(_make_id_query(task_id))
     return _doc_to_response(updated_task)
 
 @router.delete("/{task_id}")
 async def delete_task(task_id: str, db=Depends(get_db), admin=Depends(require_admin)):
-    result = await db.tasks.delete_one({"_id": task_id})
+    result = await db.tasks.delete_one(_make_id_query(task_id))
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
     
