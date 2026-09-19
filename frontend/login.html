@@ -3,38 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - GarmentFlow</title>
+  <title>Login - GarmentFlow Workflow Engine</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-4">
-  <div class="max-w-md w-full bg-white rounded-lg border border-gray-200 shadow-sm p-8">
-    <div class="text-center mb-6">
-      <div class="text-3xl mb-2"></div>
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900">GarmentFlow</h1>
-      <p class="text-sm text-gray-500 mt-1">Sign in to manage factory tasks</p>
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50/40 to-blue-50 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+  
+  <!-- Background Glow Accents -->
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl border border-slate-200/80 shadow-2xl shadow-slate-200/60 p-8 sm:p-10 relative z-10 transition-all duration-300">
+    
+    <!-- Logo & Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/25 mb-3 text-white">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">GarmentFlow</h1>
+      <p class="text-sm font-medium text-slate-500 mt-1">Sign in to manage factory workflow & tasks</p>
     </div>
 
-    <form id="login-form" class="space-y-4">
+    <!-- Quick Demo Logins -->
+    <div class="mb-6 p-3 bg-slate-50/80 border border-slate-100 rounded-xl">
+      <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 text-center">Quick Demo Accounts</div>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button type="button" class="demo-btn px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:shadow-sm transition-all text-left font-medium flex items-center justify-between"
+          data-email="admin@garmentflow.com" data-pass="Admin@1234">
+          <span>👑 Admin</span>
+          <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Fill</span>
+        </button>
+        <button type="button" class="demo-btn px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:border-blue-500 hover:text-blue-600 hover:shadow-sm transition-all text-left font-medium flex items-center justify-between"
+          data-email="ravi@garmentflow.com" data-pass="Worker@1234">
+          <span>🧵 Worker</span>
+          <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Fill</span>
+        </button>
+      </div>
+    </div>
+
+    <form id="login-form" class="space-y-5">
       <div>
-        <label for="email" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Email Address</label>
-        <input type="email" id="email" required placeholder="admin@garmentflow.com" 
-          class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+        <label for="email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+            </svg>
+          </div>
+          <input type="email" id="email" required placeholder="admin@garmentflow.com" 
+            class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+        </div>
       </div>
 
       <div>
-        <label for="password" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Password</label>
-        <input type="password" id="password" required placeholder="••••••••" 
-          class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Password</label>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <input type="password" id="password" required placeholder="••••••••" 
+            class="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+          <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" aria-label="Toggle password visibility">
+            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <div id="error-message" class="hidden text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
-        <!-- Error message -->
+      <div id="error-message" class="hidden text-xs text-red-600 bg-red-50 border border-red-200/80 p-3 rounded-xl flex items-start gap-2">
+        <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="error-text"></span>
       </div>
 
       <button type="submit" id="submit-btn"
-        class="w-full bg-[#2563EB] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors duration-150">
-        Sign In
+        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl text-sm shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 transform active:scale-[0.99] flex items-center justify-center gap-2">
+        <span id="submit-btn-text">Sign In</span>
+        <svg id="submit-btn-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
       </button>
     </form>
   </div>
@@ -51,13 +116,37 @@
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const errorMsg = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
     const submitBtn = document.getElementById('submit-btn');
+    const submitBtnText = document.getElementById('submit-btn-text');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    // Password Visibility Toggle
+    if (togglePasswordBtn) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.innerHTML = isPassword 
+          ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.038 10.038 0 013.982-.863c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m-3.076 3.076l-9.8-9.8" />`
+          : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+      });
+    }
+
+    // Quick Demo Credentials Fill
+    document.querySelectorAll('.demo-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        emailInput.value = btn.dataset.email;
+        passwordInput.value = btn.dataset.pass;
+        errorMsg.classList.add('hidden');
+      });
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorMsg.classList.add('hidden');
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Signing In...';
+      submitBtnText.innerText = 'Signing In...';
 
       try {
         const res = await apiFetch('/login', {
@@ -76,12 +165,13 @@
           window.location.href = '/worker-home.html';
         }
       } catch (err) {
-        errorMsg.innerText = err.message || 'Login failed. Please check your credentials.';
+        errorText.innerText = err.message || 'Login failed. Please check your credentials.';
         errorMsg.classList.remove('hidden');
         submitBtn.disabled = false;
-        submitBtn.innerText = 'Sign In';
+        submitBtnText.innerText = 'Sign In';
       }
     });
   </script>
 </body>
 </html>
+
