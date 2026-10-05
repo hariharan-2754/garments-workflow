@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mindly° — A clearer mind for a brighter you</title>
+  <title>Mindly° — A seamless workflow for fashion &amp; apparel</title>
   
   <!-- Google Fonts: Plus Jakarta Sans & Instrument Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,30 +36,30 @@
 
     /* Glassmorphism card styling */
     .glass-card {
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
     }
 
-    .glass-card-dark {
-      background: rgba(20, 20, 25, 0.65);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 15px 30px -8px rgba(0, 0, 0, 0.09), 0 0 0 1px rgba(0, 0, 0, 0.02);
     }
 
     /* Floating animations */
     @keyframes float-slow {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(0.5deg); }
+      50% { transform: translateY(-7px) rotate(0.4deg); }
     }
 
     @keyframes float-reverse {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(8px) rotate(-0.5deg); }
+      50% { transform: translateY(7px) rotate(-0.4deg); }
     }
 
     @keyframes spin-slow {
@@ -78,37 +78,18 @@
     .animate-spin-slow {
       animation: spin-slow 20s linear infinite;
     }
-
-    /* Smooth arc perspective for central orbiting items */
-    .perspective-container {
-      perspective: 1000px;
-    }
-
-    .arc-left {
-      transform: rotateY(22deg) rotateZ(-6deg) translateZ(40px);
-    }
-
-    .arc-right {
-      transform: rotateY(-22deg) rotateZ(6deg) translateZ(40px);
-    }
-
-    /* Circular text styling */
-    .rotating-text-container {
-      width: 110px;
-      height: 110px;
-    }
   </style>
 </head>
-<body class="min-h-screen bg-[#f7f7f5] text-[#0f172a] relative selection:bg-slate-900 selection:text-white pb-12">
+<body class="min-h-screen bg-[#f7f7f5] text-[#0f172a] relative selection:bg-slate-900 selection:text-white flex flex-col justify-between p-4 sm:p-6 lg:p-8">
 
   <!-- Subtle ambient background glows -->
-  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-white/80 via-slate-100/40 to-transparent blur-3xl pointer-events-none -z-10"></div>
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-white/90 via-slate-100/50 to-transparent blur-3xl pointer-events-none -z-10"></div>
 
-  <!-- MAIN WRAPPER CONTAINER (Framed like screenshot) -->
-  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-6">
+  <!-- MAIN WRAPPER CONTAINER -->
+  <div class="max-w-[1400px] w-full mx-auto flex flex-col justify-between flex-1">
 
-    <!-- NAVIGATION HEADER -->
-    <header class="flex items-center justify-between py-3">
+    <!-- 1. NAVIGATION HEADER -->
+    <header class="flex items-center justify-between py-2">
       
       <!-- Brand Logo -->
       <a href="index.html" class="flex items-center space-x-1 group">
@@ -116,7 +97,7 @@
       </a>
 
       <!-- Center Pill Navigation -->
-      <nav class="hidden md:flex items-center bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-full px-5 py-2 shadow-sm space-x-6 text-xs font-semibold text-gray-600">
+      <nav class="hidden md:flex items-center bg-white/90 backdrop-blur-md border border-gray-200/80 rounded-full px-5 py-2 shadow-2xs space-x-6 text-xs font-semibold text-gray-600">
         <a href="#features" class="hover:text-gray-950 transition-colors">Features</a>
         <a href="#how-it-works" class="hover:text-gray-950 transition-colors">How it works</a>
         <a href="#integrations" class="bg-gray-100/90 text-gray-950 px-3.5 py-1 rounded-full font-bold shadow-2xs">Integrations</a>
@@ -132,243 +113,271 @@
       </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="relative pt-12 pb-8 text-center max-w-5xl mx-auto">
+    <!-- 2. HERO SECTION -->
+    <section class="relative pt-8 pb-4 text-center max-w-4xl mx-auto">
       
       <!-- TOP RIGHT ROTATING STAR BADGE -->
-      <div class="absolute top-2 right-4 lg:right-12 hidden md:block">
+      <div class="absolute top-0 right-0 lg:-right-16 hidden md:block pointer-events-none">
         <div class="relative flex items-center justify-center">
-          <svg class="w-28 h-28 animate-spin-slow" viewBox="0 0 100 100">
+          <svg class="w-24 h-24 animate-spin-slow" viewBox="0 0 100 100">
             <path id="circlePath" fill="none" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" />
-            <text class="text-[9.5px] font-bold tracking-[0.24em] fill-gray-600 uppercase">
+            <text class="text-[9.5px] font-bold tracking-[0.24em] fill-gray-500 uppercase">
               <textPath href="#circlePath">
-                A MORE FOCUSED YOU EVERYDAY •
+                A SEAMLESS WORKFLOW EVERYDAY •
               </textPath>
             </text>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-gray-900 text-lg">✦</span>
+            <span class="text-gray-900 text-sm">✦</span>
           </div>
         </div>
       </div>
 
       <!-- HERO HEADLINE -->
-      <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#0f172a] font-serif leading-[1.05] max-w-3xl mx-auto">
-        A clearer mind<br />
-        <span class="italic font-serif font-normal text-[#0f172a]">for a brighter you.</span>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-normal tracking-tight text-[#0f172a] font-serif leading-[1.08] max-w-2xl mx-auto">
+        A seamless workflow<br />
+        <span class="italic font-serif font-normal text-[#0f172a]">for fashion &amp; apparel.</span>
       </h1>
 
       <!-- SUBTITLE -->
-      <p class="text-gray-500 text-sm sm:text-base md:text-[17px] max-w-lg mx-auto font-sans mt-5 leading-relaxed font-medium">
-        Mindly helps you capture ideas, organize your thoughts, and stay focused — all in one beautiful space.
+      <p class="text-gray-500 text-xs sm:text-sm md:text-[15px] max-w-md mx-auto font-sans mt-3.5 leading-relaxed font-medium">
+        From sketch to finished garment — coordinate tech packs, production stages, and worker queues in one workspace.
       </p>
 
-      <!-- HERO ACTION BUTTONS -->
-      <div class="flex items-center justify-center gap-3.5 mt-7">
-        <a href="login.html" class="bg-[#0f172a] hover:bg-black text-white px-6 py-3 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02]">
+      <!-- ACTION BUTTONS -->
+      <div class="flex items-center justify-center gap-3 mt-6">
+        <a href="login.html" class="bg-[#0f172a] hover:bg-black text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-md hover:scale-[1.02]">
           <span>Get started free</span>
-          <span class="text-base leading-none">→</span>
+          <span class="text-sm">→</span>
         </a>
-        <button type="button" id="watch-video-btn" class="bg-white border border-gray-200/90 hover:bg-gray-50 text-gray-900 px-5 py-3 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-sm hover:scale-[1.02] cursor-pointer">
-          <span class="text-2xl leading-none text-gray-800">▶</span>
-          <span>Watch video</span>
-        </button>
+        <a href="dashboard.html" class="bg-white border border-gray-200/90 hover:bg-gray-50 text-gray-900 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-2xs hover:scale-[1.02]">
+          <span>View Production Dashboard</span>
+          <span>↗</span>
+        </a>
       </div>
 
     </section>
 
-    <!-- HERO VISUAL & FLOATING CARDS SHOWCASE CONTAINER -->
-    <div class="relative max-w-6xl mx-auto mt-4 min-h-[520px] md:min-h-[580px] flex items-center justify-center">
+    <!-- 3. HERO VISUAL SHOWCASE (MATCHING SECOND IMAGE EXACTLY) -->
+    <div class="relative max-w-5xl w-full mx-auto my-auto min-h-[460px] md:min-h-[500px] flex items-center justify-center">
 
-      <!-- SVG CURVED CONNECTOR LINES -->
-      <svg class="absolute inset-0 w-full h-full pointer-events-none z-0 hidden lg:block" viewBox="0 0 1000 600" fill="none">
-        <!-- Left line connecting turn thoughts card to head -->
-        <path d="M 230 190 C 290 190, 360 260, 420 310" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1.2" stroke-dasharray="3 3" />
-        <!-- Right line connecting ideas anytime card to head -->
-        <path d="M 770 240 C 710 250, 640 290, 580 320" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1.2" stroke-dasharray="3 3" />
-      </svg>
-
-      <!-- LEFT FLOATING CARD -->
-      <div class="absolute top-6 left-2 lg:left-8 z-20 max-w-[210px] hidden md:block animate-float-slow">
-        <div class="glass-card rounded-2xl p-5 border border-white/90 shadow-xl transition-all hover:scale-105 duration-300">
+      <!-- ================= LEFT FLOATING CARD ================= -->
+      <div class="absolute top-10 left-2 lg:left-4 z-20 max-w-[210px] hidden md:block animate-float-slow">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/95 shadow-xl transition-all hover:scale-105 duration-300">
           <div class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center mb-3 text-gray-800 shadow-2xs">
-            <!-- Soundwave SVG icon -->
+            <!-- Tech Pack / Blueprint icon -->
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
           </div>
-          <h3 class="text-sm font-bold text-gray-900 leading-snug">Turn thoughts<br />into progress.</h3>
-          <p class="text-[11px] font-medium text-gray-500 mt-1.5 leading-relaxed">Capture, organise and do more.</p>
+          <h3 class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Turn ideas into<br />garments.</h3>
+          <p class="text-[10.5px] font-medium text-gray-500 mt-1 leading-relaxed">Create tech packs, BOMs, and patterns.</p>
         </div>
       </div>
 
-      <!-- RIGHT FLOATING CARD -->
-      <div class="absolute top-16 right-2 lg:right-8 z-20 max-w-[210px] hidden md:block animate-float-reverse">
-        <div class="glass-card rounded-2xl p-5 border border-white/90 shadow-xl transition-all hover:scale-105 duration-300">
-          <!-- Avatars Header -->
-          <div class="flex items-center -space-x-1.5 mb-3">
-            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User 1" />
-            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="User 2" />
-            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="User 3" />
-            <div class="w-6 h-6 rounded-full bg-gray-100 ring-2 ring-white flex items-center justify-center text-[10px] font-bold text-gray-700">+</div>
+      <!-- ================= RIGHT FLOATING CARD ================= -->
+      <div class="absolute top-12 right-2 lg:right-4 z-20 max-w-[210px] hidden md:block animate-float-reverse">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/95 shadow-xl transition-all hover:scale-105 duration-300">
+          <!-- Textile Swatches & Global Brand Icons Stack -->
+          <div class="flex items-center -space-x-1 mb-3">
+            <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[11px] text-white ring-2 ring-white">🧵</div>
+            <div class="w-6 h-6 rounded-full bg-amber-700/80 flex items-center justify-center text-[11px] text-white ring-2 ring-white">🧶</div>
+            <div class="w-6 h-6 rounded-full bg-teal-600 flex items-center justify-center text-[11px] text-white ring-2 ring-white">🌍</div>
+            <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[11px] text-white ring-2 ring-white">🏭</div>
           </div>
-          <h3 class="text-sm font-bold text-gray-900 leading-snug">Ideas, anytime,<br />anywhere.</h3>
-          <p class="text-[11px] font-medium text-gray-500 mt-1.5 leading-relaxed">Sync across all your devices.</p>
+          <h3 class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Supply Chain,<br />streamlined.</h3>
+          <p class="text-[10.5px] font-medium text-gray-500 mt-1 leading-relaxed">Sync across all your devices.</p>
         </div>
       </div>
 
-      <!-- CENTRAL HERO VISUAL WITH ORBITING 3D GLASS PILLS AND PORTRAIT -->
-      <div class="relative w-full max-w-2xl mx-auto flex items-end justify-center pt-8">
+      <!-- ================= CENTRAL SUIT JACKET ILLUSTRATION & ORBITING PILLS ================= -->
+      <div class="relative w-full max-w-xl mx-auto flex items-center justify-center">
+
+        <!-- Half-Circle / Dome Soft Background Arch -->
+        <div class="absolute w-[340px] sm:w-[420px] h-[340px] sm:h-[420px] rounded-full bg-gradient-to-b from-white/90 via-white/50 to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white/80 pointer-events-none -z-10"></div>
+
+        <!-- ================= FLOATING ANGLED PREVIEWS & PILLS LAYER ================= -->
         
-        <!-- 3D ORBITING CARDS CONTAINER OVERLAY -->
-        <div class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-2">
-
-          <!-- TOP ORBITING GLASS PILLS -->
-          <div class="flex items-center justify-around w-full pt-10 px-4">
-            
-            <!-- Floating Mountain Preview Card (Left Edge) -->
-            <div class="hidden sm:block pointer-events-auto transform -rotate-12 -translate-y-4 hover:rotate-0 transition-transform duration-300">
-              <div class="w-20 h-24 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 glass-card p-1">
-                <img src="img/mountain_preview.jpg" alt="Mountain preview" class="w-full h-full object-cover rounded-xl" />
-              </div>
+        <!-- 1. LEFT ANGLED MINI CAD PATTERN CARD -->
+        <div class="absolute left-4 sm:left-10 top-16 z-10 transform -rotate-12 -translate-x-2 pointer-events-none hidden sm:block">
+          <div class="w-20 sm:w-24 h-28 bg-[#1e232a] rounded-2xl p-2 shadow-2xl border border-gray-700/60 flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[8px] text-gray-400 font-mono">
+              <span>PATTERN_01</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
             </div>
-
-            <!-- Focus Pill (Top Center Left) -->
-            <div class="pointer-events-auto transform -rotate-3 hover:scale-105 transition-all duration-300">
-              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-xl">
-                <div class="w-6 h-6 rounded-lg bg-lime-400/90 flex items-center justify-center text-xs font-bold text-gray-950 shadow-2xs">
-                  ⚡
-                </div>
-                <div class="text-left">
-                  <div class="text-xs font-bold text-gray-950 leading-tight">Focus</div>
-                  <div class="text-[10px] font-medium text-gray-500">Deep work, bigger results.</div>
-                </div>
-              </div>
+            <!-- CAD Sketch grid lines -->
+            <div class="w-full h-14 border border-dashed border-gray-600 rounded bg-gray-900/80 flex items-center justify-center">
+              <svg class="w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-width="1.2" d="M4 6h16M4 12h16M4 18h16M6 4v16M12 4v16M18 4v16"/>
+              </svg>
             </div>
-
-            <!-- Plan Pill (Top Center Right) -->
-            <div class="pointer-events-auto transform rotate-6 hover:scale-105 transition-all duration-300">
-              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-xl">
-                <div class="w-6 h-6 rounded-lg bg-amber-400/90 flex items-center justify-center text-xs font-bold text-gray-950 shadow-2xs">
-                  🎯
-                </div>
-                <div class="text-left">
-                  <div class="text-xs font-bold text-gray-950 leading-tight">Plan</div>
-                  <div class="text-[10px] font-medium text-gray-500">Turn ideas into action.</div>
-                </div>
-              </div>
-            </div>
-
+            <div class="text-[7.5px] text-gray-400 font-mono">Tech Pack CAD</div>
           </div>
-
-          <!-- MIDDLE / BOTTOM ORBITING GLASS PILLS -->
-          <div class="flex items-center justify-between w-full pb-16 px-2 sm:px-8">
-
-            <!-- Ideas Pill (Center Bottom) -->
-            <div class="pointer-events-auto transform translate-y-6 sm:translate-y-2 hover:scale-105 transition-all duration-300 mx-auto">
-              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-2xl">
-                <div class="w-6 h-6 rounded-lg bg-purple-500/90 flex items-center justify-center text-xs font-bold text-white shadow-2xs">
-                  💡
-                </div>
-                <div class="text-left">
-                  <div class="text-xs font-bold text-gray-950 leading-tight">Ideas</div>
-                  <div class="text-[10px] font-medium text-gray-500">Capture everything.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Floating Moon Preview Card (Right Edge) -->
-            <div class="hidden sm:block pointer-events-auto transform rotate-12 translate-y-4 hover:rotate-0 transition-transform duration-300">
-              <div class="w-20 h-24 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 glass-card p-1">
-                <img src="img/moon_preview.jpg" alt="Moon preview" class="w-full h-full object-cover rounded-xl" />
-              </div>
-            </div>
-
-          </div>
-
         </div>
 
-        <!-- PORTRAIT HEAD IMAGE (CUT OUT & FADED AT BOTTOM) -->
-        <div class="relative z-10 w-[320px] sm:w-[400px] md:w-[460px] mx-auto rounded-b-full overflow-hidden">
-          <img src="img/hero_portrait.jpg" alt="Mindly Hero Portrait" 
-            class="w-full h-auto object-cover filter contrast-[1.05] grayscale brightness-[1.02]" />
-          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] via-[#f7f7f5]/80 to-transparent"></div>
+        <!-- 2. RIGHT ANGLED MINI PRODUCTION TRACKER CARD -->
+        <div class="absolute right-4 sm:right-10 bottom-12 z-10 transform rotate-12 translate-x-2 pointer-events-none hidden sm:block">
+          <div class="w-20 sm:w-24 h-28 bg-[#181d24] rounded-2xl p-2 shadow-2xl border border-gray-700/60 flex flex-col justify-between">
+            <div class="text-[8px] text-gray-400 font-mono flex items-center justify-between">
+              <span>PROD_LOG</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            </div>
+            <div class="space-y-1 my-auto">
+              <div class="flex items-center gap-1 text-[7.5px] text-gray-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Cutting: Done
+              </div>
+              <div class="flex items-center gap-1 text-[7.5px] text-gray-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Stitch: Done
+              </div>
+              <div class="flex items-center gap-1 text-[7.5px] text-amber-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> QC: In Progress
+              </div>
+            </div>
+            <div class="text-[7.5px] text-green-400 font-mono">92% Complete</div>
+          </div>
+        </div>
+
+        <!-- ================= 4 FLOATING STAGE PILLS ================= -->
+        
+        <!-- PILL 1: DESIGN (Top Left) -->
+        <div class="absolute -top-1 sm:top-2 left-6 sm:left-14 z-30 transform -rotate-2 hover:scale-105 transition-all duration-300">
+          <div class="glass-pill rounded-2xl px-3.5 py-2 flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-900 shadow-2xs">
+              🧵
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold text-gray-950 leading-tight">Design</div>
+              <div class="text-[9.5px] font-medium text-gray-500">From sketch to tech pack.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PILL 2: TRACK (Top Right) -->
+        <div class="absolute -top-1 sm:top-2 right-6 sm:right-14 z-30 transform rotate-2 hover:scale-105 transition-all duration-300">
+          <div class="glass-pill rounded-2xl px-3.5 py-2 flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-900 shadow-2xs">
+              📐
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold text-gray-950 leading-tight">Track</div>
+              <div class="text-[9.5px] font-medium text-gray-500">Live production stage monitoring.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PILL 3: PLAN (Bottom Left) -->
+        <div class="absolute bottom-8 sm:bottom-12 left-2 sm:left-8 z-30 transform -rotate-1 hover:scale-105 transition-all duration-300">
+          <div class="glass-pill rounded-2xl px-3.5 py-2 flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-900 shadow-2xs">
+              🪡
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold text-gray-950 leading-tight">Plan</div>
+              <div class="text-[9.5px] font-medium text-gray-500">Order and material resource planning.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PILL 4: DELIVER (Bottom Center/Right) -->
+        <div class="absolute bottom-4 sm:bottom-6 right-8 sm:right-24 z-30 transform rotate-1 hover:scale-105 transition-all duration-300">
+          <div class="glass-pill rounded-2xl px-3.5 py-2 flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-900 shadow-2xs">
+              📦
+            </div>
+            <div class="text-left">
+              <div class="text-xs font-bold text-gray-950 leading-tight">Deliver</div>
+              <div class="text-[9.5px] font-medium text-gray-500">Quality control to final dispatch.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= CENTER SUIT JACKET LINE ART ================= -->
+        <div class="relative z-20 w-[240px] sm:w-[290px] h-[340px] sm:h-[390px] flex items-center justify-center my-4">
+          <svg class="w-full h-full text-gray-900 drop-shadow-sm" viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hanger Hook & Stand -->
+            <path d="M150 35 C150 20, 162 20, 162 30 C162 38, 150 42, 150 52" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M150 52 L150 80" stroke="#1e293b" stroke-width="2.5"/>
+            <path d="M100 80 L150 65 L200 80" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- Collar & Lapels -->
+            <!-- Left Lapel -->
+            <path d="M130 80 L110 145 L150 215 L142 120 Z" fill="#ffffff" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Right Lapel -->
+            <path d="M170 80 L190 145 L150 215 L158 120 Z" fill="#ffffff" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Collar band -->
+            <path d="M130 80 Q150 88 170 80" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- Suit Shoulders & Outer Body -->
+            <path d="M130 80 L65 110 L75 320 L150 335 L225 320 L235 110 L170 80" fill="rgba(255,255,255,0.7)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
+
+            <!-- Sleeves Inner Seam -->
+            <path d="M78 140 L92 315" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M222 140 L208 315" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"/>
+
+            <!-- Center Front Line & Button Closure -->
+            <path d="M150 215 L150 335" stroke="#0f172a" stroke-width="2"/>
+            <circle cx="150" cy="245" r="2.5" fill="#0f172a"/>
+            <circle cx="150" cy="280" r="2.5" fill="#0f172a"/>
+
+            <!-- Breast Pocket (Left Chest) -->
+            <path d="M100 160 L125 156" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+            <path d="M102 161 L102 165 L123 161 L123 157" stroke="#0f172a" stroke-width="1.2"/>
+
+            <!-- Waist Flap Pockets -->
+            <path d="M88 265 L120 268 L120 274 L88 271 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+            <path d="M212 265 L180 268 L180 274 L212 271 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+
+            <!-- Mannequin Stand Center Post (Bottom) -->
+            <path d="M150 335 L150 380" stroke="#1e293b" stroke-width="2.5"/>
+            <path d="M120 380 L180 380" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+          </svg>
         </div>
 
       </div>
 
     </div>
 
-    <!-- BOTTOM HERO FOOTER ROW -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200/60 max-w-6xl mx-auto text-xs font-semibold text-gray-500">
+    <!-- 4. BOTTOM FOOTER SOCIAL PROOF & TAGLINE -->
+    <footer class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200/80 max-w-6xl w-full mx-auto text-xs text-gray-500 font-medium">
       
-      <!-- Bottom Left: Social Proof -->
+      <!-- Bottom Left: Brand Social Proof -->
       <div class="flex items-center gap-3">
-        <div class="flex items-center -space-x-2">
-          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User 1" />
-          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="User 2" />
-          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="User 3" />
-          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="User 4" />
-          <div class="w-7 h-7 rounded-full bg-white ring-2 ring-[#f7f7f5] flex items-center justify-center text-[10px] font-bold text-gray-800 shadow-2xs">+</div>
+        <div class="flex items-center -space-x-1.5">
+          <!-- Circular Brand Badges (as in screenshot) -->
+          <div class="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[8px] font-extrabold ring-2 ring-[#f7f7f5]">
+            ZARA
+          </div>
+          <div class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[8px] font-extrabold ring-2 ring-[#f7f7f5]">
+            H&amp;M
+          </div>
+          <div class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-[7px] font-extrabold ring-2 ring-[#f7f7f5]">
+            GAP
+          </div>
+          <div class="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center text-[7px] font-extrabold ring-2 ring-[#f7f7f5]">
+            ASOS
+          </div>
+          <div class="w-6 h-6 rounded-full bg-white ring-2 ring-[#f7f7f5] flex items-center justify-center text-[9px] font-bold text-gray-800 shadow-2xs">
+            +
+          </div>
         </div>
-        <span class="text-gray-600 font-medium">Trusted by 50,000+ creators worldwide.</span>
+        <span class="text-gray-700 font-medium">Trusted by 50,000+ fashion brands worldwide.</span>
       </div>
 
       <!-- Bottom Right: Tagline -->
       <div class="flex items-center gap-2 text-gray-600 font-medium">
-        <span class="text-gray-900 text-sm">✦</span>
-        <span>Less chaos. More clarity.</span>
+        <span class="text-gray-900 text-sm font-bold">✦</span>
+        <span>Less fabric waste. More production efficiency.</span>
       </div>
 
-    </div>
+    </footer>
 
   </div>
 
-  <!-- VIDEO MODAL (Watch Video Trigger) -->
-  <div id="video-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-    <div class="relative max-w-3xl w-full bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-      <button type="button" id="close-modal-btn" class="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center text-lg z-10 transition-colors">
-        ✕
-      </button>
-      <div class="aspect-video w-full flex items-center justify-center bg-gray-950 p-8 text-center">
-        <div>
-          <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 text-white text-2xl">▶</div>
-          <h3 class="text-xl font-bold text-white mb-2">Mindly Experience Demo</h3>
-          <p class="text-sm text-gray-400 max-w-md mx-auto">Watch how Mindly brings clarity to your thoughts and workflows with seamless organization tools.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTERACTIVE JS SCRIPT -->
+  <!-- SCRIPT -->
   <script type="module">
     import { getUser } from './js/api.js';
 
-    // Watch video modal trigger
-    const watchVideoBtn = document.getElementById('watch-video-btn');
-    const videoModal = document.getElementById('video-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-
-    if (watchVideoBtn && videoModal && closeModalBtn) {
-      watchVideoBtn.addEventListener('click', () => {
-        videoModal.classList.remove('hidden');
-        setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
-      });
-
-      closeModalBtn.addEventListener('click', () => {
-        videoModal.classList.add('opacity-0');
-        setTimeout(() => videoModal.classList.add('hidden'), 300);
-      });
-
-      videoModal.addEventListener('click', (e) => {
-        if (e.target === videoModal) {
-          videoModal.classList.add('opacity-0');
-          setTimeout(() => videoModal.classList.add('hidden'), 300);
-        }
-      });
-    }
-
-    // App Button redirection behavior (navigates logged in users directly or to login)
+    // Direct dashboard button redirection for logged-in users
     const appBtn = document.getElementById('app-btn');
     if (appBtn) {
       const user = getUser();
