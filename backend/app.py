@@ -72,6 +72,7 @@ async def startup_event():
     workers_to_seed = [
         {"name": "Ravi Kumar",   "email": "ravi@garmentflow.com",   "password": "Worker@1234", "department": "Cutting", "phone": "9876543210"},
         {"name": "Priya Sharma", "email": "priya@garmentflow.com",  "password": "Worker@1234", "department": "Stitching", "phone": "9876543211"},
+    
         {"name": "Arjun Patel",  "email": "arjun@garmentflow.com",  "password": "Worker@1234", "department": "Quality Check", "phone": "9876543212"},
     ]
     for w in workers_to_seed:

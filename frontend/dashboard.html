@@ -3,126 +3,587 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - GarmentFlow</title>
+  <title>Product Grid - Shoplytic / GarmentFlow</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans / Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css" />
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+            },
+            cardBg: '#ffffff',
+            pageBg: '#f4f5f8',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f4f5f8;
+      color: #1e293b;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      accent-color: #f97316;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
 </head>
-<body class="bg-[#F8FAFC] text-gray-800">
+<body class="bg-[#f4f5f8] min-h-screen text-slate-800 flex flex-col antialiased">
 
-  <!-- Mobile Top Navigation Header -->
-  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-    <div class="flex items-center space-x-2">
-      <span class="text-xl">🧵</span>
-      <span class="font-bold text-gray-900">GarmentFlow</span>
+  <!-- ================= BROWSER CHROME SIMULATION (As in mockup) ================= -->
+  <div class="hidden lg:flex items-center justify-between px-6 py-2.5 bg-[#eaebee] border-b border-gray-300/70 text-xs text-gray-500 select-none">
+    <!-- Window buttons -->
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block"></span>
     </div>
-    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none hover:bg-gray-50">
-      ☰
-    </button>
-  </header>
+    <!-- URL Bar -->
+    <div class="flex items-center gap-2 bg-white/90 px-8 py-1 rounded-full border border-gray-300/80 text-[11px] text-gray-600 shadow-2xs font-mono">
+      <span>🔒</span>
+      <span>garmentflow.shoplytic.app/products</span>
+    </div>
+    <!-- Window controls -->
+    <div class="flex items-center gap-3 text-gray-400">
+      <button class="hover:text-gray-700">⇪</button>
+      <button class="hover:text-gray-700">+</button>
+      <button class="hover:text-gray-700">❐</button>
+    </div>
+  </div>
 
-  <div class="flex min-h-screen">
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-150 ease-in-out">
-      <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <span class="text-2xl">🧵</span>
-          <span class="text-lg font-bold text-gray-900 tracking-tight">GarmentFlow</span>
-        </div>
-        <button id="mobile-menu-close" class="lg:hidden p-2 text-gray-500 hover:text-gray-900 font-semibold">×</button>
-      </div>
+  <!-- ================= MAIN DASHBOARD APP WRAPPER ================= -->
+  <div class="flex flex-1 min-h-[calc(100vh-42px)]">
 
-      <nav class="flex-1 px-4 py-6 space-y-1">
-        <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-semibold bg-blue-50 text-blue-600">
-          <span>📋</span> <span>Dashboard</span>
-        </a>
-        <a href="assign-task.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
-          <span>✍️</span> <span>Assign Task</span>
-        </a>
-        <a href="departments.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
-          <span>🏢</span> <span>Departments</span>
-        </a>
-        <a href="workers.html" class="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
-          <span>👷</span> <span>Workers</span>
-        </a>
-      </nav>
-
-      <div class="p-4 border-t border-gray-200">
-        <div class="px-4 py-3 bg-gray-50 rounded-lg mb-2">
-          <div id="user-name" class="text-sm font-semibold text-gray-900 truncate">—</div>
-          <div class="text-xs text-gray-500 uppercase tracking-wider">Admin</div>
-        </div>
-        <button id="logout-btn" class="w-full flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-          <span>🚪</span> <span>Logout</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Layout / Content Wrapper -->
-    <main class="flex-1 flex flex-col min-w-0 lg:pl-0">
-      <!-- Desktop Header -->
-      <header class="hidden lg:flex items-center justify-between bg-white border-b border-gray-200 px-8 py-4 shadow-sm">
-        <h1 class="text-xl font-bold text-gray-900">Dashboard</h1>
-      </header>
-
-      <!-- Dashboard View Content -->
-      <div class="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8">
-        
-        <!-- Metrics Summary Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Tasks</div>
-            <div id="stat-total" class="text-3xl font-bold text-gray-900 mt-2">—</div>
-          </div>
-          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pending</div>
-            <div id="stat-pending" class="text-3xl font-bold text-amber-600 mt-2">—</div>
-          </div>
-          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Completed</div>
-            <div id="stat-completed" class="text-3xl font-bold text-green-600 mt-2">—</div>
-          </div>
-          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Not Completed</div>
-            <div id="stat-not-completed" class="text-3xl font-bold text-red-600 mt-2">—</div>
-          </div>
+    <!-- 1. LEFT PRIMARY NAVIGATION SIDEBAR -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-gray-200/80 flex flex-col justify-between shrink-0 p-5 select-none fixed lg:static inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
+      
+      <div>
+        <!-- Brand Logo -->
+        <div class="flex items-center justify-between mb-8 px-2">
+          <a href="dashboard.html" class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white shadow-sm shadow-orange-500/30">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/>
+              </svg>
+            </div>
+            <span class="text-lg font-bold text-gray-900 tracking-tight">Shoplytic</span>
+          </a>
+          <button id="close-mobile-sidebar" class="lg:hidden text-gray-400 hover:text-gray-700">✕</button>
         </div>
 
-        <!-- Task Monitoring Section -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
-          <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 class="text-lg font-bold text-gray-900">Task Monitoring</h2>
-            <div class="text-xs text-gray-500 flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded">
-              <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-              Auto-updating
+        <!-- Navigation Links Group -->
+        <nav class="space-y-1 text-sm font-medium">
+          <!-- Overview -->
+          <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            <span>Overview</span>
+          </a>
+
+          <!-- Product (Active Tree) -->
+          <div class="space-y-1">
+            <button id="product-menu-toggle" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-900 font-semibold hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10l2 4v9a2 2 0 01-2 2H7a2 2 0 01-2-2v-9l2-4z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7V5a3 3 0 016 0v2"/>
+                </svg>
+                <span>Product</span>
+              </div>
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <!-- Submenu -->
+            <div class="pl-9 pr-2 space-y-1">
+              <button id="nav-list-btn" class="w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                List
+              </button>
+              <button id="nav-grid-btn" class="w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 text-brand-500 transition-colors flex items-center justify-between">
+                <span>Grid</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+              </button>
+              <button class="w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Details
+              </button>
+              <button class="w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Edit
+              </button>
+              <button id="nav-create-btn" class="w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Create
+              </button>
             </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  <th class="px-6 py-3">Task Details</th>
-                  <th class="px-6 py-3">Worker</th>
-                  <th class="px-6 py-3">Department</th>
-                  <th class="px-6 py-3">Status</th>
-                  <th class="px-6 py-3">Due Date</th>
-                  <th class="px-6 py-3">Last Updated</th>
-                  <th class="px-6 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="tasks-table-body" class="divide-y divide-gray-200 text-sm">
-                <tr>
-                  <td colspan="7" class="px-6 py-8 text-center text-gray-400">Loading tasks...</td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Orders -->
+          <a href="assign-task.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+              </svg>
+              <span>Orders / Tasks</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+
+          <!-- Invoice -->
+          <a href="#" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <span>Invoice</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+
+          <!-- Roles / Workers -->
+          <a href="workers.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              <span>Roles &amp; Workers</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+
+          <!-- Departments -->
+          <a href="departments.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+              <span>Departments</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+
+          <!-- Customer / Quality Check -->
+          <a href="#" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <span>Customer</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Bottom Sidebar Links -->
+      <div class="pt-4 border-t border-gray-100 space-y-1 text-sm font-medium">
+        <a href="#" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Help Desk</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span>Settings</span>
+        </a>
+
+        <button id="logout-btn" class="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-amber-600 hover:text-amber-700 hover:bg-amber-50/50 transition-colors font-semibold text-left cursor-pointer">
+          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          <span>Log Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- 2. MAIN WORKSPACE CONTAINER -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- TOP APP HEADER -->
+      <header class="bg-white/80 backdrop-blur-md sticky top-0 z-30 border-b border-gray-200/80 px-6 py-4 flex items-center justify-between gap-4">
+        
+        <!-- Mobile Sidebar Hamburger -->
+        <button id="open-mobile-sidebar" class="lg:hidden p-2 rounded-lg border border-gray-200 text-gray-600">
+          ☰
+        </button>
+
+        <!-- Page Title & Subtitle -->
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight" id="main-view-title">Product Grid</h1>
+          <p class="text-xs text-gray-500 hidden sm:block">View and manage all listed products and garment production items easily.</p>
+        </div>
+
+        <!-- Global Search Bar & Actions -->
+        <div class="flex items-center gap-4">
+          
+          <!-- Global Search Pill -->
+          <div class="relative hidden md:block w-72">
+            <input 
+              type="text" 
+              id="global-search-input"
+              placeholder="Search product..." 
+              class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+            />
+            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
           </div>
+
+          <!-- Utility Icons -->
+          <div class="flex items-center gap-2 text-gray-500">
+            <!-- Notification Bell -->
+            <button class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors relative" title="Notifications">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <span class="w-2 h-2 rounded-full bg-orange-500 absolute top-1.5 right-1.5"></span>
+            </button>
+            
+            <!-- Help -->
+            <button class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors" title="Help & Support">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </button>
+            
+            <!-- Dark / Moon Toggle -->
+            <button id="theme-toggle-btn" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors" title="Toggle Theme">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+          </div>
+
+          <!-- User Profile Pill -->
+          <div class="flex items-center gap-2.5 pl-2 border-l border-gray-200">
+            <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+              <span id="user-avatar-initials">OA</span>
+            </div>
+            <div class="hidden sm:block text-left">
+              <div id="user-name" class="text-xs font-bold text-gray-900 leading-tight">Oripio</div>
+              <div class="text-[10px] text-gray-400 font-medium">Admin</div>
+            </div>
+          </div>
+
+        </div>
+
+      </header>
+
+      <!-- CONTENT BODY (SPLIT: FILTERS PANEL + PRODUCT GRID) -->
+      <div class="flex-1 p-4 sm:p-6 lg:p-7 flex flex-col lg:flex-row gap-6 items-start">
+        
+        <!-- 3. MIDDLE FILTER SIDE PANEL -->
+        <div class="w-full lg:w-64 shrink-0 bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-5">
+          
+          <!-- Categories Accordion -->
+          <div class="border-b border-gray-100 pb-3">
+            <button class="w-full flex items-center justify-between text-xs font-bold text-gray-800 tracking-wide">
+              <span>Categories</span>
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+
+          <!-- Product Price / Department Accordion -->
+          <div class="space-y-3">
+            <button class="w-full flex items-center justify-between text-xs font-bold text-gray-800 tracking-wide">
+              <span>Product Price</span>
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+            </button>
+
+            <!-- Checkbox List -->
+            <div class="space-y-2.5 pt-1 text-xs text-gray-600 font-medium">
+              
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" id="filter-all-price" checked class="w-3.5 h-3.5 text-orange-500 rounded accent-orange-500" />
+                <span class="text-gray-900 font-semibold">All Price</span>
+              </label>
+
+              <label class="flex items-center justify-between cursor-pointer select-none text-gray-600 hover:text-gray-900">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" class="filter-price-cb w-3.5 h-3.5 rounded accent-orange-500" data-max="200" />
+                  <span>Below $200</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono">(145)</span>
+              </label>
+
+              <label class="flex items-center justify-between cursor-pointer select-none text-gray-600 hover:text-gray-900">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" class="filter-price-cb w-3.5 h-3.5 rounded accent-orange-500" data-min="200" data-max="500" />
+                  <span>$200 - $500</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono">(1,885)</span>
+              </label>
+
+              <label class="flex items-center justify-between cursor-pointer select-none text-gray-600 hover:text-gray-900">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" class="filter-price-cb w-3.5 h-3.5 rounded accent-orange-500" data-min="500" data-max="800" />
+                  <span>$500 - $800</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono">(2,276)</span>
+              </label>
+
+              <label class="flex items-center justify-between cursor-pointer select-none text-gray-600 hover:text-gray-900">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" class="filter-price-cb w-3.5 h-3.5 rounded accent-orange-500" data-min="800" data-max="1000" />
+                  <span>$800 - $1000</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono">(12,676)</span>
+              </label>
+
+              <label class="flex items-center justify-between cursor-pointer select-none text-gray-600 hover:text-gray-900">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" class="filter-price-cb w-3.5 h-3.5 rounded accent-orange-500" data-min="1000" data-max="1100" />
+                  <span>$1000 - $1100</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono">(13,123)</span>
+              </label>
+
+            </div>
+
+            <!-- Custom Price Range Slider -->
+            <div class="pt-3 border-t border-gray-100">
+              <div class="flex items-center justify-between text-xs font-bold text-gray-800 mb-2">
+                <span>Custom Price Range :</span>
+                <span id="slider-badge" class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-mono">$500</span>
+              </div>
+
+              <!-- Interactive Range -->
+              <input 
+                type="range" 
+                id="price-range-slider" 
+                min="0" 
+                max="1000" 
+                value="500" 
+                step="20"
+                class="w-full h-1.5 bg-orange-100 rounded-lg appearance-none cursor-pointer"
+              />
+
+              <!-- Min / Max Box Values -->
+              <div class="flex items-center justify-between gap-2 mt-3">
+                <div class="w-1/2 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1 text-xs text-gray-700 font-mono">
+                  $0
+                </div>
+                <div class="text-xs text-gray-400">—</div>
+                <div id="slider-box-max" class="w-1/2 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1 text-xs text-gray-700 font-mono text-right">
+                  $500
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Gender Accordion -->
+          <div class="border-t border-gray-100 pt-3">
+            <button class="w-full flex items-center justify-between text-xs font-bold text-gray-800 tracking-wide">
+              <span>Gender</span>
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+
+          <!-- Size & Fit Accordion -->
+          <div class="border-t border-gray-100 pt-3">
+            <button class="w-full flex items-center justify-between text-xs font-bold text-gray-800 tracking-wide">
+              <span>Size &amp; Fit</span>
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+
+          <!-- Apply Filter Button -->
+          <div class="pt-2">
+            <button 
+              id="apply-filter-btn"
+              class="w-full bg-[#f97316] hover:bg-[#ea580c] active:scale-[0.99] text-white text-xs font-bold py-3 rounded-xl transition-all shadow-sm hover:shadow-orange-500/20 cursor-pointer"
+            >
+              Apply
+            </button>
+          </div>
+
+        </div>
+
+        <!-- 4. RIGHT PRODUCT / TASK GRID AREA -->
+        <div class="flex-1 w-full flex flex-col space-y-5">
+          
+          <!-- Top Results Bar & Actions -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            
+            <!-- Breadcrumbs / Results Count -->
+            <div>
+              <div class="text-[11px] text-gray-400 font-medium">
+                Categories &gt; <span class="text-gray-700 font-semibold">All Price</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-0.5">
+                Showing all <span id="results-count" class="font-bold text-gray-900">12</span> items results
+              </div>
+            </div>
+
+            <!-- Search, Filter, and + Create Order Button -->
+            <div class="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+              
+              <!-- Inner Search Box -->
+              <div class="relative flex-1 sm:w-48">
+                <input 
+                  type="text" 
+                  id="inner-search-input"
+                  placeholder="Search..." 
+                  class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-500 shadow-2xs"
+                />
+                <svg class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+
+              <!-- Filter Toggle Button -->
+              <button id="quick-filter-btn" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-50 shadow-2xs">
+                <span>Filter</span>
+                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+              </button>
+
+              <!-- + Create Order CTA -->
+              <button 
+                id="create-order-btn"
+                class="flex items-center gap-1.5 px-4 py-1.5 bg-[#f97316] hover:bg-[#ea580c] active:scale-[0.98] text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer whitespace-nowrap"
+              >
+                <span>+</span>
+                <span>Create Order</span>
+              </button>
+
+            </div>
+
+          </div>
+
+          <!-- GRID VIEW CONTAINER (Default) -->
+          <div id="grid-view-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Product cards will be dynamically injected here -->
+          </div>
+
+          <!-- LIST / TABLE VIEW CONTAINER (Switched when 'List' is clicked) -->
+          <div id="list-view-container" class="hidden bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-sm font-bold text-gray-900">Task &amp; Production Monitoring</h2>
+              <div class="text-xs text-gray-500 flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                <span>Live Status</span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50/80 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                    <th class="px-4 py-3">Garment Item</th>
+                    <th class="px-4 py-3">Assigned Worker</th>
+                    <th class="px-4 py-3">Department</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Due Date</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tasks-table-body" class="divide-y divide-gray-100 text-xs">
+                  <!-- Live tasks table rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
       </div>
-    </main>
+
+    </div>
+
   </div>
 
+  <!-- ================= CREATE ORDER / TASK MODAL ================= -->
+  <div id="create-order-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+        <h3 class="text-base font-bold text-gray-900">+ Create Garment Order / Task</h3>
+        <button id="close-modal-btn" class="text-gray-400 hover:text-gray-700 text-lg">✕</button>
+      </div>
+
+      <form id="create-order-form" class="space-y-3.5">
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Item / Garment Name *</label>
+          <input type="text" id="order-title" required placeholder="e.g., Tokyo Mist Jacket" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500" />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Description / Style Specs *</label>
+          <textarea id="order-desc" required rows="2" placeholder="e.g., Two-tone nylon outerwear built for city adventures" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Price / Target ($) *</label>
+            <input type="number" id="order-price" required placeholder="320.00" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Department</label>
+            <select id="order-department" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
+              <option value="Cutting">Cutting</option>
+              <option value="Stitching">Stitching</option>
+              <option value="Quality Check">Quality Check</option>
+              <option value="Packing">Packing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Due Date</label>
+            <input type="date" id="order-due-date" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Priority</label>
+            <select id="order-priority" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-orange-500">
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="cancel-modal-btn" class="px-4 py-2 border border-gray-200 text-xs font-semibold rounded-xl hover:bg-gray-50">Cancel</button>
+          <button type="submit" id="save-order-btn" class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl shadow-sm">Save Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODULE SCRIPT -->
   <script type="module" src="js/dashboard.js"></script>
+
 </body>
 </html>
