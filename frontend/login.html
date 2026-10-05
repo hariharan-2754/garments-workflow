@@ -28,7 +28,7 @@
 
     <form id="login-form" class="space-y-6">
       <div>
-        <label for="email" class="block text-[11px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">IDENTIFY</label>
+        <label for="email" class="block text-[11px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">EMAIL ADDRESS</label>
         <div class="relative">
           <input type="email" id="email" required placeholder="admin@garmentflow.com" 
             class="w-full px-4 py-3 bg-[#13131c] border border-slate-800 rounded-xl text-sm font-medium text-white placeholder-slate-600 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all" />
@@ -36,7 +36,7 @@
       </div>
 
       <div>
-        <label for="password" class="block text-[11px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">SECURITY</label>
+        <label for="password" class="block text-[11px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">PASSWORD</label>
         <div class="relative">
           <input type="password" id="password" required placeholder="••••••••" 
             class="w-full pl-4 pr-10 py-3 bg-[#13131c] border border-slate-800 rounded-xl text-sm font-medium text-white placeholder-slate-600 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all" />
@@ -58,11 +58,22 @@
 
       <button type="submit" id="submit-btn"
         class="w-full bg-white hover:bg-slate-100 text-slate-950 font-extrabold py-3.5 rounded-xl text-sm transition-all duration-150 transform active:scale-[0.98] shadow-lg shadow-white/5 flex items-center justify-center">
-        <span id="submit-btn-text">Unlock Session</span>
+        <span id="submit-btn-text">Sign In</span>
       </button>
 
-      <div class="text-center pt-2">
-        <span class="text-xs text-slate-600 hover:text-slate-400 transition-colors cursor-pointer">Lost credentials?</span>
+      <!-- Quick Demo Login Credentials -->
+      <div class="pt-4 border-t border-slate-800/80">
+        <p class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 mb-2.5">Demo Credentials (Click to fill):</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="fill-admin-btn" class="px-3 py-2 bg-[#13131c] hover:bg-slate-800/80 border border-slate-800 rounded-lg text-left transition-all group cursor-pointer">
+            <span class="block text-[11px] font-bold text-slate-300 group-hover:text-white">Admin</span>
+            <span class="block text-[10px] text-slate-500 font-mono">admin@garmentflow.com</span>
+          </button>
+          <button type="button" id="fill-worker-btn" class="px-3 py-2 bg-[#13131c] hover:bg-slate-800/80 border border-slate-800 rounded-lg text-left transition-all group cursor-pointer">
+            <span class="block text-[11px] font-bold text-slate-300 group-hover:text-white">Worker</span>
+            <span class="block text-[10px] text-slate-500 font-mono">ravi@garmentflow.com</span>
+          </button>
+        </div>
       </div>
     </form>
   </div>
@@ -84,6 +95,22 @@
     const submitBtnText = document.getElementById('submit-btn-text');
     const togglePasswordBtn = document.getElementById('toggle-password');
     const eyeIcon = document.getElementById('eye-icon');
+    const fillAdminBtn = document.getElementById('fill-admin-btn');
+    const fillWorkerBtn = document.getElementById('fill-worker-btn');
+
+    // Demo credentials helper click handlers
+    if (fillAdminBtn) {
+      fillAdminBtn.addEventListener('click', () => {
+        emailInput.value = 'admin@garmentflow.com';
+        passwordInput.value = 'Admin@1234';
+      });
+    }
+    if (fillWorkerBtn) {
+      fillWorkerBtn.addEventListener('click', () => {
+        emailInput.value = 'ravi@garmentflow.com';
+        passwordInput.value = 'Worker@1234';
+      });
+    }
 
     // Password Visibility Toggle
     if (togglePasswordBtn) {
@@ -100,7 +127,7 @@
       e.preventDefault();
       errorMsg.classList.add('hidden');
       submitBtn.disabled = true;
-      submitBtnText.innerText = 'Unlocking...';
+      submitBtnText.innerText = 'Signing In...';
 
       try {
         const res = await apiFetch('/login', {
@@ -122,7 +149,7 @@
         errorText.innerText = err.message || 'Login failed. Please check your credentials.';
         errorMsg.classList.remove('hidden');
         submitBtn.disabled = false;
-        submitBtnText.innerText = 'Unlock Session';
+        submitBtnText.innerText = 'Sign In';
       }
     });
   </script>
