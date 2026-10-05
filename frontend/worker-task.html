@@ -3,94 +3,353 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task Details - GarmentFlow</title>
+  <title>Production Job Spec & Tracker — GarmentFlow</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css" />
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            tealBrand: '#124b4f',
+            tealDark: '#0c383b',
+            tealLight: '#e4f2f3',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f4f6f9;
+      color: #0f172a;
+    }
+    .stepper-step.active-step {
+      background-color: #124b4f;
+      color: #ffffff;
+      border-color: #124b4f;
+      box-shadow: 0 4px 14px rgba(18, 75, 79, 0.25);
+    }
+    .stepper-step.completed-step {
+      background-color: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+  </style>
 </head>
-<body class="bg-[#F8FAFC] text-gray-800 min-h-screen flex flex-col">
+<body class="bg-[#f4f6f9] text-gray-800 antialiased min-h-screen flex flex-col selection:bg-teal-900 selection:text-white">
 
-  <!-- Top Navbar Only -->
-  <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="text-xl">🧵</span>
-        <span class="font-bold text-gray-900 tracking-tight">GarmentFlow</span>
-      </div>
-      <button id="logout-btn" class="text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
-        Logout
-      </button>
-    </div>
-  </nav>
-
-  <!-- Content Container -->
-  <main class="flex-1 max-w-xl w-full mx-auto p-4 md:p-6 space-y-4">
-    
-    <!-- Back to tasks list navigation link -->
-    <div class="mb-2">
-      <a href="worker-home.html" class="inline-flex items-center text-sm font-semibold text-blue-600 hover:underline">
-        ← Back to My Tasks
-      </a>
-    </div>
-
-    <!-- Task details card -->
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+  <!-- ================= WORKER TOP NAVBAR ================= -->
+  <header class="bg-white border-b border-gray-200/90 sticky top-0 z-40 shadow-2xs backdrop-blur-md bg-white/95">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       
-      <!-- Loading indicator -->
-      <div id="loading-state" class="text-center text-gray-400 py-12">
-        Loading task details...
+      <!-- Brand & Back Button -->
+      <div class="flex items-center gap-3">
+        <a href="worker-home.html" class="flex items-center gap-2 group">
+          <div class="w-8 h-8 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-base group-hover:scale-105 transition-transform">
+            🧵
+          </div>
+          <div class="flex flex-col">
+            <span class="font-extrabold text-gray-950 text-base sm:text-lg tracking-tight leading-none">GarmentFlow</span>
+            <span class="text-[9.5px] font-bold uppercase tracking-widest text-[#124b4f] mt-0.5">Job Detail & Progress</span>
+          </div>
+        </a>
       </div>
 
-      <!-- Main task content (hidden initially) -->
-      <div id="task-content" class="hidden space-y-6">
-        <div>
-          <div class="flex items-center flex-wrap gap-2 mb-2">
-            <span id="task-priority" class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded">Priority</span>
-            <span id="task-status" class="px-2 py-0.5 text-xs font-semibold rounded-full">Status</span>
-          </div>
-          <h1 id="task-title" class="text-xl font-bold text-gray-900 leading-tight">Task Title</h1>
-        </div>
-
-        <div class="border-t border-b border-gray-100 py-4 space-y-2.5 text-sm text-gray-600">
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-400">Department</span>
-            <span id="task-dept" class="font-semibold text-gray-800">—</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-400">Due Date</span>
-            <span id="task-due-date" class="font-semibold text-gray-800">—</span>
-          </div>
-        </div>
-
-        <div class="space-y-1.5">
-          <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Instructions</h3>
-          <p id="task-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-lg border border-gray-100">Task instructions description...</p>
-        </div>
-
-        <!-- Optional Reference Image -->
-        <div id="image-container" class="hidden space-y-2">
-          <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Reference Image</h3>
-          <img id="task-image" src="" alt="Reference" class="w-full max-h-80 object-contain rounded-lg border border-gray-200 bg-gray-50" />
-        </div>
-
-        <!-- Submission Status Indicator -->
-        <div id="submission-status" class="hidden p-4 rounded-lg text-center font-bold text-sm bg-green-50 text-green-700 border border-green-200">
-          Response Submitted
-        </div>
-
-        <!-- Action Buttons (shown only when Pending) -->
-        <div id="actions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-          <button id="complete-btn" class="w-full bg-green-600 text-white py-3 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shadow-sm focus:outline-none">
-            ✅ Complete
-          </button>
-          <button id="not-completed-btn" class="w-full bg-red-600 text-white py-3 rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors shadow-sm focus:outline-none">
-            ❌ Not Completed
-          </button>
-        </div>
+      <!-- Worker Profile & Logout -->
+      <div class="flex items-center gap-3">
+        <a href="worker-home.html" class="px-3.5 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-100 rounded-xl transition-colors flex items-center gap-1.5 border border-gray-200/80">
+          <span>←</span>
+          <span class="hidden sm:inline">My Task Queue</span>
+        </a>
+        <button id="logout-btn" class="px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 border border-red-100 rounded-xl transition-colors cursor-pointer flex items-center gap-1">
+          <span>🚪</span>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
       </div>
 
     </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- BREADCRUMB & QUICK NAV -->
+    <div class="flex items-center justify-between">
+      <a href="worker-home.html" class="inline-flex items-center gap-2 text-xs font-extrabold text-[#124b4f] hover:underline">
+        <span>←</span>
+        <span>Back to All Assigned Tasks</span>
+      </a>
+      <span id="task-batch-badge" class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-mono font-bold rounded-lg border border-gray-200">
+        BATCH #W24-08
+      </span>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div id="loading-state" class="bg-white rounded-3xl border border-gray-200/90 p-12 text-center shadow-2xs">
+      <div class="text-4xl mb-3 animate-pulse">⏳</div>
+      <p class="text-xs font-bold text-gray-500">Loading garment specification & production instructions...</p>
+    </div>
+
+    <!-- MAIN TASK CONTENT (Revealed dynamically) -->
+    <div id="task-content" class="hidden space-y-6">
+
+      <!-- ================= 1. JOB HEADER HERO CARD ================= -->
+      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs space-y-4 relative overflow-hidden">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="task-dept-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-[#124b4f] border border-teal-100">
+              Cutting Department
+            </span>
+            <span id="task-priority-badge" class="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+              High Priority
+            </span>
+            <span id="task-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+              ● In Progress
+            </span>
+          </div>
+
+          <div class="text-xs font-semibold text-gray-500 flex items-center gap-2">
+            <span>📅 Due Date:</span>
+            <span id="task-due-date" class="font-bold text-gray-900">Today, 5:00 PM</span>
+          </div>
+        </div>
+
+        <h1 id="task-title" class="text-xl sm:text-2xl font-extrabold text-gray-950 tracking-tight leading-snug">
+          Precision Pattern Cutting — Men's Italian Wool Suit Jacket
+        </h1>
+
+        <!-- KPI Strip -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-gray-100">
+          <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+            <div class="text-[10px] uppercase font-bold text-gray-400">Target Output</div>
+            <div id="task-target-qty" class="text-base font-extrabold text-gray-900 mt-0.5">150 pcs</div>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+            <div class="text-[10px] uppercase font-bold text-gray-400">Completed</div>
+            <div id="task-completed-qty" class="text-base font-extrabold text-[#124b4f] mt-0.5">68 pcs</div>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+            <div class="text-[10px] uppercase font-bold text-gray-400">Tolerance</div>
+            <div class="text-base font-extrabold text-gray-900 mt-0.5">± 1.0 mm</div>
+          </div>
+          <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+            <div class="text-[10px] uppercase font-bold text-gray-400">Quality Pass</div>
+            <div class="text-base font-extrabold text-emerald-600 mt-0.5">100% Verified</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= 2. INTERACTIVE PRODUCTION STEPPER ================= -->
+      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-extrabold text-gray-900 uppercase tracking-wider">Production Workflow Stages</h2>
+            <p class="text-xs text-gray-500 font-medium">Click any stage to update your current workstation progress</p>
+          </div>
+          <span id="stepper-percentage" class="text-xs font-extrabold px-3 py-1 bg-teal-50 text-[#124b4f] rounded-full border border-teal-100">
+            45% Completed
+          </span>
+        </div>
+
+        <!-- 4 Steps Interactive Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5 pt-2">
+          
+          <button type="button" data-step="1" class="stepper-step p-3.5 rounded-2xl border border-gray-200 text-left transition-all cursor-pointer flex flex-col justify-between completed-step">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-extrabold">Step 1</span>
+              <span class="text-sm">📋</span>
+            </div>
+            <div class="text-xs font-bold leading-snug">Material Received &amp; Verified</div>
+          </button>
+
+          <button type="button" data-step="2" class="stepper-step p-3.5 rounded-2xl border border-gray-200 text-left transition-all cursor-pointer flex flex-col justify-between active-step">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-extrabold">Step 2</span>
+              <span class="text-sm">✂️</span>
+            </div>
+            <div class="text-xs font-bold leading-snug">Active Production &amp; Assembly</div>
+          </button>
+
+          <button type="button" data-step="3" class="stepper-step p-3.5 rounded-2xl border border-gray-200 text-left transition-all cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-extrabold">Step 3</span>
+              <span class="text-sm">🔍</span>
+            </div>
+            <div class="text-xs font-bold leading-snug">Station QC &amp; Measurement</div>
+          </button>
+
+          <button type="button" data-step="4" class="stepper-step p-3.5 rounded-2xl border border-gray-200 text-left transition-all cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-extrabold">Step 4</span>
+              <span class="text-sm">📦</span>
+            </div>
+            <div class="text-xs font-bold leading-snug">Handover &amp; Final Output</div>
+          </button>
+
+        </div>
+
+        <!-- Progress bar under stepper -->
+        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden mt-3">
+          <div id="workflow-progress-bar" class="bg-[#124b4f] h-full rounded-full transition-all duration-500" style="width: 45%"></div>
+        </div>
+
+      </div>
+
+      <!-- ================= 3. GARMENT TECHNICAL SPEC & INSTRUCTIONS ================= -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Instructions & Technical Details (2 Cols) -->
+        <div class="md:col-span-2 bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs space-y-4">
+          <h2 class="text-sm font-extrabold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+            <span>📝</span> Technical Instructions &amp; SOP
+          </h2>
+
+          <div id="task-desc" class="text-xs text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50/80 p-4 rounded-2xl border border-gray-100 font-medium">
+            Perform computerized CAD marker layout and precision laser cutting for 150 pieces of Italian Wool Twill Charcoal.
+          </div>
+
+          <!-- Technical Table -->
+          <div class="border-t border-gray-100 pt-4 space-y-2.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-400 font-medium">Fabric Specification</span>
+              <span id="task-fabric-spec" class="font-bold text-gray-900">100% Italian Wool Twill (Charcoal)</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-400 font-medium">Quality Protocol</span>
+              <span class="font-bold text-gray-900">ISO 9001 Garment Standard AQL 1.5</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-gray-400 font-medium">Dispatch Routing</span>
+              <span class="font-bold text-gray-900">Next ➔ Stitching Department (Bay 4)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Garment Reference (1 Col) -->
+        <div class="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-2xs space-y-3 flex flex-col justify-between">
+          <div>
+            <h2 class="text-xs font-extrabold text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span>🖼️</span> Style Reference
+            </h2>
+            <div class="relative rounded-2xl overflow-hidden group bg-gray-100 border border-gray-200/80 aspect-square">
+              <img 
+                id="task-image" 
+                src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80" 
+                alt="Garment Reference" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold pointer-events-none">
+                🔍 Reference Cut CAD
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[10px] text-gray-400 text-center font-medium">
+            Verify style silhouette and seam placement against visual spec before dispatch.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ================= 4. OPERATOR LOG & SUBMISSION FORM ================= -->
+      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs space-y-5">
+        
+        <h2 class="text-sm font-extrabold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+          <span>⚡</span> Operator Workstation Output Log
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div>
+            <label for="pieces-completed-input" class="block text-[10px] font-extrabold uppercase tracking-widest text-gray-500 mb-1">
+              COMPLETED PIECES (PCS)
+            </label>
+            <input 
+              type="number" 
+              id="pieces-completed-input" 
+              value="68" 
+              min="0" 
+              max="10000"
+              class="w-full px-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 focus:bg-white focus:outline-none focus:border-[#124b4f] focus:ring-1 focus:ring-[#124b4f] transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="station-notes-input" class="block text-[10px] font-extrabold uppercase tracking-widest text-gray-500 mb-1">
+              OPERATOR LOG / SHIFT NOTES
+            </label>
+            <input 
+              type="text" 
+              id="station-notes-input" 
+              placeholder="e.g. Cut 68 pieces with zero flaw. Prepared for stitching line."
+              class="w-full px-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-2xl text-xs font-medium text-gray-900 focus:bg-white focus:outline-none focus:border-[#124b4f] focus:ring-1 focus:ring-[#124b4f] transition-all"
+            />
+          </div>
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div id="actions-container" class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+          
+          <button 
+            type="button" 
+            id="report-issue-btn" 
+            class="px-5 py-3 rounded-2xl border border-rose-200 text-rose-700 bg-rose-50/60 hover:bg-rose-100 text-xs font-extrabold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <span>⚠️</span>
+            <span>Flag Defect / Need Assistance</span>
+          </button>
+
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              id="save-progress-btn" 
+              class="flex-1 sm:flex-none px-6 py-3 rounded-2xl border border-gray-300 hover:bg-gray-100 text-gray-800 text-xs font-extrabold transition-all cursor-pointer"
+            >
+              Save Progress
+            </button>
+
+            <button 
+              type="button" 
+              id="complete-task-btn" 
+              class="flex-1 sm:flex-none px-7 py-3 rounded-2xl bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-extrabold transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>✅</span>
+              <span>Mark 100% Completed</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Status Submitted Banner (When task is already completed) -->
+        <div id="submission-status-banner" class="hidden p-4 rounded-2xl text-center font-bold text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center gap-2">
+          <span>✨</span>
+          <span>This task has been completed and verified for downstream handover.</span>
+        </div>
+
+      </div>
+
+    </div>
+
   </main>
 
   <script type="module" src="js/worker-task.js"></script>
+
 </body>
 </html>

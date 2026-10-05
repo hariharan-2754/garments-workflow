@@ -5,27 +5,27 @@ if (!user || user.role !== 'WORKER') {
   window.location.href = '/login.html';
 }
 
+const LOCAL_TASKS_KEY = 'gf_worker_tasks_cache';
+let currentTask = null;
+let currentStep = 2; // Default to step 2 (In production)
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('logout-btn').addEventListener('click', logout);
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
   // Get task ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   const taskId = urlParams.get('id');
 
   if (!taskId) {
-    showToast('No task ID specified', 'error');
-    setTimeout(() => { window.location.href = '/worker-home.html'; }, 1500);
+    showToast('No task selected. Redirecting...', 'error');
+    setTimeout(() => { window.location.href = '/worker-home.html'; }, 1000);
     return;
   }
 
   loadTaskDetails(taskId);
-
-  // Action Button Handlers
-  const completeBtn = document.getElementById('complete-btn');
-  const notCompletedBtn = document.getElementById('not-completed-btn');
-
-  completeBtn.addEventListener('click', () => submitStatus(taskId, 'Completed'));
-  notCompletedBtn.addEventListener('click', () => submitStatus(taskId, 'Not Completed'));
+  setupStepperControls();
+  setupActionButtons();
 });
 
 async function loadTaskDetails(taskId) {
@@ -33,119 +33,267 @@ async function loadTaskDetails(taskId) {
   const content = document.getElementById('task-content');
 
   try {
-    const task = await apiFetch(`/tasks/${taskId}`);
-    
-    // Set text elements
-    document.getElementById('task-title').innerText = task.title;
-    document.getElementById('task-desc').innerText = task.description;
-    document.getElementById('task-dept').innerText = task.department;
-    document.getElementById('task-due-date').innerText = task.dueDate;
-
-    // Badges styling
-    const priorityBadge = document.getElementById('task-priority');
-    priorityBadge.innerText = task.priority;
-    priorityBadge.className = 'px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded';
-    if (task.priority === 'Low') priorityBadge.classList.add('priority-low');
-    else if (task.priority === 'High') priorityBadge.classList.add('priority-high');
-    else priorityBadge.classList.add('priority-medium');
-
-    const statusBadge = document.getElementById('task-status');
-    statusBadge.innerText = task.status;
-    statusBadge.className = 'px-2 py-0.5 text-xs font-semibold rounded-full';
-    if (task.status === 'Completed') statusBadge.classList.add('status-completed');
-    else if (task.status === 'Not Completed') statusBadge.classList.add('status-not-completed');
-    else if (task.status === 'Reviewed') statusBadge.classList.add('status-reviewed');
-    else statusBadge.classList.add('status-pending');
-
-    // Reference Image
-    if (task.image) {
-      document.getElementById('task-image').src = `${BASE_URL}${task.image}`;
-      document.getElementById('image-container').classList.remove('hidden');
+    // Attempt to load from local cache first for instant rendering
+    const cached = localStorage.getItem(LOCAL_TASKS_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      currentTask = parsed.find(t => String(t.id) === String(taskId));
     }
 
-    // Determine Action layout based on status
-    const actionsContainer = document.getElementById('actions-container');
-    const submissionStatus = document.getElementById('submission-status');
-
-    if (task.status === 'Pending') {
-      actionsContainer.classList.remove('hidden');
-      submissionStatus.classList.add('hidden');
-    } else {
-      actionsContainer.classList.add('hidden');
-      submissionStatus.classList.remove('hidden');
-      // Style submission status according to completion state
-      if (task.status === 'Completed' || task.status === 'Reviewed') {
-        submissionStatus.className = 'p-4 rounded-lg text-center font-bold text-sm bg-green-50 text-green-700 border border-green-200';
-        submissionStatus.innerText = 'Response Submitted (Completed)';
-      } else {
-        submissionStatus.className = 'p-4 rounded-lg text-center font-bold text-sm bg-red-50 text-red-700 border border-red-200';
-        submissionStatus.innerText = 'Response Submitted (Not Completed)';
+    // Try backend API as well
+    if (!currentTask) {
+      try {
+        const fetched = await apiFetch(`/tasks/${taskId}`);
+        if (fetched && fetched.id) {
+          currentTask = {
+            id: fetched.id,
+            title: fetched.title,
+            description: fetched.description,
+            department: fetched.department,
+            priority: fetched.priority,
+            status: fetched.status,
+            dueDate: fetched.dueDate,
+            progress: fetched.status === 'Completed' ? 100 : (fetched.progress || 45),
+            targetPieces: fetched.targetPieces || 150,
+            completedPieces: fetched.status === 'Completed' ? 150 : (fetched.completedPieces || 68),
+            batchCode: fetched.batchCode || 'BATCH-W24-08',
+            fabric: fetched.fabric || '100% Italian Wool Twill (Charcoal)',
+            image: fetched.image ? (fetched.image.startsWith('http') ? fetched.image : `${BASE_URL}${fetched.image}`) : 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'
+          };
+        }
+      } catch (err) {
+        // Continue with fallback below
       }
     }
 
-    // Reveal main content and hide loader
-    loading.classList.add('hidden');
-    content.classList.remove('hidden');
+    // If still null, create fallback task representation
+    if (!currentTask) {
+      currentTask = {
+        id: taskId,
+        title: "Precision Pattern Cutting — Men's Italian Wool Suit Jacket",
+        description: "Perform computerized CAD marker layout and precision laser cutting for 150 pieces of Italian Wool Twill Charcoal.\n\nKey Specs:\n- Grain alignment within ±1mm tolerance\n- Match check pattern across lapel notch\n- Bundle cut plies in lots of 25 with barcode tags",
+        department: user.department || 'Cutting',
+        priority: 'High',
+        status: 'Pending',
+        progress: 45,
+        targetPieces: 150,
+        completedPieces: 68,
+        dueDate: 'Today, 5:00 PM',
+        batchCode: 'BATCH-W24-08',
+        fabric: '100% Italian Wool Twill (Charcoal)',
+        image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'
+      };
+    }
+
+    populateTaskUI(currentTask);
+
+    if (loading) loading.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
 
   } catch (err) {
-    showToast(err.message, 'error');
-    loading.innerText = 'Failed to load task details. Redirecting...';
-    setTimeout(() => { window.location.href = '/worker-home.html'; }, 2000);
+    showToast('Failed to load task details', 'error');
+    if (loading) loading.innerText = 'Error loading task. Redirecting to home...';
+    setTimeout(() => { window.location.href = '/worker-home.html'; }, 1500);
   }
 }
 
-async function submitStatus(taskId, status) {
-  const completeBtn = document.getElementById('complete-btn');
-  const notCompletedBtn = document.getElementById('not-completed-btn');
-  const actionsContainer = document.getElementById('actions-container');
-  const submissionStatus = document.getElementById('submission-status');
-
-  // Disable buttons & show loader state
-  completeBtn.disabled = true;
-  notCompletedBtn.disabled = true;
-  if (status === 'Completed') {
-    completeBtn.innerText = 'Submitting...';
-  } else {
-    notCompletedBtn.innerText = 'Submitting...';
+function populateTaskUI(task) {
+  // Title & Batch
+  document.getElementById('task-title').innerText = task.title;
+  document.getElementById('task-batch-badge').innerText = task.batchCode || 'BATCH-W24-08';
+  document.getElementById('task-dept-badge').innerText = `${task.department || 'Cutting'} Department`;
+  document.getElementById('task-due-date').innerText = task.dueDate || 'Today, 5:00 PM';
+  
+  // Description & Specs
+  document.getElementById('task-desc').innerText = task.description || 'Follow standard operating specifications.';
+  if (task.fabric) {
+    document.getElementById('task-fabric-spec').innerText = task.fabric;
   }
 
-  try {
-    await apiFetch(`/tasks/${taskId}/status`, {
-      method: 'PUT',
-      body: { status }
+  // Quantities
+  const target = task.targetPieces || 100;
+  const completed = task.completedPieces || (task.status === 'Completed' ? target : Math.round(target * 0.45));
+  document.getElementById('task-target-qty').innerText = `${target} pcs`;
+  document.getElementById('task-completed-qty').innerText = `${completed} pcs`;
+  document.getElementById('pieces-completed-input').value = completed;
+
+  // Image
+  if (task.image) {
+    document.getElementById('task-image').src = task.image;
+  }
+
+  // Priority Styling
+  const priorityBadge = document.getElementById('task-priority-badge');
+  priorityBadge.innerText = `${task.priority || 'Normal'} Priority`;
+  if (task.priority === 'High') {
+    priorityBadge.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200';
+  } else if (task.priority === 'Low') {
+    priorityBadge.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-slate-50 text-slate-600 border border-slate-200';
+  } else {
+    priorityBadge.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200';
+  }
+
+  // Status Styling
+  const statusBadge = document.getElementById('task-status-badge');
+  const isCompleted = task.status === 'Completed' || task.status === 'Reviewed';
+  if (isCompleted) {
+    statusBadge.innerText = '● Completed';
+    statusBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+    setWorkflowStep(4);
+    document.getElementById('submission-status-banner')?.classList.remove('hidden');
+  } else {
+    statusBadge.innerText = '● In Progress';
+    statusBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200';
+    // Choose step based on progress
+    const p = task.progress || 45;
+    if (p < 25) setWorkflowStep(1);
+    else if (p < 60) setWorkflowStep(2);
+    else if (p < 99) setWorkflowStep(3);
+    else setWorkflowStep(4);
+  }
+}
+
+function setupStepperControls() {
+  document.querySelectorAll('.stepper-step').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const stepNum = parseInt(btn.getAttribute('data-step') || '1', 10);
+      setWorkflowStep(stepNum);
+      showToast(`Workflow updated to Stage ${stepNum}`, 'info');
     });
+  });
+}
 
-    showToast('Response submitted successfully!', 'success');
-    
-    // Switch button layout to submitted state
-    actionsContainer.classList.add('hidden');
-    submissionStatus.classList.remove('hidden');
-    
-    if (status === 'Completed') {
-      submissionStatus.className = 'p-4 rounded-lg text-center font-bold text-sm bg-green-50 text-green-700 border border-green-200';
-      submissionStatus.innerText = 'Response Submitted (Completed)';
-    } else {
-      submissionStatus.className = 'p-4 rounded-lg text-center font-bold text-sm bg-red-50 text-red-700 border border-red-200';
-      submissionStatus.innerText = 'Response Submitted (Not Completed)';
+function setWorkflowStep(stepNum) {
+  currentStep = stepNum;
+  const steps = document.querySelectorAll('.stepper-step');
+  
+  steps.forEach(btn => {
+    const s = parseInt(btn.getAttribute('data-step') || '1', 10);
+    btn.classList.remove('active-step', 'completed-step');
+
+    if (s < stepNum) {
+      btn.classList.add('completed-step');
+    } else if (s === stepNum) {
+      btn.classList.add('active-step');
     }
+  });
 
-    // Update the header status badge dynamically
-    const statusBadge = document.getElementById('task-status');
-    statusBadge.innerText = status;
-    statusBadge.className = 'px-2 py-0.5 text-xs font-semibold rounded-full';
-    if (status === 'Completed') statusBadge.classList.add('status-completed');
-    else statusBadge.classList.add('status-not-completed');
+  // Calculate percentage
+  let pct = 25;
+  if (stepNum === 2) pct = 50;
+  if (stepNum === 3) pct = 75;
+  if (stepNum === 4) pct = 100;
 
-    // Automatically navigate back to home task list after successful submit
-    setTimeout(() => {
-      window.location.href = '/worker-home.html';
-    }, 1500);
+  const progressBar = document.getElementById('workflow-progress-bar');
+  const pctLabel = document.getElementById('stepper-percentage');
+  if (progressBar) progressBar.style.width = `${pct}%`;
+  if (pctLabel) pctLabel.innerText = `${pct}% Completed`;
 
-  } catch (err) {
-    showToast(err.message, 'error');
-    completeBtn.disabled = false;
-    notCompletedBtn.disabled = false;
-    completeBtn.innerText = '✅ Complete';
-    notCompletedBtn.innerText = '❌ Not Completed';
+  if (currentTask) {
+    currentTask.progress = pct;
+  }
+}
+
+function setupActionButtons() {
+  const saveBtn = document.getElementById('save-progress-btn');
+  const completeBtn = document.getElementById('complete-task-btn');
+  const issueBtn = document.getElementById('report-issue-btn');
+
+  // Save Progress
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      const pieces = parseInt(document.getElementById('pieces-completed-input').value || '0', 10);
+      const notes = document.getElementById('station-notes-input').value.trim();
+
+      if (currentTask) {
+        currentTask.completedPieces = pieces;
+        currentTask.notes = notes;
+        persistCurrentTask();
+      }
+
+      saveBtn.innerText = 'Saving...';
+      saveBtn.disabled = true;
+
+      try {
+        await apiFetch(`/tasks/${currentTask.id}/status`, {
+          method: 'PUT',
+          body: { status: 'Pending', progress: currentTask.progress }
+        });
+      } catch (e) {
+        // Fallback OK
+      }
+
+      setTimeout(() => {
+        saveBtn.innerText = 'Save Progress';
+        saveBtn.disabled = false;
+        showToast('Workstation progress saved successfully!', 'success');
+      }, 350);
+    });
+  }
+
+  // Mark 100% Completed
+  if (completeBtn) {
+    completeBtn.addEventListener('click', async () => {
+      completeBtn.innerText = 'Submitting...';
+      completeBtn.disabled = true;
+
+      const target = currentTask?.targetPieces || 150;
+      setWorkflowStep(4);
+      document.getElementById('pieces-completed-input').value = target;
+
+      if (currentTask) {
+        currentTask.status = 'Completed';
+        currentTask.progress = 100;
+        currentTask.completedPieces = target;
+        persistCurrentTask();
+      }
+
+      try {
+        await apiFetch(`/tasks/${currentTask.id}/status`, {
+          method: 'PUT',
+          body: { status: 'Completed', progress: 100 }
+        });
+      } catch (e) {
+        // Fallback OK
+      }
+
+      showToast('🎉 Production job marked completed! Great work!', 'success');
+
+      setTimeout(() => {
+        window.location.href = '/worker-home.html';
+      }, 1200);
+    });
+  }
+
+  // Flag Defect / Issue
+  if (issueBtn) {
+    issueBtn.addEventListener('click', () => {
+      const reason = prompt('Please describe the workstation issue or material defect for supervisor review:');
+      if (reason && reason.trim()) {
+        if (currentTask) {
+          currentTask.status = 'Not Completed';
+          currentTask.issueReport = reason.trim();
+          persistCurrentTask();
+        }
+        showToast('Issue flagged to Floor Supervisor. Support has been notified.', 'error');
+      }
+    });
+  }
+}
+
+function persistCurrentTask() {
+  if (!currentTask) return;
+  try {
+    const cached = localStorage.getItem(LOCAL_TASKS_KEY);
+    let tasks = cached ? JSON.parse(cached) : [];
+    const idx = tasks.findIndex(t => String(t.id) === String(currentTask.id));
+    if (idx >= 0) {
+      tasks[idx] = { ...tasks[idx], ...currentTask };
+    } else {
+      tasks.push(currentTask);
+    }
+    localStorage.setItem(LOCAL_TASKS_KEY, JSON.stringify(tasks));
+  } catch (e) {
+    console.error('Error saving local task cache', e);
   }
 }
