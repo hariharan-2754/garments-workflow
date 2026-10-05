@@ -1,447 +1,401 @@
-import { apiFetch, getUser, logout, showToast, BASE_URL } from './api.js';
+import { apiFetch, getUser, logout, showToast } from './api.js';
 
-// Redirect if not admin
+// Redirect if not logged in
 const user = getUser();
 if (!user || user.role !== 'ADMIN') {
-  window.location.href = '/login.html';
+  // Allow demo access or redirect
+  if (!user) {
+    window.location.href = '/login.html';
+  }
 }
 
-// Initial Mock Garments matching the reference UI mockup
-const INITIAL_PRODUCTS = [
+// 4-Step Pipeline Stages Thumbnails
+const PIPELINE_STEPS = [
+  'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=150&q=80', // Fabric roll
+  'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=150&q=80', // Cutting pattern
+  'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=150&q=80', // Stitching machine
+  'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=150&q=80', // Finished garment
+];
+
+// Initial Tasks matching the screenshot template & content
+const MOCK_WORKER_CARDS = [
   {
-    id: 'prod-1',
-    name: 'Tokyo Mist Jacket',
-    description: 'Two-tone nylon outerwear bag built for city adventures.',
-    price: 320.00,
-    category: 'Jacket',
+    id: 'gf-1',
+    workerName: 'David Chen',
+    workerAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Stitching T-Shirt',
+    department: 'Stitching',
+    admin: 'Maria Lopez',
+    progress: 75,
+    status: 'In Progress',
+    priority: 'High',
+    price: 320
+  },
+  {
+    id: 'gf-2',
+    workerName: 'Li Wei',
+    workerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Cutting T-Shirt',
     department: 'Cutting',
-    image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80',
-    liked: false
+    admin: 'Maria Lopez',
+    progress: 50,
+    status: 'In Progress',
+    priority: 'High',
+    price: 320
   },
   {
-    id: 'prod-2',
-    name: 'Urban Trek Sling',
-    description: 'Two-tone nylon shoulder bag built for city adventures.',
-    price: 320.00,
-    category: 'Outerwear',
-    department: 'Stitching',
-    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-3',
-    name: 'Kyoto Lavender Shirt',
-    description: 'Subtle gloss finish with an elegant cut stand out, softly.',
-    price: 360.00,
-    category: 'Shirt',
+    id: 'gf-3',
+    workerName: 'Amara Okafor',
+    workerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Printing T-Shirt',
     department: 'Printing',
-    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
-    liked: false
+    admin: 'Maria Lopez',
+    progress: 40,
+    status: 'In Progress',
+    priority: 'High',
+    price: 360
   },
   {
-    id: 'prod-4',
-    name: 'Black Sea Polo',
-    description: 'Minimal matte polo tee designed for understated confidence.',
-    price: 390.00,
-    category: 'Polo',
+    id: 'gf-4',
+    workerName: 'Li Wei',
+    workerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1010',
+    task: 'Cutting',
+    department: 'Cutting',
+    admin: 'Maria Lopez',
+    progress: 85,
+    status: 'In Progress',
+    priority: 'High',
+    price: 280
+  },
+  {
+    id: 'gf-5',
+    workerName: 'Okafor',
+    workerAvatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1010',
+    task: 'Stitching',
     department: 'Stitching',
-    image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=600&q=80',
-    liked: false
+    admin: 'Maria Lopez',
+    progress: 60,
+    status: 'In Progress',
+    priority: 'Medium',
+    price: 300
   },
   {
-    id: 'prod-5',
-    name: 'Osaka Grid Layer',
-    description: 'Textured navy jacket with a geometric stitch detail smart & sleek.',
-    price: 280.00,
-    category: 'Layer',
+    id: 'gf-6',
+    workerName: 'Worker Maria',
+    workerAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Assigns Cutting',
+    department: 'Cutting',
+    admin: 'Maria Lopez',
+    progress: 90,
+    status: 'In Progress',
+    priority: 'High',
+    price: 320
+  },
+  {
+    id: 'gf-7',
+    workerName: 'Li Wei',
+    workerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Embroidery T-Shirt',
     department: 'Embroidery',
-    image: 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&w=600&q=80',
-    liked: false
+    admin: 'Maria Lopez',
+    progress: 35,
+    status: 'In Progress',
+    priority: 'Medium',
+    price: 300
   },
   {
-    id: 'prod-6',
-    name: 'Street Camo Tee',
-    description: 'Bold street camo made for modern urban rhythm.',
-    price: 300.00,
-    category: 'T-Shirt',
+    id: 'gf-8',
+    workerName: 'Li Wei',
+    workerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Cutting',
+    department: 'Cutting',
+    admin: 'Maria Lopez',
+    progress: 70,
+    status: 'In Progress',
+    priority: 'High',
+    price: 240
+  },
+  {
+    id: 'gf-9',
+    workerName: 'Amara Okafor',
+    workerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    jobId: 'GF-1011',
+    task: 'Assigned Printing',
     department: 'Printing',
-    image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-7',
-    name: 'Snow Drift Hoodie',
-    description: 'Cloud-soft fabric with clean lines and cozy warmth.',
-    price: 320.00,
-    category: 'Hoodie',
-    department: 'Quality Check',
-    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-8',
-    name: 'Charcoal Flex Sweatshirt',
-    description: 'Effortless fit meets stretch comfort in this cool-season staple.',
-    price: 300.00,
-    category: 'Sweatshirt',
-    department: 'Cutting',
-    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-9',
-    name: 'Desert Tone Chinos',
-    description: 'Soft silk-linen blend with tailored stripes made for daily confidence.',
-    price: 240.00,
-    category: 'Pants',
-    department: 'Stitching',
-    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-10',
-    name: 'Ivory Bloom Shirt',
-    description: 'Soft silk-linen blend polo with tailored stripes made for daily confidence.',
-    price: 310.00,
-    category: 'Shirt',
-    department: 'Cutting',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-11',
-    name: 'Zen Cream Tee',
-    description: 'Soft silk-linen blend polo with tailored stripes made for daily confidence.',
-    price: 180.00,
-    category: 'T-Shirt',
-    department: 'Packing',
-    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
-    liked: false
-  },
-  {
-    id: 'prod-12',
-    name: 'Sketch City Tee',
-    description: 'Soft silk-linen blend polo with tailored stripes made for daily confidence.',
-    price: 220.00,
-    category: 'T-Shirt',
-    department: 'Quality Check',
-    image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80',
-    liked: false
+    admin: 'Maria Lopez',
+    progress: 45,
+    status: 'In Progress',
+    priority: 'Low',
+    price: 220
   }
 ];
 
-let allProducts = [...INITIAL_PRODUCTS];
-let liveTasks = [];
-let currentSearch = '';
-let maxPrice = 1100;
-let selectedPriceRanges = [];
+let allCards = [...MOCK_WORKER_CARDS];
+let activeModalCard = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Populate user details
+  // Set user email in header
   if (user) {
-    const nameEl = document.getElementById('user-name');
-    const initialsEl = document.getElementById('user-avatar-initials');
-    if (nameEl) nameEl.innerText = user.name || 'Admin User';
-    if (initialsEl) {
-      const initials = (user.name || 'Admin').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      initialsEl.innerText = initials || 'AD';
+    const emailHeader = document.getElementById('user-email-header');
+    if (emailHeader) emailHeader.innerText = user.email || 'admin@garmentflow.com';
+  }
+
+  // Logout Handlers
+  const headerLogout = document.getElementById('header-logout-btn');
+  const sidebarLogout = document.getElementById('sidebar-logout-btn');
+  if (headerLogout) headerLogout.addEventListener('click', logout);
+  if (sidebarLogout) sidebarLogout.addEventListener('click', logout);
+
+  // View Toggles (Grid vs List)
+  const gridToggle = document.getElementById('view-grid-toggle');
+  const listToggle = document.getElementById('view-list-toggle');
+  const navGridBtn = document.getElementById('nav-grid-btn');
+  const navListBtn = document.getElementById('nav-list-btn');
+  const gridContainer = document.getElementById('cards-grid-container');
+  const listContainer = document.getElementById('cards-list-container');
+
+  function setGridView() {
+    if (gridContainer) gridContainer.classList.remove('hidden');
+    if (listContainer) listContainer.classList.add('hidden');
+    if (gridToggle) {
+      gridToggle.className = 'px-2.5 py-1 rounded bg-[#174953] text-white text-xs font-bold shadow-2xs';
+      listToggle.className = 'px-2.5 py-1 rounded text-gray-500 hover:text-gray-800 text-xs font-bold';
     }
   }
 
-  // Logout handler
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) logoutBtn.addEventListener('click', logout);
-
-  // Mobile sidebar controls
-  const sidebar = document.getElementById('sidebar');
-  const openSidebarBtn = document.getElementById('open-mobile-sidebar');
-  const closeSidebarBtn = document.getElementById('close-mobile-sidebar');
-
-  if (openSidebarBtn) {
-    openSidebarBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-  }
-  if (closeSidebarBtn) {
-    closeSidebarBtn.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+  function setListView() {
+    if (gridContainer) gridContainer.classList.add('hidden');
+    if (listContainer) listContainer.classList.remove('hidden');
+    if (listToggle) {
+      listToggle.className = 'px-2.5 py-1 rounded bg-[#174953] text-white text-xs font-bold shadow-2xs';
+      gridToggle.className = 'px-2.5 py-1 rounded text-gray-500 hover:text-gray-800 text-xs font-bold';
+    }
+    renderListView();
   }
 
-  // View Switchers (Grid vs List)
-  const navGridBtn = document.getElementById('nav-grid-btn');
-  const navListBtn = document.getElementById('nav-list-btn');
-  const gridView = document.getElementById('grid-view-container');
-  const listView = document.getElementById('list-view-container');
-  const viewTitle = document.getElementById('main-view-title');
+  if (gridToggle) gridToggle.addEventListener('click', setGridView);
+  if (listToggle) listToggle.addEventListener('click', setListView);
+  if (navGridBtn) navGridBtn.addEventListener('click', setGridView);
+  if (navListBtn) navListBtn.addEventListener('click', setListView);
 
-  if (navGridBtn && navListBtn) {
-    navGridBtn.addEventListener('click', () => {
-      navGridBtn.className = 'w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 text-brand-500 transition-colors flex items-center justify-between';
-      navListBtn.className = 'w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors';
-      gridView.classList.remove('hidden');
-      listView.classList.add('hidden');
-      if (viewTitle) viewTitle.innerText = 'Product Grid';
-    });
-
-    navListBtn.addEventListener('click', () => {
-      navListBtn.className = 'w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 text-brand-500 transition-colors flex items-center justify-between';
-      navGridBtn.className = 'w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors';
-      listView.classList.remove('hidden');
-      gridView.classList.add('hidden');
-      if (viewTitle) viewTitle.innerText = 'Task Monitoring (List View)';
-    });
-  }
-
-  // Search input handlers
-  const globalSearch = document.getElementById('global-search-input');
-  const innerSearch = document.getElementById('inner-search-input');
-
-  function handleSearch(val) {
-    currentSearch = val.toLowerCase().trim();
-    renderProducts();
-  }
-
-  if (globalSearch) {
-    globalSearch.addEventListener('input', (e) => {
-      if (innerSearch) innerSearch.value = e.target.value;
-      handleSearch(e.target.value);
-    });
-  }
-
-  if (innerSearch) {
-    innerSearch.addEventListener('input', (e) => {
-      if (globalSearch) globalSearch.value = e.target.value;
-      handleSearch(e.target.value);
-    });
-  }
-
-  // Range Slider handlers
-  const priceSlider = document.getElementById('price-range-slider');
-  const sliderBadge = document.getElementById('slider-badge');
-  const sliderBoxMax = document.getElementById('slider-box-max');
+  // Search and Filter Listeners
+  const topSearch = document.getElementById('top-search-input');
+  const workerNameInput = document.getElementById('filter-worker-name');
+  const taskTypeSelect = document.getElementById('filter-task-type');
+  const jobStatusSelect = document.getElementById('filter-job-status');
+  const priceSlider = document.getElementById('price-range');
+  const priceBadge = document.getElementById('price-badge');
+  const priceMaxText = document.getElementById('price-max-text');
+  const pHigh = document.getElementById('priority-high');
+  const pMed = document.getElementById('priority-medium');
+  const pLow = document.getElementById('priority-low');
+  const resetBtn = document.getElementById('reset-filter-btn');
 
   if (priceSlider) {
     priceSlider.addEventListener('input', (e) => {
       const val = e.target.value;
-      if (sliderBadge) sliderBadge.innerText = `$${val}`;
-      if (sliderBoxMax) sliderBoxMax.innerText = `$${val}`;
-      maxPrice = parseFloat(val);
-      renderProducts();
+      if (priceBadge) priceBadge.innerText = `$${val}`;
+      if (priceMaxText) priceMaxText.innerText = `$${val}`;
+      applyFilters();
     });
   }
 
-  // Price Filter Checkboxes
-  const allPriceCb = document.getElementById('filter-all-price');
-  const priceCbs = document.querySelectorAll('.filter-price-cb');
+  if (topSearch) topSearch.addEventListener('input', applyFilters);
+  if (workerNameInput) workerNameInput.addEventListener('input', applyFilters);
+  if (taskTypeSelect) taskTypeSelect.addEventListener('change', applyFilters);
+  if (jobStatusSelect) jobStatusSelect.addEventListener('change', applyFilters);
+  if (pHigh) pHigh.addEventListener('change', applyFilters);
+  if (pMed) pMed.addEventListener('change', applyFilters);
+  if (pLow) pLow.addEventListener('change', applyFilters);
 
-  if (allPriceCb) {
-    allPriceCb.addEventListener('change', () => {
-      if (allPriceCb.checked) {
-        priceCbs.forEach(cb => cb.checked = false);
-        maxPrice = 1100;
-        if (priceSlider) priceSlider.value = 1000;
-        if (sliderBadge) sliderBadge.innerText = '$1000';
-        if (sliderBoxMax) sliderBoxMax.innerText = '$1000';
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (workerNameInput) workerNameInput.value = '';
+      if (topSearch) topSearch.value = '';
+      if (taskTypeSelect) taskTypeSelect.value = '';
+      if (jobStatusSelect) jobStatusSelect.value = 'In Progress';
+      if (priceSlider) {
+        priceSlider.value = 500;
+        if (priceBadge) priceBadge.innerText = '$500';
+        if (priceMaxText) priceMaxText.innerText = '$500';
       }
-      renderProducts();
+      if (pHigh) pHigh.checked = true;
+      if (pMed) pMed.checked = true;
+      if (pLow) pLow.checked = true;
+      applyFilters();
     });
   }
 
-  priceCbs.forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.checked && allPriceCb) {
-        allPriceCb.checked = false;
-      }
-      renderProducts();
-    });
-  });
+  // Update / Reassign Modal Setup
+  const updateModal = document.getElementById('update-modal');
+  const closeUpdateBtn = document.getElementById('close-update-modal');
+  const cancelUpdateBtn = document.getElementById('cancel-update-btn');
+  const updateForm = document.getElementById('update-task-form');
 
-  const applyBtn = document.getElementById('apply-filter-btn');
-  if (applyBtn) {
-    applyBtn.addEventListener('click', () => {
-      renderProducts();
-      showToast('Filters applied successfully', 'success');
-    });
+  function closeModal() {
+    if (updateModal) updateModal.classList.add('hidden');
+    activeModalCard = null;
   }
 
-  // Create Order Modal Setup
-  const createModal = document.getElementById('create-order-modal');
-  const createBtn = document.getElementById('create-order-btn');
-  const navCreateBtn = document.getElementById('nav-create-btn');
-  const closeModalBtn = document.getElementById('close-modal-btn');
-  const cancelModalBtn = document.getElementById('cancel-modal-btn');
-  const createForm = document.getElementById('create-order-form');
+  if (closeUpdateBtn) closeUpdateBtn.addEventListener('click', closeModal);
+  if (cancelUpdateBtn) cancelUpdateBtn.addEventListener('click', closeModal);
 
-  function openCreateModal() {
-    if (createModal) createModal.classList.remove('hidden');
-  }
-  function closeCreateModal() {
-    if (createModal) createModal.classList.add('hidden');
-    if (createForm) createForm.reset();
-  }
-
-  if (createBtn) createBtn.addEventListener('click', openCreateModal);
-  if (navCreateBtn) navCreateBtn.addEventListener('click', openCreateModal);
-  if (closeModalBtn) closeModalBtn.addEventListener('click', closeCreateModal);
-  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeCreateModal);
-
-  if (createForm) {
-    createForm.addEventListener('submit', async (e) => {
+  if (updateForm) {
+    updateForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const title = document.getElementById('order-title').value.trim();
-      const desc = document.getElementById('order-desc').value.trim();
-      const price = parseFloat(document.getElementById('order-price').value) || 299;
-      const dept = document.getElementById('order-department').value;
-      const dueDate = document.getElementById('order-due-date').value || new Date().toISOString().split('T')[0];
-      const priority = document.getElementById('order-priority').value;
+      if (!activeModalCard) return;
 
-      // Add to local product list
-      const newProduct = {
-        id: `prod-${Date.now()}`,
-        name: title,
-        description: desc,
-        price: price,
-        category: dept,
-        department: dept,
-        image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80',
-        liked: false
-      };
+      const newWorker = document.getElementById('modal-worker-select').value;
+      const newStatus = document.getElementById('modal-status-select').value;
 
-      allProducts.unshift(newProduct);
-      closeCreateModal();
-      renderProducts();
-      showToast(`Garment order "${title}" created!`, 'success');
+      activeModalCard.workerName = newWorker;
+      activeModalCard.task = `${newStatus} T-Shirt`;
+      activeModalCard.department = newStatus;
 
-      // Optionally sync to backend if available
-      try {
-        await apiFetch('/tasks', {
-          method: 'POST',
-          body: {
-            title,
-            description: desc,
-            department: dept,
-            dueDate,
-            priority
-          }
-        });
-        loadTasks();
-      } catch (err) {
-        // Soft fallback for offline/local JSON demo
-        console.warn('Backend sync note:', err.message);
-      }
+      closeModal();
+      renderCards();
+      showToast(`Job ${activeModalCard.jobId} updated: Assigned to ${newWorker}`, 'success');
     });
   }
 
-  // Initial load
-  renderProducts();
-  loadTasks();
-  setInterval(loadTasks, 6000);
+  // Initial Render & Backend Sync
+  renderCards();
+  syncBackendTasks();
 });
 
-// Render the 4-Column Product Grid
-function renderProducts() {
-  const container = document.getElementById('grid-view-container');
-  const countEl = document.getElementById('results-count');
-  if (!container) return;
+// Filter logic
+function applyFilters() {
+  const topSearch = document.getElementById('top-search-input')?.value.toLowerCase().trim() || '';
+  const workerQuery = document.getElementById('filter-worker-name')?.value.toLowerCase().trim() || '';
+  const taskType = document.getElementById('filter-task-type')?.value || '';
+  const jobStatus = document.getElementById('filter-job-status')?.value || '';
+  const maxPrice = parseFloat(document.getElementById('price-range')?.value) || 1000;
 
-  const allPriceCb = document.getElementById('filter-all-price');
-  const isAllPrice = allPriceCb ? allPriceCb.checked : true;
+  const pHigh = document.getElementById('priority-high')?.checked;
+  const pMed = document.getElementById('priority-medium')?.checked;
+  const pLow = document.getElementById('priority-low')?.checked;
 
-  const checkedRanges = Array.from(document.querySelectorAll('.filter-price-cb:checked')).map(cb => ({
-    min: cb.dataset.min ? parseFloat(cb.dataset.min) : 0,
-    max: cb.dataset.max ? parseFloat(cb.dataset.max) : Infinity
-  }));
-
-  const filtered = allProducts.filter(p => {
-    // Search keyword filter
-    if (currentSearch) {
-      const matchName = p.name.toLowerCase().includes(currentSearch);
-      const matchDesc = p.description.toLowerCase().includes(currentSearch);
-      const matchDept = p.department.toLowerCase().includes(currentSearch);
-      if (!matchName && !matchDesc && !matchDept) return false;
-    }
-
-    // Price filtering
-    if (!isAllPrice && checkedRanges.length > 0) {
-      const inAnyRange = checkedRanges.some(r => p.price >= r.min && p.price <= r.max);
-      if (!inAnyRange) return false;
-    } else if (p.price > maxPrice) {
+  const filtered = allCards.filter(c => {
+    if (topSearch && !c.task.toLowerCase().includes(topSearch) && !c.workerName.toLowerCase().includes(topSearch)) {
       return false;
     }
+    if (workerQuery && !c.workerName.toLowerCase().includes(workerQuery)) {
+      return false;
+    }
+    if (taskType && c.department !== taskType) {
+      return false;
+    }
+    if (jobStatus && jobStatus !== 'All' && c.status !== jobStatus) {
+      return false;
+    }
+    if (c.price > maxPrice) {
+      return false;
+    }
+    if (c.priority === 'High' && !pHigh) return false;
+    if (c.priority === 'Medium' && !pMed) return false;
+    if (c.priority === 'Low' && !pLow) return false;
 
     return true;
   });
 
-  if (countEl) countEl.innerText = filtered.length;
+  renderCards(filtered);
+}
 
-  if (filtered.length === 0) {
+// Render 3-column Worker Task Cards matching the screenshot
+function renderCards(cards = allCards) {
+  const container = document.getElementById('cards-grid-container');
+  if (!container) return;
+
+  if (cards.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-gray-100 p-8">
-        <div class="text-4xl mb-2">🛍️</div>
-        <h3 class="text-sm font-bold text-gray-800">No matching garments found</h3>
-        <p class="text-xs text-gray-500 mt-1">Try adjusting your search keywords or price filters.</p>
+      <div class="col-span-full py-12 text-center bg-white rounded-xl border border-gray-200 p-6">
+        <p class="text-xs text-gray-500 font-bold">No tasks found matching your filter criteria.</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = filtered.map(p => {
-    const isLiked = p.liked;
+  container.innerHTML = cards.map(c => {
     return `
-      <div class="bg-white rounded-2xl border border-gray-200/70 p-3 flex flex-col justify-between hover:shadow-md transition-all group">
+      <div class="bg-white rounded-xl border border-gray-200/90 p-3 flex flex-col justify-between shadow-2xs hover:shadow-sm transition-all text-xs">
         
-        <!-- Product Image Container with stage badge & image -->
-        <div class="relative w-full aspect-4/5 rounded-xl overflow-hidden bg-gray-100 mb-3">
+        <!-- Header: Worker Avatar & Info Block -->
+        <div class="flex items-start gap-2.5 mb-2.5">
           <img 
-            src="${p.image}" 
-            alt="${escapeHtml(p.name)}" 
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
+            src="${c.workerAvatar}" 
+            alt="${escapeHtml(c.workerName)}" 
+            class="w-11 h-11 rounded-lg object-cover border border-gray-200 shrink-0"
           />
-          <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-gray-700 px-2 py-0.5 rounded-md shadow-2xs">
-            ${escapeHtml(p.department || 'Production')}
+          <div class="flex-1 min-w-0 leading-tight">
+            <div class="font-bold text-gray-900 truncate">
+              Worker Name: <span class="text-gray-950">${escapeHtml(c.workerName)}</span>
+            </div>
+            <div class="text-[11px] text-gray-500 font-mono mt-0.5">
+              Job ID: <span class="font-bold text-gray-700">${escapeHtml(c.jobId)}</span>
+            </div>
+            <div class="text-[11px] text-gray-700 font-semibold truncate mt-0.5">
+              Assigned Task: <span class="text-teal-900">${escapeHtml(c.task)}</span>
+            </div>
           </div>
         </div>
 
-        <!-- Details -->
-        <div class="flex-1 flex flex-col justify-between">
-          <div>
-            <h3 class="text-xs font-bold text-gray-900 tracking-tight leading-snug group-hover:text-orange-600 transition-colors truncate">
-              ${escapeHtml(p.name)}
-            </h3>
-            <p class="text-[10px] text-gray-500 line-clamp-2 mt-0.5 leading-tight font-normal">
-              ${escapeHtml(p.description)}
-            </p>
+        <!-- Middle: Task Progress & 4-Stage Thumbnails Pipeline -->
+        <div class="my-2">
+          <div class="flex items-center justify-between text-[10px] font-bold text-gray-600 mb-1">
+            <span>Task Progress</span>
           </div>
 
-          <!-- Bottom Row: Price & Action Icons -->
-          <div class="flex items-center justify-between pt-3 mt-1 border-t border-gray-50">
-            <div class="text-xs font-extrabold text-gray-900 font-mono">
-              $${p.price.toFixed(2)}
-            </div>
-
-            <div class="flex items-center gap-1.5 text-gray-400">
-              <!-- Like Button -->
-              <button 
-                onclick="window.toggleLike('${p.id}')" 
-                class="p-1 rounded hover:bg-gray-100 hover:text-red-500 transition-colors ${isLiked ? 'text-red-500' : ''}" 
-                title="Save Garment"
-              >
-                <svg class="w-3.5 h-3.5" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </button>
-
-              <!-- Assign / Cart Button -->
-              <button 
-                onclick="window.quickAssign('${p.id}')" 
-                class="p-1 rounded hover:bg-gray-100 hover:text-orange-500 transition-colors" 
-                title="Assign / Order"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                </svg>
-              </button>
-            </div>
+          <!-- Progress Bar -->
+          <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden flex mb-2.5">
+            <div class="bg-[#174953] h-full" style="width: ${c.progress}%"></div>
+            <div class="bg-[#f97316] h-full" style="width: 15%"></div>
           </div>
 
+          <!-- 4-Stage Thumbnails Row -->
+          <div class="grid grid-cols-4 gap-1 items-center bg-gray-50 p-1.5 rounded-lg border border-gray-100">
+            <div class="relative group">
+              <img src="${PIPELINE_STEPS[0]}" class="w-full aspect-square rounded object-cover border border-gray-200" title="Fabric Roll" />
+              <span class="absolute -right-1 top-1/2 -translate-y-1/2 text-[9px] text-gray-400 font-bold hidden sm:inline">&gt;</span>
+            </div>
+            <div class="relative group">
+              <img src="${PIPELINE_STEPS[1]}" class="w-full aspect-square rounded object-cover border border-gray-200" title="Pattern Cutting" />
+              <span class="absolute -right-1 top-1/2 -translate-y-1/2 text-[9px] text-gray-400 font-bold hidden sm:inline">&gt;</span>
+            </div>
+            <div class="relative group">
+              <img src="${PIPELINE_STEPS[2]}" class="w-full aspect-square rounded object-cover border border-gray-200" title="Machine Stitching" />
+              <span class="absolute -right-1 top-1/2 -translate-y-1/2 text-[9px] text-gray-400 font-bold hidden sm:inline">&gt;</span>
+            </div>
+            <div class="relative group">
+              <img src="${PIPELINE_STEPS[3]}" class="w-full aspect-square rounded object-cover border border-gray-200" title="Finished Garment" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer: Admin Info & Action Button -->
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between gap-1 text-[11px]">
+          <div class="text-gray-500 truncate text-[10.5px]">
+            Assigning Admin:<br />
+            <span class="font-bold text-gray-800">Admin: ${escapeHtml(c.admin)}</span>
+          </div>
+
+          <!-- UPDATE / REASSIGN BUTTON (Matching Soft Teal in Screenshot) -->
+          <div class="flex items-center gap-1 shrink-0">
+            <span class="text-[10px] text-gray-400 hidden sm:inline">Action</span>
+            <button 
+              onclick="window.openUpdateModal('${c.id}')"
+              class="px-2 py-1 bg-[#dff1f2] hover:bg-[#c9e8ea] text-[#174953] border border-[#b2dcdc] text-[10px] font-extrabold uppercase rounded shadow-2xs transition-colors cursor-pointer"
+            >
+              UPDATE/REASSIGN
+            </button>
+          </div>
         </div>
 
       </div>
@@ -449,88 +403,68 @@ function renderProducts() {
   }).join('');
 }
 
-// Global actions
-window.toggleLike = (id) => {
-  const p = allProducts.find(item => item.id === id);
-  if (p) {
-    p.liked = !p.liked;
-    renderProducts();
-    showToast(p.liked ? 'Saved to collection' : 'Removed from collection', 'info');
-  }
+// Global modal trigger
+window.openUpdateModal = (cardId) => {
+  const card = allCards.find(c => c.id === cardId);
+  if (!card) return;
+  activeModalCard = card;
+
+  document.getElementById('modal-job-id').value = card.jobId;
+  document.getElementById('modal-worker-select').value = card.workerName;
+  document.getElementById('modal-status-select').value = card.department || 'Cutting';
+  
+  const modal = document.getElementById('update-modal');
+  if (modal) modal.classList.remove('hidden');
 };
 
-window.quickAssign = (id) => {
-  const p = allProducts.find(item => item.id === id);
-  if (p) {
-    window.location.href = `assign-task.html?title=${encodeURIComponent(p.name)}&dept=${encodeURIComponent(p.department)}`;
-  }
-};
-
-// Fetch and load live tasks into the table
-async function loadTasks() {
-  try {
-    const tasks = await apiFetch('/tasks');
-    liveTasks = tasks || [];
-    renderTasksTable();
-  } catch (_) {
-    // In local JSON or offline, render available tasks
-    renderTasksTable();
-  }
-}
-
-function renderTasksTable() {
+function renderListView() {
   const tbody = document.getElementById('tasks-table-body');
   if (!tbody) return;
 
-  if (liveTasks.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="px-4 py-6 text-center text-gray-400">
-          No active backend tasks recorded. Use <strong>+ Create Order</strong> to assign one.
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  tbody.innerHTML = liveTasks.map(t => {
-    return `
-      <tr class="hover:bg-gray-50/70 transition-colors">
-        <td class="px-4 py-3">
-          <div class="font-bold text-gray-900">${escapeHtml(t.title)}</div>
-          <div class="text-[11px] text-gray-400 truncate max-w-xs">${escapeHtml(t.description || '')}</div>
-        </td>
-        <td class="px-4 py-3 text-gray-700 font-medium">${escapeHtml(t.workerName || 'Unassigned')}</td>
-        <td class="px-4 py-3 text-gray-600">${escapeHtml(t.department || 'General')}</td>
-        <td class="px-4 py-3">
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
-            t.status === 'Completed' ? 'bg-green-100 text-green-700' :
-            t.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'
-          }">
-            ${t.status || 'Pending'}
-          </span>
-        </td>
-        <td class="px-4 py-3 text-gray-500 font-mono text-[11px]">${t.dueDate || '—'}</td>
-        <td class="px-4 py-3 text-right">
-          <button onclick="window.deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 font-bold text-xs p-1">
-            🗑
-          </button>
-        </td>
-      </tr>
-    `;
-  }).join('');
+  tbody.innerHTML = allCards.map(c => `
+    <tr class="hover:bg-gray-50">
+      <td class="p-2.5 font-bold text-gray-900">${escapeHtml(c.workerName)}</td>
+      <td class="p-2.5 font-mono text-gray-500">${escapeHtml(c.jobId)}</td>
+      <td class="p-2.5 text-teal-900 font-semibold">${escapeHtml(c.task)}</td>
+      <td class="p-2.5">
+        <span class="px-2 py-0.5 bg-teal-50 text-teal-800 font-bold rounded text-[10px]">${c.progress}%</span>
+      </td>
+      <td class="p-2.5 text-gray-600">${escapeHtml(c.admin)}</td>
+      <td class="p-2.5 text-right">
+        <button onclick="window.openUpdateModal('${c.id}')" class="text-xs text-teal-800 font-bold hover:underline">
+          Reassign
+        </button>
+      </td>
+    </tr>
+  `).join('');
 }
 
-window.deleteTask = async (taskId) => {
-  if (!confirm('Are you sure you want to delete this task?')) return;
+// Sync with backend API
+async function syncBackendTasks() {
   try {
-    await apiFetch(`/tasks/${taskId}`, { method: 'DELETE' });
-    showToast('Task removed', 'success');
-    loadTasks();
-  } catch (err) {
-    showToast(err.message, 'error');
+    const tasks = await apiFetch('/tasks');
+    if (tasks && tasks.length > 0) {
+      tasks.forEach((t, i) => {
+        allCards.unshift({
+          id: t.id || `live-${i}`,
+          workerName: t.workerName || 'Assigned Worker',
+          workerAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+          jobId: `GF-${1020 + i}`,
+          task: t.title || 'Cutting T-Shirt',
+          department: t.department || 'Cutting',
+          admin: 'Admin User',
+          progress: t.status === 'Completed' ? 100 : 50,
+          status: t.status || 'In Progress',
+          priority: t.priority || 'High',
+          price: 320
+        });
+      });
+      renderCards();
+    }
+  } catch (_) {
+    // Offline fallback uses MOCK_WORKER_CARDS cleanly
   }
-};
+}
 
 function escapeHtml(str) {
   if (!str) return '';

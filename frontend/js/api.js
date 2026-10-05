@@ -1,4 +1,15 @@
-export const BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const isLocalHost = Boolean(
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname === '::1' ||
+  window.location.hostname === '[::1]' ||
+  window.location.hostname.endsWith('.local') ||
+  window.location.port === '5500' ||
+  window.location.port === '8080' ||
+  window.location.port === '3000'
+);
+
+export const BASE_URL = isLocalHost
   ? 'http://localhost:8000'
   : 'https://garments-workflow.onrender.com';
 
@@ -32,33 +43,46 @@ export async function apiFetch(path, options = {}) {
     ...(options.headers || {}),
   };
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4500); // 4.5s max timeout to prevent hanging
+
   const config = {
     ...options,
     headers,
+    signal: controller.signal,
   };
 
   if (options.body && !(options.body instanceof FormData)) {
     config.body = JSON.stringify(options.body);
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, config);
-  
-  if (res.status === 401) {
-    localStorage.removeItem('gf_token');
-    localStorage.removeItem('gf_user');
-    if (!window.location.pathname.endsWith('login.html')) {
-      window.location.href = '/login.html';
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, config);
+    clearTimeout(timeoutId);
+    
+    if (res.status === 401) {
+      localStorage.removeItem('gf_token');
+      localStorage.removeItem('gf_user');
+      if (!window.location.pathname.endsWith('login.html')) {
+        window.location.href = '/login.html';
+      }
+      throw new Error('Session expired. Please log in again.');
     }
-    throw new Error('Session expired. Please log in again.');
-  }
 
-  const data = await res.json().catch(() => ({}));
-  
-  if (!res.ok) {
-    throw new Error(data.detail || 'Something went wrong');
+    const data = await res.json().catch(() => ({}));
+    
+    if (!res.ok) {
+      throw new Error(data.detail || 'Request failed');
+    }
+    
+    return data;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Backend connection timed out. Ensure FastAPI backend is running on port 8000.');
+    }
+    throw err;
   }
-  
-  return data;
 }
 
 export function showToast(message, type = 'info') {
