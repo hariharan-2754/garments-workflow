@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Worker Task Dashboard — Shoplytic GarmentFlow</title>
+  <title>Dashboard — GarmentFlow</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans -->
+  <!-- Google Fonts: Plus Jakarta Sans / Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,8 +24,7 @@
             tealBrand: '#124b4f',
             tealDark: '#0c383b',
             tealLight: '#e4f2f3',
-            tealMuted: '#d1ebed',
-            pageBg: '#f4f6f9',
+            sidebarActive: '#eef4ff',
           }
         }
       }
@@ -35,126 +34,107 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f4f6f9;
+      background-color: #f8fafc;
       color: #0f172a;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1;
-      border-radius: 9999px;
     }
   </style>
 </head>
-<body class="bg-[#f4f6f9] min-h-screen text-slate-800 flex flex-col antialiased selection:bg-teal-900 selection:text-white">
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col">
 
-  <!-- ================= TOP HEADER BAR ================= -->
-  <header class="bg-white border-b border-gray-200/80 px-4 sm:px-6 py-3 flex items-center justify-between z-30 select-none shadow-2xs">
-    
-    <!-- Left Logo & Brand -->
-    <div class="flex items-center gap-3">
-      <!-- Dark Teal Ribbon / Logo Box -->
-      <a href="dashboard.html" class="w-8 h-8 rounded-lg bg-[#124b4f] flex items-center justify-center text-white shadow-sm hover:opacity-95 transition-opacity">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/>
-        </svg>
-      </a>
-      
-      <div class="flex items-baseline gap-2">
-        <span class="text-xl font-extrabold tracking-tight text-gray-950 font-sans">Shoplytic</span>
-        <span class="text-sm font-semibold text-gray-600 font-sans hidden sm:inline">GarmentFlow</span>
-      </div>
+  <!-- Mobile Top Navigation Header -->
+  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 shadow-2xs">
+    <div class="flex items-center space-x-2">
+      <span class="text-xl">🧵</span>
+      <span class="font-extrabold text-gray-900 text-lg tracking-tight">GarmentFlow</span>
     </div>
-
-    <!-- Right Profile Avatar & Actions -->
-    <div class="flex items-center gap-3">
-      <!-- Quick + New Task Button -->
-      <button id="header-new-task-btn" class="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer">
-        <span>+</span> <span>New Task</span>
-      </button>
-
-      <!-- Profile Avatar Image (Circular) -->
-      <div class="relative group cursor-pointer" id="profile-menu-trigger">
-        <img 
-          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
-          alt="Admin Profile" 
-          class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100 hover:ring-teal-700 transition-all"
-        />
-        <!-- Dropdown Menu -->
-        <div id="profile-dropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50 text-xs">
-          <div class="px-3.5 py-2 border-b border-gray-100">
-            <div class="font-bold text-gray-900" id="user-display-name">Admin User</div>
-            <div class="text-[10px] text-gray-500 truncate" id="user-display-email">admin@garmentflow.com</div>
-          </div>
-          <a href="assign-task.html" class="block px-3.5 py-2 text-gray-700 hover:bg-gray-50 font-medium">Assign New Task</a>
-          <a href="workers.html" class="block px-3.5 py-2 text-gray-700 hover:bg-gray-50 font-medium">Worker Rosters</a>
-          <button id="dropdown-logout-btn" class="w-full text-left px-3.5 py-2 text-red-600 hover:bg-red-50 font-bold">Log Out</button>
-        </div>
-      </div>
-    </div>
-
+    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none hover:bg-gray-50 cursor-pointer">
+      ☰
+    </button>
   </header>
 
-  <!-- ================= APP WRAPPER: ICON RIBBON + MAIN DASHBOARD ================= -->
-  <div class="flex flex-1 min-h-[calc(100vh-57px)]">
-
-    <!-- 1. LEFT ICON RIBBON (Exact Match to Screenshot) -->
-    <aside class="w-14 bg-[#f8fafc] border-r border-gray-200/80 flex flex-col items-center py-6 space-y-6 shrink-0 select-none">
+  <div class="flex flex-1 min-h-screen">
+    
+    <!-- ================= 1. SIDEBAR NAVIGATION ================= -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-white border-r border-gray-200/90 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out select-none shrink-0">
       
-      <!-- Home Icon (Active) -->
-      <a href="dashboard.html" class="w-9 h-9 rounded-xl bg-gray-200/80 text-gray-800 flex items-center justify-center hover:bg-gray-300 transition-colors" title="Dashboard">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-        </svg>
-      </a>
+      <div>
+        <!-- Brand Logo Header -->
+        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+          <a href="dashboard.html" class="flex items-center space-x-2.5">
+            <span class="text-2xl">🧵</span>
+            <span class="text-lg font-extrabold text-gray-950 tracking-tight">GarmentFlow</span>
+          </a>
+          <button id="mobile-menu-close" class="lg:hidden p-1.5 text-gray-400 hover:text-gray-900 font-bold">✕</button>
+        </div>
 
-      <!-- Grid / Layout Icon -->
-      <a href="dashboard.html" class="w-9 h-9 rounded-xl text-gray-400 hover:text-gray-800 hover:bg-gray-100 flex items-center justify-center transition-colors" title="Tasks Grid">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M3 3v8h8V3H3zm0 18h8v-8H3v8zm10 0h8v-8h-8v8zm0-18v8h8V3h-8z"/>
-        </svg>
-      </a>
+        <!-- Navigation Menu Links -->
+        <nav class="p-3.5 space-y-1.5 text-xs font-semibold">
+          <!-- 1. Dashboard (Active Pill) -->
+          <a href="dashboard.html" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold transition-all shadow-2xs">
+            <span class="text-base">📋</span>
+            <span>Dashboard</span>
+          </a>
 
-      <!-- Tech Pack / Orders Document Icon -->
-      <a href="assign-task.html" class="w-9 h-9 rounded-xl text-gray-400 hover:text-gray-800 hover:bg-gray-100 flex items-center justify-center transition-colors" title="Assign Tasks">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-        </svg>
-      </a>
+          <!-- 2. Assign Task -->
+          <a href="assign-task.html" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
+            <span class="text-base">✍️</span>
+            <span>Assign Task</span>
+          </a>
 
-      <!-- Workers / Users Icon -->
-      <a href="workers.html" class="w-9 h-9 rounded-xl text-gray-400 hover:text-gray-800 hover:bg-gray-100 flex items-center justify-center transition-colors" title="Workers">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-        </svg>
-      </a>
+          <!-- 3. Departments -->
+          <a href="departments.html" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
+            <span class="text-base">🏢</span>
+            <span>Departments</span>
+          </a>
 
-      <!-- Analytics / Chart Icon -->
-      <a href="departments.html" class="w-9 h-9 rounded-xl text-gray-400 hover:text-gray-800 hover:bg-gray-100 flex items-center justify-center transition-colors" title="Departments">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-        </svg>
-      </a>
+          <!-- 4. Workers -->
+          <a href="workers.html" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-950 transition-colors">
+            <span class="text-base">👷</span>
+            <span>Workers</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- User Profile Box & Logout (Bottom) -->
+      <div class="p-4 border-t border-gray-100 space-y-2">
+        <div class="px-3.5 py-2.5 bg-gray-50 rounded-xl">
+          <div id="user-name" class="text-xs font-bold text-gray-900 truncate">Admin User</div>
+          <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">ADMIN</div>
+        </div>
+        <button id="logout-btn" class="w-full flex items-center space-x-2 px-3.5 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
 
     </aside>
 
-    <!-- 2. MAIN DASHBOARD CONTENT (MATCHING SCREENSHOT) -->
-    <main class="flex-1 p-6 lg:p-8 max-w-[1560px] mx-auto w-full">
+    <!-- ================= 2. MAIN WORKSPACE ================= -->
+    <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc]">
       
-      <!-- PAGE TITLE & SUBTITLE -->
-      <div class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight">
-          Worker Task Dashboard
-        </h1>
-        <p class="text-xs sm:text-sm font-medium text-gray-500 mt-1">
-          Showing <span id="pipeline-count" class="font-bold text-gray-900">9</span> actives worker jobs in production pipeline
-        </p>
-      </div>
+      <!-- Top Desktop Header Bar -->
+      <header class="hidden lg:flex items-center justify-between bg-white border-b border-gray-200/90 px-8 py-3.5 shadow-2xs">
+        <h1 class="text-base font-extrabold text-gray-900 tracking-tight">Dashboard</h1>
+      </header>
 
-      <!-- 3-COLUMN LARGE WORKER TASK CARDS GRID -->
-      <div id="worker-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Dynamic Cards rendered via JS -->
+      <!-- Dashboard Body Content -->
+      <div class="flex-1 p-6 lg:p-8 max-w-[1560px] w-full mx-auto space-y-6">
+        
+        <!-- Page Title & Subtitle Header -->
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-gray-950 tracking-tight">
+            Worker Task Dashboard
+          </h2>
+          <p class="text-xs sm:text-sm font-medium text-gray-500 mt-1">
+            Showing <span id="pipeline-count" class="font-bold text-gray-900">9</span> actives worker jobs in production pipeline
+          </p>
+        </div>
+
+        <!-- 3-Column Worker Task Cards Grid -->
+        <div id="worker-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered dynamically via js/dashboard.js -->
+        </div>
+
       </div>
 
     </main>
@@ -224,43 +204,6 @@
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" id="cancel-update-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-semibold hover:bg-gray-50 cursor-pointer">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl cursor-pointer shadow-xs">Save Progress</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ================= CREATE NEW TASK MODAL ================= -->
-  <div id="new-task-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4">
-      <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-        <h3 class="text-sm font-extrabold text-[#124b4f]">+ Dispatch New Production Task</h3>
-        <button id="close-new-modal" class="text-gray-400 hover:text-gray-700 text-sm font-bold cursor-pointer">✕</button>
-      </div>
-
-      <form id="new-task-form" class="space-y-3.5 text-xs">
-        <div>
-          <label class="block font-bold text-gray-700 mb-1">Garment / Task Title *</label>
-          <input type="text" id="new-task-title" required placeholder="e.g., Tokyo Mist Jacket Stitching" class="w-full px-3 py-2 border border-gray-200 rounded-xl font-medium focus:border-teal-700" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-gray-700 mb-1">Assigned Worker</label>
-            <select id="new-worker-select" class="w-full px-3 py-2 border border-gray-200 rounded-xl font-medium focus:border-teal-700">
-              <option value="Worker David Chen">Worker David Chen</option>
-              <option value="Li Wei">Li Wei</option>
-              <option value="Amara Okafor">Amara Okafor</option>
-              <option value="Worker Maria">Worker Maria</option>
-              <option value="Ravi Kumar">Ravi Kumar</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-gray-700 mb-1">Initial Progress (%)</label>
-            <input type="number" id="new-progress-input" value="35" min="0" max="100" class="w-full px-3 py-2 border border-gray-200 rounded-xl font-medium focus:border-teal-700" />
-          </div>
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" id="cancel-new-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-semibold hover:bg-gray-50 cursor-pointer">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl cursor-pointer shadow-xs">Dispatch Job</button>
         </div>
       </form>
     </div>

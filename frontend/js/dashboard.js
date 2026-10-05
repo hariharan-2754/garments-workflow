@@ -261,74 +261,72 @@ function renderTasks() {
 
   container.innerHTML = tasksState.map(t => {
     return `
-      <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all group">
+      <div class="bg-white rounded-2xl p-4 shadow-2xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all group">
         
-        <!-- Top: Worker Header -->
-        <div class="flex items-center gap-3.5">
+        <!-- Top: Worker Header (Compact) -->
+        <div class="flex items-center gap-3">
           <img 
             src="${t.workerAvatar}" 
             alt="${escapeHtml(t.workerName)}" 
-            class="w-13 h-13 rounded-2xl object-cover border border-gray-100 shadow-2xs shrink-0"
+            class="w-10 h-10 rounded-xl object-cover border border-gray-100 shadow-2xs shrink-0"
           />
           <div class="flex-1 min-w-0">
-            <h3 class="text-base sm:text-lg font-bold text-gray-950 tracking-tight leading-tight truncate">
+            <h3 class="text-sm font-bold text-gray-950 tracking-tight leading-tight truncate">
               ${escapeHtml(t.workerName)}
             </h3>
-            <p class="text-xs font-semibold text-gray-400 font-mono mt-0.5">
+            <p class="text-[10.5px] font-semibold text-gray-400 font-mono mt-0.5">
               ${escapeHtml(t.jobId)}
             </p>
           </div>
         </div>
 
-        <!-- Center: Big Factory Action Production Image -->
-        <div class="my-4 relative rounded-2xl overflow-hidden bg-gray-100 aspect-16/10 shadow-xs">
+        <!-- Center: Factory Action Production Image (Compact & Proportional) -->
+        <div class="my-3 relative rounded-xl overflow-hidden bg-gray-100 h-40 sm:h-44 w-full shadow-2xs">
           <img 
             src="${t.actionImage}" 
             alt="${escapeHtml(t.task)}" 
-            class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+            class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
             loading="lazy"
           />
         </div>
 
         <!-- Details & Task Progress Section -->
-        <div class="space-y-3">
+        <div class="space-y-2.5">
           
           <!-- Assigned Task -->
-          <div>
-            <div class="text-xs font-bold text-gray-900 leading-snug">
-              Assigned Task: <span class="font-bold text-gray-950">${escapeHtml(t.task)}</span>
-            </div>
+          <div class="text-xs font-bold text-gray-900 leading-snug truncate">
+            Assigned Task: <span class="font-bold text-gray-950">${escapeHtml(t.task)}</span>
           </div>
 
           <!-- Task Progress Bar -->
           <div>
-            <div class="flex items-center justify-between text-xs font-medium text-gray-500 mb-1.5">
+            <div class="flex items-center justify-between text-[11px] font-medium text-gray-500 mb-1">
               <span>Task Progress</span>
               <span class="font-extrabold text-gray-950 font-mono">${t.progress}%</span>
             </div>
-            <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+            <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
               <div class="bg-[#124b4f] h-full rounded-full transition-all duration-500" style="width: ${t.progress}%"></div>
             </div>
           </div>
 
           <!-- Footer: Assigning Admin & Action Buttons -->
-          <div class="pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
-            <div class="text-xs text-gray-500 leading-tight">
+          <div class="pt-2.5 border-t border-gray-100 flex items-center justify-between gap-1.5">
+            <div class="text-[10.5px] text-gray-500 leading-tight">
               <span>Assigning Admin:</span><br />
-              <span class="font-bold text-gray-900">Admin: ${escapeHtml(t.admin)}</span>
+              <span class="font-bold text-gray-800">Admin: ${escapeHtml(t.admin)}</span>
             </div>
 
             <!-- Action Buttons: [ ASSIGN ] and [ UPDATE ] -->
-            <div class="flex flex-col items-end gap-1.5 shrink-0">
+            <div class="flex flex-col items-end gap-1 shrink-0">
               <button 
                 onclick="window.triggerAssign('${t.id}')"
-                class="px-5 py-1.5 bg-[#124b4f] hover:bg-[#0c383b] text-white text-[11px] font-extrabold uppercase rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-[0.98] cursor-pointer"
+                class="px-3.5 py-1 bg-[#124b4f] hover:bg-[#0c383b] text-white text-[10px] font-extrabold uppercase rounded-lg transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
               >
                 ASSIGN
               </button>
               <button 
                 onclick="window.triggerUpdate('${t.id}')"
-                class="px-5 py-1.5 bg-[#e4f2f3] hover:bg-[#d0ebed] text-[#124b4f] text-[11px] font-extrabold uppercase rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                class="px-3.5 py-1 bg-[#e4f2f3] hover:bg-[#d0ebed] text-[#124b4f] text-[10px] font-extrabold uppercase rounded-lg transition-all active:scale-[0.98] cursor-pointer"
               >
                 UPDATE
               </button>
