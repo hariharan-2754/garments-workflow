@@ -1,24 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GarmentFlow Redirecting...</title>
-  <script type="module">
-    import { getUser } from './js/api.js';
-    const user = getUser();
-    if (!user) {
-      window.location.href = '/login.html';
-    } else if (user.role === 'ADMIN') {
-      window.location.href = '/dashboard.html';
-    } else {
-      window.location.href = '/worker-home.html';
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindly° — A clearer mind for a brighter you</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Instrument Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'serif'],
+          }
+        }
+      }
     }
   </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f7f7f5;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism card styling */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    }
+
+    .glass-card-dark {
+      background: rgba(20, 20, 25, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Floating animations */
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(0.5deg); }
+    }
+
+    @keyframes float-reverse {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(8px) rotate(-0.5deg); }
+    }
+
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .animate-float-slow {
+      animation: float-slow 6s ease-in-out infinite;
+    }
+
+    .animate-float-reverse {
+      animation: float-reverse 7s ease-in-out infinite;
+    }
+
+    .animate-spin-slow {
+      animation: spin-slow 20s linear infinite;
+    }
+
+    /* Smooth arc perspective for central orbiting items */
+    .perspective-container {
+      perspective: 1000px;
+    }
+
+    .arc-left {
+      transform: rotateY(22deg) rotateZ(-6deg) translateZ(40px);
+    }
+
+    .arc-right {
+      transform: rotateY(-22deg) rotateZ(6deg) translateZ(40px);
+    }
+
+    /* Circular text styling */
+    .rotating-text-container {
+      width: 110px;
+      height: 110px;
+    }
+  </style>
 </head>
-<body style="background-color: #F8FAFC;">
-  <div style="font-family: sans-serif; text-align: center; margin-top: 100px; color: #64748B;">
-    <p>Loading GarmentFlow...</p>
+<body class="min-h-screen bg-[#f7f7f5] text-[#0f172a] relative selection:bg-slate-900 selection:text-white pb-12">
+
+  <!-- Subtle ambient background glows -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-white/80 via-slate-100/40 to-transparent blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- MAIN WRAPPER CONTAINER (Framed like screenshot) -->
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-6">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="flex items-center justify-between py-3">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center space-x-1 group">
+        <span class="text-2xl font-extrabold tracking-tight text-[#0f172a] font-sans">Mindly<span class="text-xs align-super font-bold">°</span></span>
+      </a>
+
+      <!-- Center Pill Navigation -->
+      <nav class="hidden md:flex items-center bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-full px-5 py-2 shadow-sm space-x-6 text-xs font-semibold text-gray-600">
+        <a href="#features" class="hover:text-gray-950 transition-colors">Features</a>
+        <a href="#how-it-works" class="hover:text-gray-950 transition-colors">How it works</a>
+        <a href="#integrations" class="bg-gray-100/90 text-gray-950 px-3.5 py-1 rounded-full font-bold shadow-2xs">Integrations</a>
+        <a href="#pricing" class="hover:text-gray-950 transition-colors">Pricing</a>
+      </nav>
+
+      <!-- Right Action Button -->
+      <div class="flex items-center gap-3">
+        <a href="login.html" id="app-btn" class="bg-[#0f172a] hover:bg-black text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-200 shadow-sm flex items-center gap-1.5 group">
+          <span>Get the app</span>
+          <span class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-12 pb-8 text-center max-w-5xl mx-auto">
+      
+      <!-- TOP RIGHT ROTATING STAR BADGE -->
+      <div class="absolute top-2 right-4 lg:right-12 hidden md:block">
+        <div class="relative flex items-center justify-center">
+          <svg class="w-28 h-28 animate-spin-slow" viewBox="0 0 100 100">
+            <path id="circlePath" fill="none" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" />
+            <text class="text-[9.5px] font-bold tracking-[0.24em] fill-gray-600 uppercase">
+              <textPath href="#circlePath">
+                A MORE FOCUSED YOU EVERYDAY •
+              </textPath>
+            </text>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-gray-900 text-lg">✦</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO HEADLINE -->
+      <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-normal tracking-tight text-[#0f172a] font-serif leading-[1.05] max-w-3xl mx-auto">
+        A clearer mind<br />
+        <span class="italic font-serif font-normal text-[#0f172a]">for a brighter you.</span>
+      </h1>
+
+      <!-- SUBTITLE -->
+      <p class="text-gray-500 text-sm sm:text-base md:text-[17px] max-w-lg mx-auto font-sans mt-5 leading-relaxed font-medium">
+        Mindly helps you capture ideas, organize your thoughts, and stay focused — all in one beautiful space.
+      </p>
+
+      <!-- HERO ACTION BUTTONS -->
+      <div class="flex items-center justify-center gap-3.5 mt-7">
+        <a href="login.html" class="bg-[#0f172a] hover:bg-black text-white px-6 py-3 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02]">
+          <span>Get started free</span>
+          <span class="text-base leading-none">→</span>
+        </a>
+        <button type="button" id="watch-video-btn" class="bg-white border border-gray-200/90 hover:bg-gray-50 text-gray-900 px-5 py-3 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-sm hover:scale-[1.02] cursor-pointer">
+          <span class="text-2xl leading-none text-gray-800">▶</span>
+          <span>Watch video</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- HERO VISUAL & FLOATING CARDS SHOWCASE CONTAINER -->
+    <div class="relative max-w-6xl mx-auto mt-4 min-h-[520px] md:min-h-[580px] flex items-center justify-center">
+
+      <!-- SVG CURVED CONNECTOR LINES -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none z-0 hidden lg:block" viewBox="0 0 1000 600" fill="none">
+        <!-- Left line connecting turn thoughts card to head -->
+        <path d="M 230 190 C 290 190, 360 260, 420 310" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1.2" stroke-dasharray="3 3" />
+        <!-- Right line connecting ideas anytime card to head -->
+        <path d="M 770 240 C 710 250, 640 290, 580 320" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1.2" stroke-dasharray="3 3" />
+      </svg>
+
+      <!-- LEFT FLOATING CARD -->
+      <div class="absolute top-6 left-2 lg:left-8 z-20 max-w-[210px] hidden md:block animate-float-slow">
+        <div class="glass-card rounded-2xl p-5 border border-white/90 shadow-xl transition-all hover:scale-105 duration-300">
+          <div class="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center mb-3 text-gray-800 shadow-2xs">
+            <!-- Soundwave SVG icon -->
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+          </div>
+          <h3 class="text-sm font-bold text-gray-900 leading-snug">Turn thoughts<br />into progress.</h3>
+          <p class="text-[11px] font-medium text-gray-500 mt-1.5 leading-relaxed">Capture, organise and do more.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT FLOATING CARD -->
+      <div class="absolute top-16 right-2 lg:right-8 z-20 max-w-[210px] hidden md:block animate-float-reverse">
+        <div class="glass-card rounded-2xl p-5 border border-white/90 shadow-xl transition-all hover:scale-105 duration-300">
+          <!-- Avatars Header -->
+          <div class="flex items-center -space-x-1.5 mb-3">
+            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User 1" />
+            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="User 2" />
+            <img class="w-6 h-6 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="User 3" />
+            <div class="w-6 h-6 rounded-full bg-gray-100 ring-2 ring-white flex items-center justify-center text-[10px] font-bold text-gray-700">+</div>
+          </div>
+          <h3 class="text-sm font-bold text-gray-900 leading-snug">Ideas, anytime,<br />anywhere.</h3>
+          <p class="text-[11px] font-medium text-gray-500 mt-1.5 leading-relaxed">Sync across all your devices.</p>
+        </div>
+      </div>
+
+      <!-- CENTRAL HERO VISUAL WITH ORBITING 3D GLASS PILLS AND PORTRAIT -->
+      <div class="relative w-full max-w-2xl mx-auto flex items-end justify-center pt-8">
+        
+        <!-- 3D ORBITING CARDS CONTAINER OVERLAY -->
+        <div class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-2">
+
+          <!-- TOP ORBITING GLASS PILLS -->
+          <div class="flex items-center justify-around w-full pt-10 px-4">
+            
+            <!-- Floating Mountain Preview Card (Left Edge) -->
+            <div class="hidden sm:block pointer-events-auto transform -rotate-12 -translate-y-4 hover:rotate-0 transition-transform duration-300">
+              <div class="w-20 h-24 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 glass-card p-1">
+                <img src="img/mountain_preview.jpg" alt="Mountain preview" class="w-full h-full object-cover rounded-xl" />
+              </div>
+            </div>
+
+            <!-- Focus Pill (Top Center Left) -->
+            <div class="pointer-events-auto transform -rotate-3 hover:scale-105 transition-all duration-300">
+              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-xl">
+                <div class="w-6 h-6 rounded-lg bg-lime-400/90 flex items-center justify-center text-xs font-bold text-gray-950 shadow-2xs">
+                  ⚡
+                </div>
+                <div class="text-left">
+                  <div class="text-xs font-bold text-gray-950 leading-tight">Focus</div>
+                  <div class="text-[10px] font-medium text-gray-500">Deep work, bigger results.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Plan Pill (Top Center Right) -->
+            <div class="pointer-events-auto transform rotate-6 hover:scale-105 transition-all duration-300">
+              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-xl">
+                <div class="w-6 h-6 rounded-lg bg-amber-400/90 flex items-center justify-center text-xs font-bold text-gray-950 shadow-2xs">
+                  🎯
+                </div>
+                <div class="text-left">
+                  <div class="text-xs font-bold text-gray-950 leading-tight">Plan</div>
+                  <div class="text-[10px] font-medium text-gray-500">Turn ideas into action.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- MIDDLE / BOTTOM ORBITING GLASS PILLS -->
+          <div class="flex items-center justify-between w-full pb-16 px-2 sm:px-8">
+
+            <!-- Ideas Pill (Center Bottom) -->
+            <div class="pointer-events-auto transform translate-y-6 sm:translate-y-2 hover:scale-105 transition-all duration-300 mx-auto">
+              <div class="glass-card rounded-2xl px-4 py-2.5 flex items-center gap-3 border border-white/90 shadow-2xl">
+                <div class="w-6 h-6 rounded-lg bg-purple-500/90 flex items-center justify-center text-xs font-bold text-white shadow-2xs">
+                  💡
+                </div>
+                <div class="text-left">
+                  <div class="text-xs font-bold text-gray-950 leading-tight">Ideas</div>
+                  <div class="text-[10px] font-medium text-gray-500">Capture everything.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Moon Preview Card (Right Edge) -->
+            <div class="hidden sm:block pointer-events-auto transform rotate-12 translate-y-4 hover:rotate-0 transition-transform duration-300">
+              <div class="w-20 h-24 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 glass-card p-1">
+                <img src="img/moon_preview.jpg" alt="Moon preview" class="w-full h-full object-cover rounded-xl" />
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PORTRAIT HEAD IMAGE (CUT OUT & FADED AT BOTTOM) -->
+        <div class="relative z-10 w-[320px] sm:w-[400px] md:w-[460px] mx-auto rounded-b-full overflow-hidden">
+          <img src="img/hero_portrait.jpg" alt="Mindly Hero Portrait" 
+            class="w-full h-auto object-cover filter contrast-[1.05] grayscale brightness-[1.02]" />
+          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f7f5] via-[#f7f7f5]/80 to-transparent"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- BOTTOM HERO FOOTER ROW -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200/60 max-w-6xl mx-auto text-xs font-semibold text-gray-500">
+      
+      <!-- Bottom Left: Social Proof -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center -space-x-2">
+          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User 1" />
+          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="User 2" />
+          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="User 3" />
+          <img class="w-7 h-7 rounded-full ring-2 ring-[#f7f7f5] object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80" alt="User 4" />
+          <div class="w-7 h-7 rounded-full bg-white ring-2 ring-[#f7f7f5] flex items-center justify-center text-[10px] font-bold text-gray-800 shadow-2xs">+</div>
+        </div>
+        <span class="text-gray-600 font-medium">Trusted by 50,000+ creators worldwide.</span>
+      </div>
+
+      <!-- Bottom Right: Tagline -->
+      <div class="flex items-center gap-2 text-gray-600 font-medium">
+        <span class="text-gray-900 text-sm">✦</span>
+        <span>Less chaos. More clarity.</span>
+      </div>
+
+    </div>
+
   </div>
+
+  <!-- VIDEO MODAL (Watch Video Trigger) -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="relative max-w-3xl w-full bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+      <button type="button" id="close-modal-btn" class="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center text-lg z-10 transition-colors">
+        ✕
+      </button>
+      <div class="aspect-video w-full flex items-center justify-center bg-gray-950 p-8 text-center">
+        <div>
+          <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 text-white text-2xl">▶</div>
+          <h3 class="text-xl font-bold text-white mb-2">Mindly Experience Demo</h3>
+          <p class="text-sm text-gray-400 max-w-md mx-auto">Watch how Mindly brings clarity to your thoughts and workflows with seamless organization tools.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE JS SCRIPT -->
+  <script type="module">
+    import { getUser } from './js/api.js';
+
+    // Watch video modal trigger
+    const watchVideoBtn = document.getElementById('watch-video-btn');
+    const videoModal = document.getElementById('video-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    if (watchVideoBtn && videoModal && closeModalBtn) {
+      watchVideoBtn.addEventListener('click', () => {
+        videoModal.classList.remove('hidden');
+        setTimeout(() => videoModal.classList.remove('opacity-0'), 10);
+      });
+
+      closeModalBtn.addEventListener('click', () => {
+        videoModal.classList.add('opacity-0');
+        setTimeout(() => videoModal.classList.add('hidden'), 300);
+      });
+
+      videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) {
+          videoModal.classList.add('opacity-0');
+          setTimeout(() => videoModal.classList.add('hidden'), 300);
+        }
+      });
+    }
+
+    // App Button redirection behavior (navigates logged in users directly or to login)
+    const appBtn = document.getElementById('app-btn');
+    if (appBtn) {
+      const user = getUser();
+      if (user) {
+        appBtn.href = user.role === 'ADMIN' ? '/dashboard.html' : '/worker-home.html';
+        appBtn.querySelector('span').innerText = 'Go to Dashboard';
+      }
+    }
+  </script>
+
 </body>
 </html>
