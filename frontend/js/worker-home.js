@@ -10,6 +10,7 @@ let allWorkerTasks = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let todayAttendance = null;
+let workerEarningsRecords = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   setupWorkerUI();
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAttendanceStatus();
   loadPieceRateEarnings();
   loadWorkerTasks();
+  loadMachinesForModal();
 });
 
 function setupWorkerUI() {
@@ -68,12 +70,8 @@ function setupEventListeners() {
   const btnClockIn = document.getElementById('btn-clockin');
   const btnClockOut = document.getElementById('btn-clockout');
 
-  if (btnClockIn) {
-    btnClockIn.addEventListener('click', handleClockIn);
-  }
-  if (btnClockOut) {
-    btnClockOut.addEventListener('click', handleClockOut);
-  }
+  if (btnClockIn) btnClockIn.addEventListener('click', handleClockIn);
+  if (btnClockOut) btnClockOut.addEventListener('click', handleClockOut);
 
   // Leave Modal
   const openLeaveBtn = document.getElementById('open-leave-modal');
@@ -84,7 +82,6 @@ function setupEventListeners() {
 
   if (openLeaveBtn && leaveModal) {
     openLeaveBtn.addEventListener('click', () => {
-      // Set default dates
       const today = new Date().toISOString().split('T')[0];
       const startInp = document.getElementById('leave-start');
       const endInp = document.getElementById('leave-end');
@@ -94,10 +91,7 @@ function setupEventListeners() {
     });
   }
 
-  const hideLeaveModal = () => {
-    if (leaveModal) leaveModal.classList.add('hidden');
-  };
-
+  const hideLeaveModal = () => { if (leaveModal) leaveModal.classList.add('hidden'); };
   if (closeLeaveBtn) closeLeaveBtn.addEventListener('click', hideLeaveModal);
   if (cancelLeaveBtn) cancelLeaveBtn.addEventListener('click', hideLeaveModal);
 
@@ -121,6 +115,93 @@ function setupEventListeners() {
         showToast(err.message || 'Failed to submit leave application', 'error');
       }
     });
+  }
+
+  // Breakdown Modal
+  const openBreakdownBtn = document.getElementById('open-breakdown-modal');
+  const closeBreakdownBtn = document.getElementById('close-breakdown-modal');
+  const cancelBreakdownBtn = document.getElementById('cancel-breakdown-btn');
+  const breakdownModal = document.getElementById('breakdown-modal');
+  const breakdownForm = document.getElementById('breakdown-form');
+
+  if (openBreakdownBtn && breakdownModal) {
+    openBreakdownBtn.addEventListener('click', () => {
+      breakdownModal.classList.remove('hidden');
+    });
+  }
+
+  const hideBreakdownModal = () => { if (breakdownModal) breakdownModal.classList.add('hidden'); };
+  if (closeBreakdownBtn) closeBreakdownBtn.addEventListener('click', hideBreakdownModal);
+  if (cancelBreakdownBtn) cancelBreakdownBtn.addEventListener('click', hideBreakdownModal);
+
+  if (breakdownForm) {
+    breakdownForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const machineSelect = document.getElementById('breakdown-machine');
+      const machineId = machineSelect.value;
+      const machineName = machineSelect.options[machineSelect.selectedIndex]?.text || 'Machine';
+      const severity = document.getElementById('breakdown-severity')?.value || 'Moderate';
+      const issueDescription = document.getElementById('breakdown-issue')?.value;
+
+      if (!machineId) {
+        showToast('Please select a machine', 'error');
+        return;
+      }
+
+      try {
+        await apiFetch('/machines/tickets', {
+          method: 'POST',
+          body: {
+            machineId,
+            machineName,
+            issueDescription,
+            severity,
+            reportedBy: user.name || 'Worker'
+          }
+        });
+        showToast('Machine breakdown ticket dispatched to Maintenance Supervisor!', 'success');
+        hideBreakdownModal();
+        breakdownForm.reset();
+      } catch (err) {
+        showToast(err.message || 'Failed to file machine ticket', 'error');
+      }
+    });
+  }
+
+  // Earnings Modal
+  const earningsCard = document.getElementById('earnings-card');
+  const earningsModal = document.getElementById('earnings-modal');
+  const closeEarningsBtn = document.getElementById('close-earnings-modal');
+
+  if (earningsCard && earningsModal) {
+    earningsCard.addEventListener('click', () => {
+      renderEarningsModal();
+      earningsModal.classList.remove('hidden');
+    });
+  }
+
+  if (closeEarningsBtn && earningsModal) {
+    closeEarningsBtn.addEventListener('click', () => earningsModal.classList.add('hidden'));
+  }
+}
+
+async function loadMachinesForModal() {
+  const select = document.getElementById('breakdown-machine');
+  if (!select) return;
+
+  try {
+    const machines = await apiFetch('/machines');
+    if (Array.isArray(machines) && machines.length > 0) {
+      select.innerHTML = machines.map(m => `
+        <option value="${m.id || m._id}">
+          ${m.machineCode || ''} — ${m.name} (${m.department || 'Floor'})
+        </option>
+      `).join('');
+    } else {
+      select.innerHTML = `<option value="gen-01">General Bay Machinery</option>`;
+    }
+  } catch (e) {
+    select.innerHTML = `<option value="gen-01">Cutting / Stitching Station</option>`;
   }
 }
 
@@ -214,15 +295,57 @@ async function loadPieceRateEarnings() {
   try {
     const res = await apiFetch('/transactions/piece-rate/ledger');
     if (Array.isArray(res)) {
-      // Find entries for this worker or today
       const workerId = user._id || user.id;
-      const workerEntries = res.filter(r => String(r.workerId) === String(workerId) || r.workerName === user.name);
-      const totalEarnings = workerEntries.reduce((sum, item) => sum + (Number(item.totalAmount) || 0), 0);
+      workerEarningsRecords = res.filter(r => String(r.workerId) === String(workerId) || r.workerName === user.name);
+      const totalEarnings = workerEarningsRecords.reduce((sum, item) => sum + (Number(item.payoutAmount || item.totalAmount) || 0), 0);
       earningsEl.innerText = formatCurrency(totalEarnings);
     }
   } catch (err) {
     earningsEl.innerText = '₹0';
   }
+}
+
+function renderEarningsModal() {
+  const container = document.getElementById('earnings-list-container');
+  const modalTotal = document.getElementById('modal-total-earnings');
+  if (!container) return;
+
+  if (workerEarningsRecords.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-400">
+        <div class="text-3xl mb-1">🪙</div>
+        <p class="font-bold text-gray-700">No piece-rate settlements yet</p>
+        <p class="text-[11px] text-gray-400 mt-1">Complete assigned job cards to earn piece-rate wages automatically.</p>
+      </div>
+    `;
+    if (modalTotal) modalTotal.innerText = '₹0';
+    return;
+  }
+
+  let total = 0;
+  container.innerHTML = workerEarningsRecords.map(item => {
+    const amount = Number(item.payoutAmount || item.totalAmount) || 0;
+    total += amount;
+    const isPaid = item.status === 'Paid';
+    return `
+      <div class="bg-gray-50 p-3 rounded-xl border border-gray-200/80 flex items-center justify-between">
+        <div>
+          <div class="font-bold text-gray-900">${escapeHtml(item.jobNumber || 'Job Batch')} — ${escapeHtml(item.department || 'Production')}</div>
+          <div class="text-[11px] text-gray-500 font-medium mt-0.5">
+            ${item.acceptedQuantity || item.completedQuantity || 0} pcs @ ₹${item.ratePerPiece || 0}/pc • ${item.timestamp ? item.timestamp.split('T')[0] : 'Today'}
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="font-extrabold text-sm text-[#124b4f]">${formatCurrency(amount)}</div>
+          <span class="inline-block text-[9.5px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${isPaid ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+            ${isPaid ? 'Settled / Paid' : 'Accrued'}
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (modalTotal) modalTotal.innerText = formatCurrency(total);
 }
 
 function switchTab(filterName) {
@@ -238,10 +361,7 @@ function switchTab(filterName) {
 
 async function loadWorkerTasks() {
   try {
-    // 1. Fetch tasks assigned to worker
     let fetched = await apiFetch('/tasks');
-    
-    // 2. Also fetch active job cards in worker department
     let jobCards = [];
     try {
       jobCards = await apiFetch(`/production/job-cards?department=${encodeURIComponent(user.department || 'Cutting')}`);
@@ -269,17 +389,17 @@ async function loadWorkerTasks() {
 
     if (Array.isArray(jobCards) && jobCards.length > 0) {
       const jcMapped = jobCards.map(jc => ({
-        id: jc.id,
-        title: `Job Card: ${jc.stage} — Order #${jc.orderNumber || ''}`,
-        description: `Execute ${jc.stage} for production run. Target: ${jc.targetQuantity} units at piece rate ₹${jc.pieceRate || 0}/pc.`,
+        id: jc.id || jc._id,
+        title: `Job Card: ${jc.stage || jc.department} — Order #${jc.orderNumber || ''}`,
+        description: `Execute ${jc.stage || jc.department} for production order. Target: ${jc.plannedQuantity || jc.targetQuantity || 100} units at piece rate ₹${jc.pieceRate || 0}/pc.`,
         department: jc.department || user.department || 'Production',
         priority: 'High',
         status: jc.status === 'Completed' ? 'Completed' : 'Pending',
-        progress: jc.status === 'Completed' ? 100 : Math.round(((jc.completedQuantity || 0) / (jc.targetQuantity || 1)) * 100),
-        targetPieces: jc.targetQuantity || 100,
+        progress: jc.status === 'Completed' ? 100 : Math.round(((jc.completedQuantity || 0) / (jc.plannedQuantity || jc.targetQuantity || 1)) * 100),
+        targetPieces: jc.plannedQuantity || jc.targetQuantity || 100,
         completedPieces: jc.completedQuantity || 0,
         dueDate: 'Today, 6:00 PM',
-        batchCode: jc.jobCardNumber || `JC-${jc.stage.substring(0, 3).toUpperCase()}`,
+        batchCode: jc.jobNumber || `JC-${(jc.department || 'CUT').substring(0, 3).toUpperCase()}`,
         fabric: 'Work Order Spec',
         image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'
       }));
@@ -412,7 +532,6 @@ function renderTaskList() {
       <div class="bg-white rounded-3xl border border-gray-200/90 shadow-2xs p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
         
         <div class="space-y-3.5">
-          <!-- Top Tag Row -->
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-md border ${priorityBadge}">
@@ -429,7 +548,6 @@ function renderTaskList() {
             ` : ''}
           </div>
 
-          <!-- Garment Thumbnail & Title -->
           <div class="flex items-start gap-3">
             <img 
               src="${taskImage}" 
@@ -448,7 +566,6 @@ function renderTaskList() {
             </div>
           </div>
 
-          <!-- Progress Bar & Piece Counter -->
           <div class="bg-gray-50/90 rounded-2xl p-3 border border-gray-100 space-y-1.5">
             <div class="flex justify-between items-center text-[11px] font-bold">
               <span class="text-gray-500">Output Target</span>
@@ -463,7 +580,6 @@ function renderTaskList() {
           </div>
         </div>
 
-        <!-- Action Button -->
         <div class="mt-4 pt-3 border-t border-gray-100">
           <a 
             href="worker-task.html?id=${encodeURIComponent(task.id)}" 

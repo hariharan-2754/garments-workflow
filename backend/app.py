@@ -277,6 +277,16 @@ async def startup_event():
 async def shutdown_event():
     await disconnect_db()
 
+@app.get("/")
+def root():
+    return {
+        "system": "GarmentFlow ERP Management API",
+        "version": "2.0.0",
+        "status": "online",
+        "docs_url": "http://localhost:8000/docs",
+        "frontend_url": "http://localhost:5500/login.html"
+    }
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "version": "2.0.0", "system": "GarmentFlow ERP"}

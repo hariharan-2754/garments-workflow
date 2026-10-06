@@ -59,7 +59,12 @@
         </span>
       </div>
 
-      <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="open-breakdown-modal" class="px-3 py-1.5 text-xs font-bold text-amber-700 hover:bg-amber-50 border border-amber-200 rounded-xl transition-colors cursor-pointer flex items-center gap-1">
+          <span>⚙️</span>
+          <span class="hidden sm:inline">Report Machine</span>
+        </button>
+
         <button id="open-leave-modal" class="px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer flex items-center gap-1">
           <span>🏖️</span>
           <span class="hidden sm:inline">Apply Leave</span>
@@ -69,7 +74,7 @@
           <div class="w-7 h-7 rounded-full bg-teal-100 text-[#124b4f] flex items-center justify-center font-bold text-xs">
             <span id="worker-avatar-initial">W</span>
           </div>
-          <div class="text-left">
+          <div class="text-left hidden sm:block">
             <div id="worker-header-name" class="text-xs font-bold text-gray-900 leading-tight">Worker</div>
             <div id="worker-header-role" class="text-[9.5px] text-gray-400 font-semibold leading-none">Specialist</div>
           </div>
@@ -133,8 +138,11 @@
           <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Completed</div>
           <div id="stat-completed" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-0.5">0</div>
         </div>
-        <div class="bg-gray-50 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
-          <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Piece Earnings</div>
+        <div id="earnings-card" class="bg-teal-50/70 hover:bg-teal-50 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-teal-200 min-w-[95px] cursor-pointer transition-colors" title="Click to view earnings ledger breakdown">
+          <div class="text-[10px] uppercase font-bold text-[#124b4f] tracking-wider flex items-center justify-center gap-1">
+            <span>Piece Payout</span>
+            <span class="text-[9px]">🔍</span>
+          </div>
           <div id="stat-earnings" class="text-lg sm:text-xl font-extrabold text-[#124b4f] mt-0.5">₹0</div>
         </div>
       </div>
@@ -215,6 +223,69 @@
           <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Submit Leave Request</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- REPORT MACHINE BREAKDOWN MODAL -->
+  <div id="breakdown-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm flex items-center gap-1.5">
+          <span>⚙️</span>
+          <span>Report Machine Breakdown</span>
+        </h3>
+        <button id="close-breakdown-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="breakdown-form" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Select Machine / Line</label>
+          <select id="breakdown-machine" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+            <option value="">Loading factory machines...</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Severity</label>
+          <select id="breakdown-severity" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+            <option value="Critical">🔴 Critical (Line Stopped)</option>
+            <option value="Moderate" selected>🟡 Moderate (Partial Issue)</option>
+            <option value="Minor">🟢 Minor (Needs Calibration)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Problem Description</label>
+          <textarea id="breakdown-issue" required rows="3" placeholder="e.g. Needle bar jammed, motor overheating, thread cutter sensor error..." class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-breakdown-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl shadow-xs">File Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PIECE-RATE EARNINGS BREAKDOWN MODAL -->
+  <div id="earnings-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <div>
+          <h3 class="font-extrabold text-gray-950 text-sm">My Piece-Rate Earnings Log</h3>
+          <p class="text-[11px] text-gray-500">Live production piece rate settlement ledger</p>
+        </div>
+        <button id="close-earnings-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <div class="max-h-72 overflow-y-auto space-y-2 text-xs" id="earnings-list-container">
+        <p class="text-center py-6 text-gray-400">Loading your earnings history...</p>
+      </div>
+
+      <div class="flex justify-between items-center pt-3 border-t border-gray-100 text-xs">
+        <span class="font-bold text-gray-500">Total Accrued Payout:</span>
+        <span id="modal-total-earnings" class="font-extrabold text-sm text-[#124b4f]">₹0</span>
+      </div>
     </div>
   </div>
 
