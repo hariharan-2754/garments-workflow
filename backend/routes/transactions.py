@@ -40,6 +40,12 @@ async def list_transactions(
     db=Depends(get_db),
     current_user=Depends(get_current_user)
 ):
+    if current_user.get("role") == "WORKER":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden: Company financial ledger is restricted to Administrative users."
+        )
+
     query = {}
     if type:
         query["type"] = type
@@ -52,6 +58,14 @@ async def list_transactions(
 
     docs = await db.transactions.find(query).sort("date", -1).to_list(1000)
     return [_doc_to_txn_res(d) for d in docs]
+
+@router.get("/summary")
+async def get_financial_summary(db=Depends(get_db), current_user=Depends(get_current_user)):
+    if current_user.get("role") == "WORKER":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden: Financial P&L summary is restricted to Administrative users."
+        )
 
 @router.post("", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED)
 async def create_transaction(

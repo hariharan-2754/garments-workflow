@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   renderERPNavigation('dashboard');
 
+  // Set greeting and role badge
+  const greetingEl = document.getElementById('user-display-name');
+  if (greetingEl) {
+    greetingEl.innerText = `${user.name} (${user.role}${user.department ? ' — ' + user.department : ''})`;
+  }
+
   // Mobile drawer toggle
   const mobileToggle = document.getElementById('mobile-menu-toggle');
   const sidebar = document.getElementById('erp-sidebar');
@@ -15,15 +21,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  await loadDashboardKPIs();
+  // Hide financial P&L card for supervisors
+  if (user.role === 'SUPERVISOR') {
+    const profitCard = document.getElementById('stat-net-profit')?.closest('.kpi-card-container') || document.getElementById('stat-net-profit')?.parentElement;
+    if (profitCard) {
+      profitCard.classList.add('hidden');
+    }
+    const financeSection = document.getElementById('recent-txns-tbody')?.closest('section') || document.getElementById('recent-txns-tbody')?.closest('.bg-white');
+    if (financeSection) {
+      financeSection.classList.add('hidden');
+    }
+  }
+
+  await loadDashboardKPIs(user);
   await loadLiveProductionOrders();
   await loadStockAlerts();
-  await loadRecentTransactions();
+  if (user.role !== 'SUPERVISOR') {
+    await loadRecentTransactions();
+  }
 });
 
-async function loadDashboardKPIs() {
+async function loadDashboardKPIs(user) {
   try {
-    const kpis = await apiFetch('/analytics/dashboard-kpis');
+    const kpis = await apiFetch('/analytics/dashboard');
+    if (!kpis) return;
     
     document.getElementById('stat-active-orders').innerText = kpis.activeOrders || 0;
     document.getElementById('stat-pending-tasks').innerText = kpis.pendingTasks || 0;
@@ -31,19 +52,23 @@ async function loadDashboardKPIs() {
     document.getElementById('stat-att-rate').innerText = (kpis.attendanceRate || 0) + '% Rate';
     document.getElementById('stat-low-stock').innerText = kpis.lowStockCount || 0;
     document.getElementById('stat-machines-down').innerText = kpis.machinesDown || 0;
-    document.getElementById('stat-net-profit').innerText = formatCurrency(kpis.netProfit || 0);
+    
+    const profitEl = document.getElementById('stat-net-profit');
+    if (profitEl && user.role !== 'SUPERVISOR') {
+      profitEl.innerText = formatCurrency(kpis.netProfit || 0);
+    }
 
     // Render Department Throughput
     const deptContainer = document.getElementById('dept-throughput-container');
     if (deptContainer && kpis.departmentThroughput) {
-      const maxJobs = Math.max(1, ...kpis.departmentThroughput.map(d => d.completedJobs));
+      const maxJobs = Math.max(1, ...kpis.departmentThroughput.map(d => d.completedJobs || 0));
       deptContainer.innerHTML = kpis.departmentThroughput.map(d => {
-        const pct = Math.round((d.completedJobs / maxJobs) * 100);
+        const pct = Math.round(((d.completedJobs || 0) / maxJobs) * 100);
         return `
           <div class="space-y-1">
             <div class="flex justify-between text-xs font-bold">
               <span class="text-gray-700">${d.department}</span>
-              <span class="text-gray-900">${d.completedJobs} Jobs</span>
+              <span class="text-gray-900">${d.completedJobs || 0} Jobs</span>
             </div>
             <div class="w-full bg-gray-100 rounded-full h-2">
               <div class="bg-[#124b4f] h-2 rounded-full transition-all duration-500" style="width: ${Math.max(5, pct)}%"></div>
@@ -64,11 +89,11 @@ async function loadLiveProductionOrders() {
   try {
     const orders = await apiFetch('/production/orders');
     if (!orders || orders.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-gray-400">No active production orders found. Click "+ New Production Order" to create one.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-gray-400">No active production orders found.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = orders.slice(0, 5).map(o => {
+    tbody.innerHTML = orders.slice(0, 6).map(o => {
       const priorityClass = o.priority === 'High' || o.priority === 'Urgent' 
         ? 'bg-red-50 text-red-700 border-red-200' 
         : o.priority === 'Medium' 
@@ -94,7 +119,7 @@ async function loadLiveProductionOrders() {
               <span class="text-[11px] font-bold text-gray-600">${o.progressPercent}%</span>
             </div>
           </td>
-          <td class="py-3 px-4 font-mono text-gray-600 text-xs">${o.dueDate}</td>
+          <td class="py-3 px-4 font-mono text-gray-600 text-xs">${o.dueDate || 'Standard'}</td>
           <td class="py-3 px-4 text-right">
             <a href="production.html" class="px-2.5 py-1 bg-gray-100 hover:bg-[#124b4f] hover:text-white rounded-lg text-[11px] font-bold text-gray-700 transition-colors">
               Manage →
@@ -114,7 +139,7 @@ async function loadStockAlerts() {
 
   try {
     const mats = await apiFetch('/materials');
-    const lowStock = (mats || []).filter(m => m.isLowStock || m.currentQuantity <= m.minimumStock);
+    const lowStock = (mats || []).filter(m => m.isLowStock || Number(m.currentQuantity) <= Number(m.minimumStock));
     
     if (lowStock.length === 0) {
       container.innerHTML = `
@@ -148,13 +173,13 @@ async function loadRecentTransactions() {
   if (!tbody) return;
 
   try {
-    const txns = await apiFetch('/transactions');
+    const txns = await apiFetch('/transactions/ledger');
     if (!txns || txns.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-400">No recorded financial transactions yet.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = txns.slice(0, 4).map(t => {
+    tbody.innerHTML = txns.slice(0, 5).map(t => {
       const isInc = t.type === 'Income';
       return `
         <tr class="hover:bg-gray-50/70">
@@ -174,6 +199,6 @@ async function loadRecentTransactions() {
       `;
     }).join('');
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-red-500">Failed to load transactions.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-400">No transactions to display.</td></tr>`;
   }
 }
