@@ -1,51 +1,57 @@
-# 🧵 GarmentFlow (Shoplytic) — Garments Workflow & Production Management System
+# 🧵 GarmentFlow ERP — Complete Garment Manufacturing Management System
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB%20%2F%20JSON%20Mock-47A248?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20%2F%20Dual%20JSON%20Engine-47A248?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![TailwindCSS](https://img.shields.io/badge/Frontend-TailwindCSS%20%2B%20Vanilla%20ES6-38B2AC?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modern, full-stack workflow and apparel production management application tailored for garment manufacturers, fashion studios, and textile production pipelines. **GarmentFlow** streamlines task assignment across manufacturing departments (Cutting, Stitching, Printing, Embroidery, Quality Check, Packing) while offering a sleek **Shoplytic Product Catalog & Grid Dashboard**.
+**GarmentFlow** is an enterprise-grade, end-to-end Garment Manufacturing ERP (Enterprise Resource Planning) platform designed specifically for apparel factories, fashion studios, and textile production lines.
 
----
-
-## 🌟 Key Features
-
-- **🛍️ Shoplytic Product Grid Dashboard**:
-  - Interactive 4-column menswear apparel catalog with real-time price range filtering and search.
-  - Interactive **Custom Price Range Slider** with instant feedback and dynamic item counter.
-  - **Quick "+ Create Order / Task"** modal to register garment production jobs on the fly.
-  - Seamless toggle between **Product Grid View** and operational **List / Task Monitoring View**.
-
-- **🔐 Menswear Split-Card Authentication**:
-  - High-fashion editorial split modal layout matching premium apparel brand designs.
-  - Instant one-click demo credential filling (`Admin` and `Worker` presets).
-  - Built-in zero-latency local fallback so login is instant even if the backend is offline.
-
-- **👥 Role-Based Access Control (RBAC)**:
-  - **Admin / Manager Portal**: Create tasks, assign work to workers by department, monitor live statuses, review submissions, and manage teams.
-  - **Worker Portal**: View assigned queue, update production stages, upload photo proof, and mark items complete.
-
-- **🏢 Department & Pipeline Tracking**:
-  - Dedicated modules for **Cutting**, **Stitching**, **Printing**, **Embroidery**, **Packing**, and **Quality Check**.
-  - Track priority levels (`High`, `Medium`, `Low`), target deadlines, and status changes in real time.
-
-- **💾 Dual Database Engine (MongoDB Atlas + Local JSON Fallback)**:
-  - Works with remote/local **MongoDB** via `motor` async driver.
-  - Automatically falls back to an embedded lightweight local database (`db.json`) if MongoDB is unreachable, ensuring zero configuration friction.
+It unifies **12 core operational modules** into a single cohesive platform: from customer sales order intake and automated Bill of Materials (BOM) explosion, to multi-stage job-card shop floor routing, quality control audits (AQL 1.5), machine maintenance tracking, worker piece-rate payroll, double-entry financial bookkeeping, and automated CSV report generation.
 
 ---
 
-## 🔑 Default Credentials
+## 🌟 12 Core Integrated ERP Modules
 
-The system comes pre-configured with the following demo credentials:
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        GARMENTFLOW ERP PLATFORM                        │
+├────────────────────────────────┬───────────────────────────────────────┤
+│ 1. 🔐 Auth & 4-Tier RBAC       │ 7. ⚙️ Machine Monitoring & Breakdown │
+│ 2. 📊 Executive Command Center │ 8. 🏢 Supplier & Purchase Orders (GRN)│
+│ 3. 🧵 Materials, Inventory&BOM │ 9. 🚚 Customer Orders & Dispatch (AWB)│
+│ 4. 🏭 Production Orders & Jobs │ 10. 💰 Financial Ledger & Piece-Rates  │
+│ 5. 🔍 Quality Control & Rework │ 11. 📑 Reports & CSV Export Center    │
+│ 6. ⏱️ Attendance & Leaves      │ 12. 🛡️ Shift Rules & Immutable Audits │
+└────────────────────────────────┴───────────────────────────────────────┘
+```
 
-| Role | Department | Email Address | Password |
-| :--- | :--- | :--- | :--- |
-| **Admin** | System Administration | `admin@garmentflow.com` | `Admin@1234` |
-| **Worker** | Cutting | `ravi@garmentflow.com` | `Worker@1234` |
-| **Worker** | Stitching | `priya@garmentflow.com` | `Worker@1234` |
-| **Worker** | Quality Check | `arjun@garmentflow.com` | `Worker@1234` |
+1. **User Authentication & RBAC**: Strict 4-tier role enforcement (`ADMIN`, `MANAGER`, `SUPERVISOR`, `WORKER`) with JWT bearer tokens and BCrypt hashing.
+2. **Dashboard & Command Center**: Live KPI cards, department throughput metrics, production pipeline visualizer, stock alerts, and recent transactions.
+3. **Materials, Inventory & BOM**: SKU catalog, low-stock alerts, stock movement ledger, and multi-item Bill of Materials configuration.
+4. **Production Orders & Job Cards**: 7-stage manufacturing progression (`Cutting` ➔ `Stitching` ➔ `Printing` ➔ `Embroidery` ➔ `QC` ➔ `Packing` ➔ `Dispatch`) with automatic next-stage job card generation.
+5. **Quality Control & Rework**: 24-point garment inspection checklist (AQL 1.5), First Pass Yield (FPY) metrics, and automated rework job card routing.
+6. **Attendance & Leave Management**: Operator shift clock-in/out with grace-period late detection, daily attendance register, and employee leave application/approval workflow.
+7. **Machine Health & Maintenance**: Machine status cards (`Running`, `Idle`, `Maintenance`, `Breakdown`), breakdown ticket filing, and repair resolution with downtime logging.
+8. **Supplier & Purchase Orders**: Vendor directory, Purchase Order (PO) lifecycle, and Goods Receipt (GRN) that automatically increments inventory and records expenses.
+9. **Customer Orders & Logistics Dispatch**: Sales order booking with auto-conversion to production orders, plus packing slip generation with courier AWB tracking.
+10. **Financial Ledger & Piece-Rates**: Double-entry financial journal (Incomes vs Expenses), P&L summary cards, and worker piece-rate wage settlement.
+11. **Reports & Analytics Export**: Instant one-click CSV export across Production, Attendance, Inventory, QC Audits, and Financial Ledgers.
+12. **System Settings & Audit Trail**: Factory shift parameters, grace periods, notification center, and an immutable audit log trail.
+
+---
+
+## 🔑 Pre-Seeded Default Credentials
+
+| Role | Name | Department | Email Address | Password |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin** | Admin User | Factory Management | `admin@garmentflow.com` | `Admin@1234` |
+| **Manager** | Suresh Nair | Cutting Bay | `suresh@garmentflow.com` | `Worker@1234` |
+| **Supervisor** | Kavita Rao | Stitching Bay | `kavita@garmentflow.com` | `Worker@1234` |
+| **Worker (Cutting)** | Ravi Kumar | Cutting | `ravi@garmentflow.com` | `Worker@1234` |
+| **Worker (Stitching)** | Priya Sharma | Stitching | `priya@garmentflow.com` | `Worker@1234` |
+| **Worker (QC)** | Arjun Patel | Quality Check | `arjun@garmentflow.com` | `Worker@1234` |
 
 ---
 
@@ -53,42 +59,39 @@ The system comes pre-configured with the following demo credentials:
 
 ### 1. Prerequisites
 - **Python 3.10+**
-- Modern Web Browser (Chrome, Edge, Firefox, Safari)
+- Modern Web Browser (Google Chrome, Microsoft Edge, Firefox, or Safari)
 
 ---
 
-### 2. Start the Backend (FastAPI)
-
-Open a terminal in the project root:
+### 2. Start Backend (FastAPI)
 
 ```powershell
 # 1. Navigate to the backend directory
 cd backend
 
-# 2. (Optional) Create and activate a virtual environment
-python -m venv venv
+# 2. Activate virtual environment (if available) or use Python
 .\venv\Scripts\Activate.ps1    # On Windows PowerShell
 # source venv/bin/activate     # On macOS / Linux
 
 # 3. Install required packages
 pip install -r requirements.txt
 
-# 4. (Optional) Seed the database with default departments & demo users
+# 4. Seed database with complete ERP manufacturing dataset
 python seed.py
 
-# 5. Start the API server on port 8000
+# 5. Start API server on port 8000
 python -m uvicorn app:app --reload --port 8000
 ```
 
-> 🌐 **Backend API:** [http://localhost:8000](http://localhost:8000)  
-> 📑 **Swagger API Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)  
+> 🌐 **Backend URL:** [http://localhost:8000](http://localhost:8000)  
+> 📑 **Interactive Swagger API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)  
 > 📖 **Redoc Alternative Docs:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ---
 
-### 3. Start the Frontend
+### 3. Start Frontend
 
-Because the frontend uses modern JavaScript ES modules (`import`/`export`), it must be served via a local HTTP server:
+Because the frontend uses modern ES6 JavaScript modules, serve it through any local web server:
 
 ```powershell
 # Open a second terminal window
@@ -98,105 +101,66 @@ cd frontend
 python -m http.server 5500
 ```
 
-Now open your browser and navigate to:
-👉 **[http://localhost:5500/login.html](http://localhost:5500/login.html)** (or **[http://localhost:5500/dashboard.html](http://localhost:5500/dashboard.html)**)
+Open your browser and navigate to:  
+👉 **[http://localhost:5500/login.html](http://localhost:5500/login.html)**  
+👉 **[http://localhost:5500/dashboard.html](http://localhost:5500/dashboard.html)**
 
 ---
 
-## 📁 Project Architecture & File Structure
+## 📁 Repository Structure
 
 ```text
 garments-workflow/
 ├── backend/
-│   ├── app.py                 # FastAPI application entry point & CORS configuration
-│   ├── seed.py                # Database seeder script for initial demo data
-│   ├── db.json                # Local JSON database engine fallback
-│   ├── requirements.txt       # Python dependencies (FastAPI, Motor, JWT, Bcrypt, etc.)
+│   ├── app.py                 # FastAPI application & startup seeder
+│   ├── seed.py                # Standalone database seeder script
+│   ├── db.json                # High-fidelity JSON database engine
+│   ├── requirements.txt       # Dependencies (FastAPI, Motor, Pydantic, Passlib, etc.)
 │   ├── config/
-│   │   ├── db.py              # MongoDB Atlas connection manager + Mock Database engine
-│   │   └── settings.py        # Pydantic environment configuration
+│   │   ├── db.py              # Dual Database Engine (MongoDB Atlas + MockCollection)
+│   │   └── settings.py        # Environment variables & Pydantic config
 │   ├── middleware/
-│   │   └── auth.py            # JWT token creation, validation, and role guards
-│   ├── models/
-│   │   ├── user.py            # Pydantic schemas for Auth & Users
-│   │   ├── task.py            # Schemas for Tasks & Garment Production Orders
-│   │   └── department.py      # Schemas for Factory Departments
-│   ├── routes/
-│   │   ├── auth.py            # /login and /register endpoints
-│   │   ├── tasks.py           # /tasks CRUD & status transition endpoints
-│   │   ├── workers.py         # /workers roster & assignment endpoints
-│   │   └── departments.py     # /departments management endpoints
-│   └── uploads/               # Stored task reference photos and attachments
+│   │   └── auth.py            # JWT token validation, hashing & RBAC decorators
+│   ├── models/                # 13 Pydantic domain models
+│   ├── routes/                # 14 FastAPI REST routers
+│   └── utils/
+│       └── audit_helper.py    # Centralized audit logging & notification helper
 │
 ├── frontend/
-│   ├── login.html             # High-fashion split card modal login page
-│   ├── dashboard.html         # Shoplytic product catalog & production dashboard
-│   ├── assign-task.html       # Task dispatching and worker assignment form
-│   ├── departments.html       # Department oversight & worker headcount
-│   ├── workers.html           # Factory workforce roster & management
-│   ├── worker-home.html       # Worker personal task queue dashboard
-│   ├── worker-task.html       # Worker task execution & proof submission view
-│   ├── register.html          # New worker registration page
-│   ├── index.html             # GarmentFlow marketing/landing page
-│   ├── css/
-│   │   └── style.css          # Custom styling and status badges
-│   └── js/
-│       ├── api.js             # Centralized API fetcher, host detector, and auth tokens
-│       ├── dashboard.js       # Product grid rendering, filtering, and order modal
-│       ├── assign-task.js     # Task creation logic
-│       ├── departments.js     # Department CRUD logic
-│       ├── workers.js         # Worker list & role actions
-│       ├── worker-home.js     # Worker task feed logic
-│       └── worker-task.js     # Worker status change logic
+│   ├── login.html             # High-fashion split card login
+│   ├── dashboard.html         # ERP Command Center & live metrics
+│   ├── attendance.html        # Attendance register & leave manager
+│   ├── inventory.html         # Raw materials & BOM manager
+│   ├── production.html        # Production orders & job cards board
+│   ├── qc.html                # Quality Control & defect inspections
+│   ├── machines.html          # Factory machines & maintenance tickets
+│   ├── purchasing.html        # Suppliers & Purchase Orders (GRN)
+│   ├── orders-dispatch.html   # Customer Sales Orders & Logistics Dispatch
+│   ├── finance.html           # P&L ledger & worker piece-rate payroll
+│   ├── reports.html           # Reports center & CSV exports
+│   ├── workers.html           # Workforce roster & employee records
+│   ├── departments.html       # Factory departments manager
+│   ├── assign-task.html       # Task dispatcher
+│   ├── audit-settings.html    # Factory shift settings & audit trail
+│   ├── worker-home.html       # Mobile operator workstation portal
+│   ├── worker-task.html       # Operator job progress & piece counter
+│   ├── css/style.css          # Custom styling & animations
+│   └── js/                    # Vanilla ES6 module controllers
 │
-└── README.md                  # Project documentation
+├── docs/
+│   ├── ARCHITECTURE.md        # System architecture, sequence flows & database schemas
+│   └── MODULES.md             # In-depth operational specification for all 12 modules
+│
+└── README.md                  # Project overview and quick start guide
 ```
 
 ---
 
-## 🛠️ Environment Variables Configuration
-
-To customize your backend setup, you can create a `.env` file in the `backend/` directory:
-
-```env
-# MongoDB Configuration (Optional - falls back to db.json if omitted)
-MONGO_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/?retryWrites=true&w=majority
-MONGO_DB_NAME=garmentflow
-
-# JWT Authentication
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-minimum-32-chars
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-
-# Allowed CORS Origins
-ALLOWED_ORIGINS=http://localhost:5500,http://127.0.0.1:5500,http://localhost:8080,http://localhost:8000
-
-# Storage
-UPLOAD_DIR=uploads
-```
-
----
-
-## 💡 Troubleshooting & FAQ
-
-### 1. `Application Control policy has blocked uvicorn.exe`
-On Windows systems with AppLocker or security policies restricting standalone virtual environment `.exe` binaries, run `uvicorn` as a Python module:
-```powershell
-python -m uvicorn app:app --reload --port 8000
-```
-
-### 2. Login is taking too long
-- Ensure you browse via **`http://localhost:5500/login.html`** or **`http://127.0.0.1:5500/login.html`**.
-- The frontend includes an automatic 4.5s connection timeout with instant local credential authentication so you never get stuck.
-
-### 3. JavaScript ES Module CORS error when double-clicking HTML files
-Modern browsers block ES module `import` statements when loading via `file:///` URLs. Always run a local server:
-```powershell
-cd frontend
-python -m http.server 5500
-```
+## 📚 Technical Documentation
+- **[Architecture & Data Flows](docs/ARCHITECTURE.md)**: Sequence diagrams, database schemas, and RBAC matrix.
+- **[12 Modules Specification](docs/MODULES.md)**: Detailed API contracts, user flows, and business logic for each module.
 
 ---
 
 ## 📄 License
-This project is open-source under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).

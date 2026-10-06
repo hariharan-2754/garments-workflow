@@ -6,6 +6,7 @@ from models.user import UserLoginRequest, UserCreateRequest
 router = APIRouter(tags=["Authentication"])
 
 @router.post("/login")
+@router.post("/auth/login")
 async def login(body: UserLoginRequest, db=Depends(get_db)):
     email_lower = body.email.lower().strip()
     user_doc = await db.users.find_one({"email": email_lower})
@@ -34,11 +35,13 @@ async def login(body: UserLoginRequest, db=Depends(get_db)):
     
     return {
         "access_token": access_token,
+        "token": access_token,
         "token_type": "bearer",
         "user": user_res
     }
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/auth/register", status_code=status.HTTP_201_CREATED)
 async def register(body: UserCreateRequest, db=Depends(get_db)):
     email_clean = body.email.lower().strip()
     existing = await db.users.find_one({"email": email_clean})

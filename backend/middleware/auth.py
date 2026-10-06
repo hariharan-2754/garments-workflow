@@ -79,6 +79,22 @@ async def require_admin(current_user: dict = Depends(get_current_user)) -> dict:
         )
     return current_user
 
+async def require_manager_or_above(current_user: dict = Depends(get_current_user)) -> dict:
+    if current_user.get("role") not in ["ADMIN", "MANAGER"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Manager or Admin privileges required",
+        )
+    return current_user
+
+async def require_supervisor_or_above(current_user: dict = Depends(get_current_user)) -> dict:
+    if current_user.get("role") not in ["ADMIN", "MANAGER", "SUPERVISOR"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Supervisor, Manager or Admin privileges required",
+        )
+    return current_user
+
 async def require_worker(current_user: dict = Depends(get_current_user)) -> dict:
     if current_user.get("role") != "WORKER":
         raise HTTPException(
@@ -86,3 +102,14 @@ async def require_worker(current_user: dict = Depends(get_current_user)) -> dict
             detail="Worker privileges required",
         )
     return current_user
+
+def require_roles(allowed_roles: list):
+    async def role_checker(current_user: dict = Depends(get_current_user)) -> dict:
+        if current_user.get("role") not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access forbidden: required role in {allowed_roles}",
+            )
+        return current_user
+    return role_checker
+

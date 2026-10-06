@@ -1,96 +1,75 @@
-import { apiFetch, getUser, logout, showToast } from './api.js';
+import { apiFetch, requireAuth, renderERPNavigation, showToast } from './api.js';
 
-const user = getUser();
-if (!user || user.role !== 'ADMIN') {
-  window.location.href = '/login.html';
-}
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = requireAuth(['ADMIN', 'MANAGER', 'SUPERVISOR']);
+  if (!user) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('user-name').innerText = user.name;
-  document.getElementById('logout-btn').addEventListener('click', logout);
+  renderERPNavigation('departments');
 
-  // Mobile Menu Controls
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('mobile-menu-toggle');
-  const closeBtn = document.getElementById('mobile-menu-close');
+  // Mobile menu toggle
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const sidebar = document.getElementById('erp-sidebar');
+  if (mobileToggle && sidebar) {
+    mobileToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+    });
+  }
 
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.remove('-translate-x-full');
-  });
+  // Modals
+  const modal = document.getElementById('dept-modal');
+  document.getElementById('open-dept-modal')?.addEventListener('click', () => modal.classList.remove('hidden'));
+  document.getElementById('close-dept-modal')?.addEventListener('click', () => modal.classList.add('hidden'));
+  document.getElementById('cancel-dept-btn')?.addEventListener('click', () => modal.classList.add('hidden'));
 
-  closeBtn.addEventListener('click', () => {
-    sidebar.classList.add('-translate-x-full');
-  });
-
-  loadDepartments();
-
-  // Add Department Submit
-  const form = document.getElementById('add-dept-form');
-  form.addEventListener('submit', async (e) => {
+  // Form submit
+  document.getElementById('dept-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const input = document.getElementById('dept-name');
-    const name = input.value.trim();
-    const btn = document.getElementById('add-btn');
-
-    if (!name) return;
-
-    btn.disabled = true;
-    btn.innerText = 'Adding...';
-
+    const name = document.getElementById('dept-name').value;
     try {
-      await apiFetch('/departments', {
-        method: 'POST',
-        body: { name }
-      });
-
-      showToast('Department added successfully!', 'success');
-      input.value = '';
+      await apiFetch('/departments', { method: 'POST', body: { name } });
+      showToast('Department added successfully', 'success');
+      modal.classList.add('hidden');
+      document.getElementById('dept-form').reset();
       loadDepartments();
     } catch (err) {
       showToast(err.message, 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerText = 'Add Department';
     }
   });
+
+  await loadDepartments();
 });
 
 async function loadDepartments() {
-  const tbody = document.getElementById('departments-table-body');
+  const container = document.getElementById('departments-grid');
+  if (!container) return;
+
   try {
     const depts = await apiFetch('/departments');
-    
-    if (depts.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="2" class="px-6 py-8 text-center text-gray-400">
-            No departments created yet. Enter a name above to add one.
-          </td>
-        </tr>
-      `;
+    if (!depts || depts.length === 0) {
+      container.innerHTML = `<div class="p-8 text-center text-gray-400 col-span-3">No departments configured.</div>`;
       return;
     }
 
-    tbody.innerHTML = depts.map(d => `
-      <tr class="hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 text-gray-900 font-semibold">${escapeHtml(d.name)}</td>
-        <td class="px-6 py-4 text-right font-medium text-gray-600">${d.workerCount}</td>
-      </tr>
+    container.innerHTML = depts.map(d => `
+      <div class="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-2xs space-y-4 flex flex-col justify-between">
+        <div class="space-y-2">
+          <div class="flex justify-between items-start">
+            <span class="text-2xl">🏢</span>
+            <span class="px-2.5 py-0.5 bg-teal-50 text-[#124b4f] border border-teal-200 rounded-full text-xs font-bold">
+              ${d.workerCount || 0} Workers
+            </span>
+          </div>
+          <h3 class="font-extrabold text-gray-950 text-base">${d.name}</h3>
+          <p class="text-xs text-gray-500 font-medium">Core factory manufacturing division</p>
+        </div>
+
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+          <a href="production.html" class="text-xs font-bold text-[#124b4f] hover:underline">View Active Jobs →</a>
+          <a href="workers.html" class="text-xs font-semibold text-gray-500 hover:text-gray-900">Roster →</a>
+        </div>
+      </div>
     `).join('');
-
   } catch (err) {
-    showToast(err.message, 'error');
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="2" class="px-6 py-8 text-center text-red-500 font-semibold">
-          Failed to load departments.
-        </td>
-      </tr>
-    `;
+    container.innerHTML = `<p class="text-red-500 text-xs">Failed to load departments: ${err.message}</p>`;
   }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }

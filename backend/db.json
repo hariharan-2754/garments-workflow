@@ -3,78 +3,530 @@
     {
       "name": "Admin User",
       "email": "admin@garmentflow.com",
-      "password_hash": "$2b$12$2aNIFBNnnDLeHK.9UrO7U.ODaDPPpUjnUHyGvD9J7EgoEdAClZaUy",
+      "password_hash": "$2b$12$noqdS2Mt2lOxalwm/9RjDOCBfaaz.dHz9lNi1hsp7NgVGAZHwoAQK",
       "role": "ADMIN",
+      "designation": "Factory General Manager",
+      "salary": 85000.0,
+      "shift": "General",
+      "status": "Active",
       "department": null,
       "phone": "9999999999",
-      "_id": "39c2a542-d957-41e9-a7a1-375836d3aea0"
+      "joiningDate": "2024-01-01",
+      "_id": "718c8471-764c-4e7c-bda4-f58fa4543f07"
     },
     {
       "name": "Ravi Kumar",
       "email": "ravi@garmentflow.com",
-      "password_hash": "$2b$12$M0jLWbtmxbORcfAvE1ERJO5Qhez2VLtRk0UG6SvhvglIYkbP44tYy",
+      "password_hash": "$2b$12$J1x3tndzjOpDaZ4HIjZLbOlz/JqGueGsWS1GwsDJ8dvyFkJHR3r8K",
       "role": "WORKER",
       "department": "Cutting",
+      "designation": "Master Pattern Cutter",
+      "salary": 24000.0,
+      "employmentType": "Full-Time",
+      "shift": "General",
+      "status": "Active",
       "phone": "9876543210",
-      "_id": "704afb6b-5442-4991-8f20-a7e870229c9a"
+      "joiningDate": "2024-03-01",
+      "_id": "637b13bd-eb4b-4cbb-af89-5f941a41994f"
     },
     {
       "name": "Priya Sharma",
       "email": "priya@garmentflow.com",
-      "password_hash": "$2b$12$BhE.PojgliOxbmDWlSCZ6OYCqJqIIjELsVMa3tm/eyR3YIZ8eVfAO",
+      "password_hash": "$2b$12$YECYUu1CdJvTdlrqjksJ9Os8eSlt6wvoYI/U7fieixBPyPbJdtfMa",
       "role": "WORKER",
       "department": "Stitching",
+      "designation": "Senior Tailor",
+      "salary": 22000.0,
+      "employmentType": "Full-Time",
+      "shift": "General",
+      "status": "Active",
       "phone": "9876543211",
-      "_id": "551683f7-1a07-4a5a-862b-1df5dd364592"
+      "joiningDate": "2024-03-01",
+      "_id": "61d879e1-4447-48d8-95ab-4f2e1d003648"
     },
     {
       "name": "Arjun Patel",
       "email": "arjun@garmentflow.com",
-      "password_hash": "$2b$12$WFBku9/Wmxv1zMqpeP.p2.qcF4TWD..5Hoe29FhC/IrBoxiA4JsUW",
+      "password_hash": "$2b$12$Za44uh.sbIAHXOX2v5KF7uM.93yImhoPtbogkkKjB8hSGmJFsR11S",
       "role": "WORKER",
       "department": "Quality Check",
+      "designation": "QC Lead Auditor",
+      "salary": 26000.0,
+      "employmentType": "Full-Time",
+      "shift": "General",
+      "status": "Active",
       "phone": "9876543212",
-      "_id": "1fa5030b-839a-46b2-b07a-647b2d414646"
+      "joiningDate": "2024-03-01",
+      "_id": "ba873f24-3a1a-4bd7-8271-548e591584d2"
     },
     {
-      "name": "Test Worker",
-      "email": "worker_test@garmentflow.com",
-      "password_hash": "$2b$12$UWNH3.Ht.KpFJEDs3JrU2OSpQaMZs9Nx5LgJB2Setw.JojaArOE.2",
-      "role": "WORKER",
+      "name": "Kavita Rao",
+      "email": "kavita@garmentflow.com",
+      "password_hash": "$2b$12$cgM9/geWMCTyKBMsvJ2xs.dBGja9KCdKm8ZSAeCQQ72vYvXnRPuuS",
+      "role": "SUPERVISOR",
       "department": "Stitching",
-      "phone": "9876543210",
-      "_id": "7a67736b-b2fa-43ff-b422-c1e44f47bef9"
+      "designation": "Line Supervisor",
+      "salary": 38000.0,
+      "employmentType": "Full-Time",
+      "shift": "General",
+      "status": "Active",
+      "phone": "9876543213",
+      "joiningDate": "2024-03-01",
+      "_id": "7b540c0f-df95-41dc-a0a0-68b6a97f4abb"
+    },
+    {
+      "name": "Suresh Nair",
+      "email": "suresh@garmentflow.com",
+      "password_hash": "$2b$12$phT7AL892AorB7SDH7hTye7hxIko8hTUWFdRtS9ZB88JTKuYy2gzW",
+      "role": "MANAGER",
+      "department": "Cutting",
+      "designation": "Production Floor Manager",
+      "salary": 55000.0,
+      "employmentType": "Full-Time",
+      "shift": "General",
+      "status": "Active",
+      "phone": "9876543214",
+      "joiningDate": "2024-03-01",
+      "_id": "b05472df-869c-4d18-a159-4875313667be"
     }
   ],
   "departments": [
     {
       "name": "Cutting",
-      "_id": "bd0679c5-702e-4897-b80f-cb2f4c302f23"
+      "_id": "9eb919cb-6494-4239-8d6a-176b4fb855d7"
     },
     {
       "name": "Stitching",
-      "_id": "79c4c290-9ed0-4c7c-80f9-8475d6c83688"
+      "_id": "45cf6380-0e2d-4dfc-a319-3dd0f56cebaf"
     },
     {
       "name": "Printing",
-      "_id": "495ffb13-ac9c-463a-b512-ad8db243f927"
+      "_id": "cef6a100-88c9-457d-80e2-28d7103911b4"
     },
     {
       "name": "Embroidery",
-      "_id": "1429dda8-0df6-4075-8eb7-f31e4d5c5594"
+      "_id": "04878fae-0758-4530-9fc3-e56a9276cd47"
     },
     {
       "name": "Packing",
-      "_id": "a9805770-71ac-460b-915b-623772b866f9"
+      "_id": "35508985-ba5e-4cf7-b5e3-19142ffe7eac"
     },
     {
       "name": "Quality Check",
-      "_id": "e0dd833a-52e9-4206-882a-d15e258d3775"
-    },
-    {
-      "name": "Finishing",
-      "_id": "6bd9cb06-605e-4f24-bfb4-fb1415a9f303"
+      "_id": "ee319ed3-454c-489c-8dc2-e10102f4d041"
     }
   ],
-  "tasks": []
+  "tasks": [],
+  "settings": [
+    {
+      "type": "system",
+      "shiftStartTime": "09:00",
+      "shiftEndTime": "18:00",
+      "gracePeriodMinutes": 15,
+      "standardWorkingHours": 8.0,
+      "overtimeThresholdHours": 8.5,
+      "weeklyHolidays": [
+        "Sunday"
+      ],
+      "lowStockThresholdDefault": 20,
+      "currencySymbol": "\u20b9",
+      "companyName": "GarmentFlow Apparels Ltd.",
+      "companyAddress": "Sector 5, Industrial Apparel Park, Tirupur, India",
+      "taxRatePercent": 5.0,
+      "_id": "84f3c736-4a9b-46dc-9a4a-2ee9e23e4b60"
+    }
+  ],
+  "materials": [
+    {
+      "sku": "FAB-COT-01",
+      "name": "100% Combed Cotton Single Jersey (180 GSM)",
+      "category": "Fabric",
+      "unit": "Meter",
+      "currentQuantity": 1450.0,
+      "minimumStock": 200.0,
+      "reorderLevel": 500.0,
+      "warehouseLocation": "Fabric Rack A-1",
+      "supplierName": "Vardhman Textiles Ltd",
+      "costPerUnit": 185.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "99724964-df85-45da-9985-dd9f00e9a2e6"
+    },
+    {
+      "sku": "FAB-POLY-02",
+      "name": "Polyester Spandex Dri-Fit Mesh (160 GSM)",
+      "category": "Fabric",
+      "unit": "Meter",
+      "currentQuantity": 820.0,
+      "minimumStock": 150.0,
+      "reorderLevel": 300.0,
+      "warehouseLocation": "Fabric Rack A-3",
+      "supplierName": "Arvind Mills",
+      "costPerUnit": 140.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "fb889fcc-3f06-4ad5-8da2-1b33facece7e"
+    },
+    {
+      "sku": "THR-POLY-40",
+      "name": "Coats Spun Polyester Sewing Thread (Tex 27)",
+      "category": "Thread",
+      "unit": "Roll",
+      "currentQuantity": 85.0,
+      "minimumStock": 20.0,
+      "reorderLevel": 40.0,
+      "warehouseLocation": "Trims Bin T-2",
+      "supplierName": "Coats India",
+      "costPerUnit": 75.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "f69d437c-7e6c-4ebc-aff7-f1ba4b0bd0d4"
+    },
+    {
+      "sku": "BTN-RES-18",
+      "name": "Pearl 4-Hole Resin Shirt Buttons (18L)",
+      "category": "Buttons",
+      "unit": "Packet",
+      "currentQuantity": 45.0,
+      "minimumStock": 10.0,
+      "reorderLevel": 25.0,
+      "warehouseLocation": "Accessories Cabinet 1",
+      "supplierName": "YKK Trims",
+      "costPerUnit": 120.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "f75e9b36-4cc2-413b-996a-733fdac1622f"
+    },
+    {
+      "sku": "ZIP-MET-05",
+      "name": "YKK Brass Metal Zipper #5 (Antique Finish)",
+      "category": "Zippers",
+      "unit": "Piece",
+      "currentQuantity": 350.0,
+      "minimumStock": 80.0,
+      "reorderLevel": 150.0,
+      "warehouseLocation": "Trims Bin Z-1",
+      "supplierName": "YKK Trims",
+      "costPerUnit": 22.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "be5585bb-fc5c-43de-ab4a-61d842f86ff6"
+    },
+    {
+      "sku": "LBL-SAT-MAIN",
+      "name": "Woven Satin Neck Label & Wash Care Label",
+      "category": "Labels",
+      "unit": "Piece",
+      "currentQuantity": 2400.0,
+      "minimumStock": 500.0,
+      "reorderLevel": 1000.0,
+      "warehouseLocation": "Label Shelf L-1",
+      "supplierName": "Avery Dennison",
+      "costPerUnit": 3.5,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "6139a996-4f82-4cbd-b637-193cb3101988"
+    },
+    {
+      "sku": "PKG-POLY-BAG",
+      "name": "Recycled Biodegradable Polybags (12x15)",
+      "category": "Packaging",
+      "unit": "Piece",
+      "currentQuantity": 18.0,
+      "minimumStock": 50.0,
+      "reorderLevel": 100.0,
+      "warehouseLocation": "Packing Section",
+      "supplierName": "EcoPack Solutions",
+      "costPerUnit": 4.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-03-01T00:00:00Z",
+      "_id": "1f0e1dac-e854-4d60-b482-f9fa86500d5b"
+    }
+  ],
+  "machines": [
+    {
+      "machineCode": "SN-01",
+      "name": "Juki DDL-8700 Single Needle Lockstitch",
+      "machineType": "Single Needle",
+      "department": "Stitching",
+      "productionLine": "Line 1",
+      "status": "Running",
+      "assignedOperator": "Priya Sharma",
+      "totalDowntimeHours": 2.5,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "b921614d-561d-4f93-98dd-c4881f837c60"
+    },
+    {
+      "machineCode": "OL-01",
+      "name": "Pegasus M900 4-Thread Overlock",
+      "machineType": "Overlock",
+      "department": "Stitching",
+      "productionLine": "Line 1",
+      "status": "Running",
+      "assignedOperator": "Worker David",
+      "totalDowntimeHours": 0.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "17b36ce2-c0a8-4570-8d33-8a2216196420"
+    },
+    {
+      "machineCode": "CUT-01",
+      "name": "Eastman 8-Inch Auto Straight Knife Cutter",
+      "machineType": "Cutting Machine",
+      "department": "Cutting",
+      "productionLine": "Cutting Bay",
+      "status": "Running",
+      "assignedOperator": "Ravi Kumar",
+      "totalDowntimeHours": 1.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "35eab0bc-5caf-465c-87b0-65197eafff6d"
+    },
+    {
+      "machineCode": "EMB-01",
+      "name": "Tajima 6-Head Computerized Embroidery",
+      "machineType": "Embroidery Machine",
+      "department": "Embroidery",
+      "productionLine": "Embroidery Bay",
+      "status": "Idle",
+      "assignedOperator": "Elena Rostova",
+      "totalDowntimeHours": 4.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "706ebab8-8e25-41e9-b24a-63e1f45c8a97"
+    },
+    {
+      "machineCode": "PRN-01",
+      "name": "M&R Automatic 8-Color Screen Printing Carousel",
+      "machineType": "Printing Machine",
+      "department": "Printing",
+      "productionLine": "Print Shop",
+      "status": "Maintenance",
+      "assignedOperator": "Amara Okafor",
+      "totalDowntimeHours": 12.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "ae61ebd6-a09b-42d5-a8bb-258ac40b635d"
+    }
+  ],
+  "suppliers": [
+    {
+      "name": "Vardhman Textiles Ltd",
+      "contactPerson": "Anil Verma",
+      "phone": "9811223344",
+      "email": "anil@vardhman.com",
+      "category": "Fabric",
+      "paymentTerms": "Net 30",
+      "rating": 4.8,
+      "status": "Active",
+      "totalOrdersCount": 8,
+      "outstandingBalance": 45000.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "1a245f83-f863-4e74-b0e7-afc91fe1fe76"
+    },
+    {
+      "name": "Coats India Threads",
+      "contactPerson": "Deepak Mehta",
+      "phone": "9822334455",
+      "email": "sales@coatsindia.com",
+      "category": "Thread",
+      "paymentTerms": "Net 15",
+      "rating": 4.9,
+      "status": "Active",
+      "totalOrdersCount": 14,
+      "outstandingBalance": 12000.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "9afae6fc-adae-497e-a739-5cb64a782d6d"
+    },
+    {
+      "name": "YKK Zippers & Trims",
+      "contactPerson": "Vikram Singh",
+      "phone": "9833445566",
+      "email": "vikram@ykk.co.in",
+      "category": "Zippers",
+      "paymentTerms": "Immediate",
+      "rating": 5.0,
+      "status": "Active",
+      "totalOrdersCount": 11,
+      "outstandingBalance": 0.0,
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "117f25f7-c473-4f3a-aec0-6bbf8ec79a18"
+    }
+  ],
+  "customers": [
+    {
+      "name": "Nordic Apparel Co.",
+      "contactPerson": "Henrik Lindqvist",
+      "phone": "+46 8 123 4567",
+      "email": "orders@nordicapparel.com",
+      "address": "Stockholm, Sweden",
+      "customerType": "Retail Brand",
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "c17d949e-4160-4d34-86a0-4988ca05cc9a"
+    },
+    {
+      "name": "Urban Threads Studio",
+      "contactPerson": "Sarah Jenkins",
+      "phone": "+1 415 987 6543",
+      "email": "sarah@urbanthreads.io",
+      "address": "San Francisco, CA, USA",
+      "customerType": "Boutique",
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "7c990858-26ec-4bd4-8ea5-ea41b58272ee"
+    }
+  ],
+  "production_orders": [
+    {
+      "orderNumber": "PROD-2403-0001",
+      "customerName": "Nordic Apparel Co.",
+      "productName": "Classic Crewneck Organic Tee",
+      "quantity": 500,
+      "priority": "High",
+      "dueDate": "2026-10-25",
+      "targetStages": [
+        "Cutting",
+        "Stitching",
+        "Printing",
+        "Embroidery",
+        "Quality Control",
+        "Packing",
+        "Dispatch"
+      ],
+      "completedStages": [
+        "Cutting"
+      ],
+      "currentStage": "Stitching",
+      "status": "In Progress",
+      "notes": "Premium export batch with custom branding",
+      "createdAt": "2024-03-05T09:00:00Z",
+      "updatedAt": "2024-03-06T14:30:00Z",
+      "_id": "fcb627c8-8f41-4da3-8d00-23efe81592e5"
+    }
+  ],
+  "boms": [
+    {
+      "productName": "Classic Crewneck Organic Tee",
+      "productCode": "TSH-CREW-01",
+      "description": "Standard 180 GSM Crewneck Tee",
+      "items": [
+        {
+          "materialId": "FAB-COT-01",
+          "materialName": "100% Combed Cotton Single Jersey",
+          "category": "Fabric",
+          "requiredQuantity": 1.4,
+          "wastagePercentage": 5.0,
+          "unit": "Meter"
+        },
+        {
+          "materialId": "THR-POLY-40",
+          "materialName": "Coats Spun Polyester Sewing Thread",
+          "category": "Thread",
+          "requiredQuantity": 65.0,
+          "wastagePercentage": 2.0,
+          "unit": "Meter"
+        },
+        {
+          "materialId": "LBL-SAT-MAIN",
+          "materialName": "Woven Satin Neck Label",
+          "category": "Labels",
+          "requiredQuantity": 1.0,
+          "wastagePercentage": 0.0,
+          "unit": "Piece"
+        }
+      ],
+      "createdAt": "2024-03-01T00:00:00Z",
+      "_id": "8b268b6b-4064-4a21-8ad2-4d32338aa4a2"
+    }
+  ],
+  "job_cards": [
+    {
+      "jobNumber": "JC-PROD-2403-0001-CUT",
+      "productionOrderId": "fcb627c8-8f41-4da3-8d00-23efe81592e5",
+      "orderNumber": "PROD-2403-0001",
+      "productName": "Classic Crewneck Organic Tee",
+      "department": "Cutting",
+      "workerId": null,
+      "workerName": "Ravi Kumar",
+      "machineId": "CUT-01",
+      "plannedQuantity": 500,
+      "completedQuantity": 500,
+      "rejectedQuantity": 4,
+      "reworkQuantity": 0,
+      "status": "Completed",
+      "pieceRate": 4.5,
+      "dueDate": "2026-10-10",
+      "createdAt": "2024-03-05T09:00:00Z",
+      "updatedAt": "2024-03-06T12:00:00Z",
+      "_id": "b3718fcc-f9c7-4728-b705-8a253275419b"
+    },
+    {
+      "jobNumber": "JC-PROD-2403-0001-STI",
+      "productionOrderId": "fcb627c8-8f41-4da3-8d00-23efe81592e5",
+      "orderNumber": "PROD-2403-0001",
+      "productName": "Classic Crewneck Organic Tee",
+      "department": "Stitching",
+      "workerId": null,
+      "workerName": "Priya Sharma",
+      "machineId": "SN-01",
+      "plannedQuantity": 496,
+      "completedQuantity": 280,
+      "rejectedQuantity": 2,
+      "reworkQuantity": 5,
+      "status": "In Progress",
+      "pieceRate": 8.0,
+      "dueDate": "2026-10-18",
+      "createdAt": "2024-03-06T12:30:00Z",
+      "updatedAt": "2024-03-06T16:00:00Z",
+      "_id": "7bd6f855-edf4-4b1f-87ce-ef9099e5bae6"
+    }
+  ],
+  "transactions": [
+    {
+      "transactionNumber": "TXN-INC-2403-001",
+      "date": "2024-03-02",
+      "type": "Income",
+      "category": "Sales",
+      "amount": 185000.0,
+      "partyName": "Nordic Apparel Co.",
+      "description": "50% Advance for 500 pcs Organic Tee Order",
+      "paymentMethod": "Bank Transfer",
+      "status": "Completed",
+      "createdAt": "2024-03-02T10:00:00Z",
+      "_id": "acadbde7-a6da-4f38-9025-e0636e0dd074"
+    },
+    {
+      "transactionNumber": "TXN-EXP-2403-001",
+      "date": "2024-03-03",
+      "type": "Expense",
+      "category": "Material Purchase",
+      "amount": 42000.0,
+      "partyName": "Vardhman Textiles Ltd",
+      "description": "Consignment of Combed Cotton Single Jersey (GRN-2403-01)",
+      "paymentMethod": "Bank Transfer",
+      "status": "Completed",
+      "createdAt": "2024-03-03T11:00:00Z",
+      "_id": "710d2f62-ed1a-4812-bac7-9d41177b6b4e"
+    },
+    {
+      "transactionNumber": "TXN-EXP-2403-002",
+      "date": "2024-03-04",
+      "type": "Expense",
+      "category": "Machine Maintenance",
+      "amount": 3500.0,
+      "partyName": "Apex Machine Servicing",
+      "description": "Preventive servicing for Tajima 6-Head Embroidery Machine",
+      "paymentMethod": "UPI",
+      "status": "Completed",
+      "createdAt": "2024-03-04T15:00:00Z",
+      "_id": "206f0169-bcd2-4ea4-814a-eba5e9538ee8"
+    }
+  ],
+  "inventory_ledger": [],
+  "qc_inspections": [],
+  "maintenance_tickets": [],
+  "purchase_orders": [],
+  "customer_orders": [],
+  "dispatches": [],
+  "packing_slips": [],
+  "piece_rate_ledger": [],
+  "attendance": [],
+  "leaves": [],
+  "notifications": [],
+  "audit_logs": []
 }

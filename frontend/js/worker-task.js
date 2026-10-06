@@ -33,20 +33,48 @@ async function loadTaskDetails(taskId) {
   const content = document.getElementById('task-content');
 
   try {
-    // Attempt to load from local cache first for instant rendering
+    // 1. Attempt to load from local cache first for instant rendering
     const cached = localStorage.getItem(LOCAL_TASKS_KEY);
     if (cached) {
-      const parsed = JSON.parse(cached);
-      currentTask = parsed.find(t => String(t.id) === String(taskId));
+      try {
+        const parsed = JSON.parse(cached);
+        currentTask = parsed.find(t => String(t.id) === String(taskId));
+      } catch (e) {}
     }
 
-    // Try backend API as well
+    // 2. Try fetching as Job Card
+    if (!currentTask) {
+      try {
+        const jc = await apiFetch(`/production/job-cards/${taskId}`);
+        if (jc && (jc.id || jc._id)) {
+          currentTask = {
+            id: jc.id || jc._id,
+            isJobCard: true,
+            title: `Job Card: ${jc.stage || jc.department} — Order #${jc.orderNumber || ''}`,
+            description: `Execute ${jc.stage || jc.department} for production order. Target: ${jc.plannedQuantity || jc.targetQuantity || 100} units at piece rate ₹${jc.pieceRate || 0}/pc.`,
+            department: jc.department || user.department || 'Production',
+            priority: 'High',
+            status: jc.status === 'Completed' ? 'Completed' : 'Pending',
+            progress: jc.status === 'Completed' ? 100 : Math.round(((jc.completedQuantity || 0) / (jc.plannedQuantity || jc.targetQuantity || 1)) * 100),
+            targetPieces: jc.plannedQuantity || jc.targetQuantity || 100,
+            completedPieces: jc.completedQuantity || 0,
+            dueDate: jc.dueDate || 'Today, 6:00 PM',
+            batchCode: jc.jobNumber || jc.jobCardNumber || 'JC-001',
+            fabric: 'Production Order Spec',
+            image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'
+          };
+        }
+      } catch (err) {}
+    }
+
+    // 3. Try fetching as Standard Task
     if (!currentTask) {
       try {
         const fetched = await apiFetch(`/tasks/${taskId}`);
         if (fetched && fetched.id) {
           currentTask = {
             id: fetched.id,
+            isJobCard: false,
             title: fetched.title,
             description: fetched.description,
             department: fetched.department,
@@ -61,15 +89,14 @@ async function loadTaskDetails(taskId) {
             image: fetched.image ? (fetched.image.startsWith('http') ? fetched.image : `${BASE_URL}${fetched.image}`) : 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'
           };
         }
-      } catch (err) {
-        // Continue with fallback below
-      }
+      } catch (err) {}
     }
 
-    // If still null, create fallback task representation
+    // 4. Fallback demo spec
     if (!currentTask) {
       currentTask = {
         id: taskId,
+        isJobCard: false,
         title: "Precision Pattern Cutting — Men's Italian Wool Suit Jacket",
         description: "Perform computerized CAD marker layout and precision laser cutting for 150 pieces of Italian Wool Twill Charcoal.\n\nKey Specs:\n- Grain alignment within ±1mm tolerance\n- Match check pattern across lapel notch\n- Bundle cut plies in lots of 25 with barcode tags",
         department: user.department || 'Cutting',
@@ -144,7 +171,6 @@ function populateTaskUI(task) {
   } else {
     statusBadge.innerText = '● In Progress';
     statusBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200';
-    // Choose step based on progress
     const p = task.progress || 45;
     if (p < 25) setWorkflowStep(1);
     else if (p < 60) setWorkflowStep(2);
@@ -178,7 +204,6 @@ function setWorkflowStep(stepNum) {
     }
   });
 
-  // Calculate percentage
   let pct = 25;
   if (stepNum === 2) pct = 50;
   if (stepNum === 3) pct = 75;
@@ -215,10 +240,17 @@ function setupActionButtons() {
       saveBtn.disabled = true;
 
       try {
-        await apiFetch(`/tasks/${currentTask.id}/status`, {
-          method: 'PUT',
-          body: { status: 'Pending', progress: currentTask.progress }
-        });
+        if (currentTask?.isJobCard) {
+          await apiFetch(`/production/job-cards/${currentTask.id}/complete`, {
+            method: 'PUT',
+            body: { completedQuantity: pieces, rejectedQuantity: 0, notes }
+          });
+        } else {
+          await apiFetch(`/tasks/${currentTask.id}/status`, {
+            method: 'PUT',
+            body: { status: 'Pending', progress: currentTask.progress }
+          });
+        }
       } catch (e) {
         // Fallback OK
       }
@@ -238,6 +270,7 @@ function setupActionButtons() {
       completeBtn.disabled = true;
 
       const target = currentTask?.targetPieces || 150;
+      const notes = document.getElementById('station-notes-input').value.trim();
       setWorkflowStep(4);
       document.getElementById('pieces-completed-input').value = target;
 
@@ -249,15 +282,22 @@ function setupActionButtons() {
       }
 
       try {
-        await apiFetch(`/tasks/${currentTask.id}/status`, {
-          method: 'PUT',
-          body: { status: 'Completed', progress: 100 }
-        });
+        if (currentTask?.isJobCard) {
+          await apiFetch(`/production/job-cards/${currentTask.id}/complete`, {
+            method: 'PUT',
+            body: { completedQuantity: target, rejectedQuantity: 0, notes }
+          });
+        } else {
+          await apiFetch(`/tasks/${currentTask.id}/status`, {
+            method: 'PUT',
+            body: { status: 'Completed', progress: 100 }
+          });
+        }
       } catch (e) {
         // Fallback OK
       }
 
-      showToast('🎉 Production job marked completed! Great work!', 'success');
+      showToast('🎉 Production job marked completed and recorded to piece-rate ledger!', 'success');
 
       setTimeout(() => {
         window.location.href = '/worker-home.html';

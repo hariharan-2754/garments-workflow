@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Orders & Logistics Dispatch — GarmentFlow ERP</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col">
+
+  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 shadow-2xs">
+    <div class="flex items-center space-x-2">
+      <span class="text-xl">🧵</span>
+      <span class="font-extrabold text-gray-900 text-lg">GarmentFlow ERP</span>
+    </div>
+    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none">☰</button>
+  </header>
+
+  <div class="flex flex-1 min-h-screen">
+    <aside id="erp-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200/90 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out shrink-0 shadow-sm"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc] overflow-y-auto">
+      
+      <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
+        <div>
+          <h1 class="text-xl font-black text-gray-950 tracking-tight">Sales Orders, Packing & Logistics Dispatch</h1>
+          <p class="text-xs text-gray-500 font-medium">Customer order booking, auto-production order conversion, packing slips, and courier AWB delivery tracking</p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button id="open-customer-modal" class="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 text-xs font-bold rounded-xl shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
+            <span>+</span>
+            <span>Add Client</span>
+          </button>
+          <button id="open-sales-modal" class="px-3.5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span>+</span>
+            <span>Book Sales Order</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+        <!-- Tabs -->
+        <div class="flex items-center border-b border-gray-200 gap-4">
+          <button id="tab-orders" class="pb-3 text-xs font-bold border-b-2 border-[#124b4f] text-[#124b4f]">
+            📦 Customer Sales Orders
+          </button>
+          <button id="tab-dispatch" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900">
+            🚚 Dispatch & AWB Courier Tracking
+          </button>
+          <button id="tab-customers" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900">
+            👥 Customer Accounts Directory
+          </button>
+        </div>
+
+        <!-- ================= 1. SALES ORDERS ================= -->
+        <div id="orders-section" class="space-y-4">
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Sales Order #</th>
+                  <th class="py-3 px-4">Customer</th>
+                  <th class="py-3 px-4">Delivery Date</th>
+                  <th class="py-3 px-4">Quantity</th>
+                  <th class="py-3 px-4">Total Amount</th>
+                  <th class="py-3 px-4">Prod Status</th>
+                  <th class="py-3 px-4">Delivery</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sales-orders-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="8" class="py-6 text-center text-gray-400">Loading sales orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= 2. DISPATCH & AWB ================= -->
+        <div id="dispatch-section" class="space-y-4 hidden">
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Dispatch #</th>
+                  <th class="py-3 px-4">Order #</th>
+                  <th class="py-3 px-4">Customer</th>
+                  <th class="py-3 px-4">Courier</th>
+                  <th class="py-3 px-4">AWB / Tracking</th>
+                  <th class="py-3 px-4">Dispatch Date</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dispatch-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="8" class="py-6 text-center text-gray-400">Loading dispatch tracking logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= 3. CUSTOMERS ================= -->
+        <div id="customers-section" class="space-y-4 hidden">
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Customer Name</th>
+                  <th class="py-3 px-4">Type</th>
+                  <th class="py-3 px-4">Contact Person</th>
+                  <th class="py-3 px-4">Phone / Email</th>
+                  <th class="py-3 px-4">Address</th>
+                </tr>
+              </thead>
+              <tbody id="customers-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="5" class="py-6 text-center text-gray-400">Loading customers...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- BOOK SALES ORDER MODAL -->
+  <div id="sales-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Book Customer Sales Order</h3>
+        <button id="close-sales-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="sales-form" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Customer</label>
+          <select id="sales-cust-select" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Target Delivery Date</label>
+            <input type="date" id="sales-delivery-date" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Priority</label>
+            <select id="sales-priority" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Product Line -->
+        <div class="p-3 bg-gray-50 rounded-xl space-y-2 border border-gray-200/70">
+          <span class="font-bold text-gray-800">Garment Order Spec</span>
+          <div>
+            <label class="font-semibold text-gray-600 block mb-1">Product Description</label>
+            <input type="text" id="sales-item-name" required placeholder="e.g. Classic Crewneck Organic Tee (Navy)" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-gray-600 block mb-1">Total Quantity (pcs)</label>
+              <input type="number" id="sales-item-qty" required min="1" value="500" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none" />
+            </div>
+            <div>
+              <label class="font-semibold text-gray-600 block mb-1">Unit Price (₹)</label>
+              <input type="number" id="sales-item-price" required step="any" value="380" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="sales-auto-prod" checked class="rounded text-[#124b4f] focus:ring-0" />
+          <label for="sales-auto-prod" class="font-bold text-gray-800">Auto-convert to Factory Production Order & Job Cards</label>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-sales-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Confirm Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CREATE DISPATCH MODAL -->
+  <div id="dispatch-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Dispatch Consignment</h3>
+        <button id="close-disp-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="dispatch-form" class="space-y-3 text-xs">
+        <input type="hidden" id="disp-order-id" />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Courier Carrier</label>
+            <select id="disp-courier" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+              <option value="BlueDart">BlueDart Express</option>
+              <option value="FedEx">FedEx International</option>
+              <option value="DHL">DHL Express</option>
+              <option value="DTDC">DTDC Cargo</option>
+              <option value="In-house Van">Factory Logistics Truck</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">AWB / Tracking Number</label>
+            <input type="text" id="disp-awb" required placeholder="e.g. BLU-98442110" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl uppercase font-mono font-bold focus:outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Destination Shipping Address</label>
+          <textarea id="disp-address" required rows="2" placeholder="Full delivery address..." class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-disp-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Dispatch Now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/orders-dispatch.js"></script>
+</body>
+</html>

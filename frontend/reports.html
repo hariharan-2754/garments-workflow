@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports & Analytics Hub — GarmentFlow ERP</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col">
+
+  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 shadow-2xs">
+    <div class="flex items-center space-x-2">
+      <span class="text-xl">🧵</span>
+      <span class="font-extrabold text-gray-900 text-lg">GarmentFlow ERP</span>
+    </div>
+    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none">☰</button>
+  </header>
+
+  <div class="flex flex-1 min-h-screen">
+    <aside id="erp-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200/90 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out shrink-0 shadow-sm"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc] overflow-y-auto">
+      
+      <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
+        <div>
+          <h1 class="text-xl font-black text-gray-950 tracking-tight">Factory Reports & Export Center</h1>
+          <p class="text-xs text-gray-500 font-medium">Download CSV audits and review aggregate analytics for Production, Attendance, Inventory, QC, and Financials</p>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+        <!-- Report Download Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          
+          <!-- Card 1: Production Report -->
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="w-10 h-10 rounded-xl bg-teal-50 text-[#124b4f] flex items-center justify-center text-lg font-bold">🧵</div>
+              <h3 class="font-extrabold text-gray-950 text-base">Production Orders Report</h3>
+              <p class="text-xs text-gray-500">Full audit of all production batches, customer specs, planned vs actual quantities, current stages and due dates.</p>
+            </div>
+            <button data-type="production" class="export-btn w-full py-2.5 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥</span>
+              <span>Export Production CSV</span>
+            </button>
+          </div>
+
+          <!-- Card 2: Attendance & Overtime Report -->
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-lg font-bold">⏱️</div>
+              <h3 class="font-extrabold text-gray-950 text-base">Workforce Attendance Report</h3>
+              <p class="text-xs text-gray-500">Daily check-in and check-out logs, working hours calculations, overtime tracking, and leave absences.</p>
+            </div>
+            <button data-type="attendance" class="export-btn w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥</span>
+              <span>Export Attendance CSV</span>
+            </button>
+          </div>
+
+          <!-- Card 3: Inventory Stock Report -->
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center text-lg font-bold">📦</div>
+              <h3 class="font-extrabold text-gray-950 text-base">Material Inventory & Stock</h3>
+              <p class="text-xs text-gray-500">Raw fabrics, trims, buttons, thread inventory balances, reorder warnings, unit costs and supplier links.</p>
+            </div>
+            <button data-type="inventory" class="export-btn w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥</span>
+              <span>Export Inventory CSV</span>
+            </button>
+          </div>
+
+          <!-- Card 4: Quality Control & Defect Analysis -->
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center text-lg font-bold">🛡️</div>
+              <h3 class="font-extrabold text-gray-950 text-base">QC & Defect Analysis Report</h3>
+              <p class="text-xs text-gray-500">Inspection pass/fail rates, First Pass Yield (FPY), stitching and fabric defect categorizations, and rework metrics.</p>
+            </div>
+            <button data-type="qc" class="export-btn w-full py-2.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥</span>
+              <span>Export QC Analysis CSV</span>
+            </button>
+          </div>
+
+          <!-- Card 5: Financial Income & Expense Report -->
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center text-lg font-bold">💳</div>
+              <h3 class="font-extrabold text-gray-950 text-base">Financial Transactions Ledger</h3>
+              <p class="text-xs text-gray-500">Sales revenue, raw material expenses, piece-rate worker payouts, and machine maintenance costs.</p>
+            </div>
+            <button data-type="financial" class="export-btn w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥</span>
+              <span>Export Financial CSV</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/reports.js"></script>
+</body>
+</html>

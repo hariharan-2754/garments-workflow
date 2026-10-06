@@ -1,66 +1,42 @@
-import { apiFetch, getUser, logout, showToast } from './api.js';
-
-const user = getUser();
-if (!user || user.role !== 'ADMIN') {
-  window.location.href = '/login.html';
-}
+import { apiFetch, requireAuth, renderERPNavigation, showToast } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('user-name').innerText = user.name;
-  document.getElementById('logout-btn').addEventListener('click', logout);
+  const user = requireAuth(['ADMIN', 'MANAGER', 'SUPERVISOR']);
+  if (!user) return;
 
-  // Mobile Menu Controls
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('mobile-menu-toggle');
-  const closeBtn = document.getElementById('mobile-menu-close');
+  renderERPNavigation('assign-task');
 
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.remove('-translate-x-full');
-  });
+  // Mobile menu toggle
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const sidebar = document.getElementById('erp-sidebar');
+  if (mobileToggle && sidebar) {
+    mobileToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+    });
+  }
 
-  closeBtn.addEventListener('click', () => {
-    sidebar.classList.add('-translate-x-full');
-  });
+  // Set default due date +7 days
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  const dueInput = document.getElementById('task-duedate');
+  if (dueInput) dueInput.value = d.toISOString().split('T')[0];
 
-  // Pre-fill today's date + 1 day as default due date
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  document.getElementById('task-due-date').value = tomorrow.toISOString().split('T')[0];
+  // Populate departments
+  await loadDepartments();
 
-  // Fetch departments dropdown data
-  await loadDepartmentsDropdown();
-
-  // Handle Form Submit
-  const form = document.getElementById('assign-task-form');
-  const deptSelect = document.getElementById('task-department');
-
-  form.addEventListener('submit', async (e) => {
+  // Form submit
+  document.getElementById('assign-task-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const title = document.getElementById('task-title').value.trim();
-    const description = document.getElementById('task-description').value.trim();
-    const department = deptSelect.value;
-    const priority = document.getElementById('task-priority').value;
-    const dueDate = document.getElementById('task-due-date').value;
-    const imageFile = document.getElementById('task-image').files[0];
-    const submitBtn = document.getElementById('submit-btn');
-
-    if (!title || !description || !department || !dueDate) {
-      showToast('Please fill out all required fields', 'error');
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'Assigning...';
-
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('department', department);
-    formData.append('priority', priority);
-    formData.append('dueDate', dueDate);
-    if (imageFile) {
-      formData.append('image', imageFile);
+    formData.append('title', document.getElementById('task-title').value);
+    formData.append('description', document.getElementById('task-desc').value);
+    formData.append('department', document.getElementById('task-dept').value);
+    formData.append('priority', document.getElementById('task-priority').value);
+    formData.append('dueDate', document.getElementById('task-duedate').value);
+
+    const fileInput = document.getElementById('task-image');
+    if (fileInput && fileInput.files[0]) {
+      formData.append('image', fileInput.files[0]);
     }
 
     try {
@@ -68,33 +44,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         method: 'POST',
         body: formData
       });
-
-      showToast('Task assigned successfully!', 'success');
-      form.reset();
-      document.getElementById('task-due-date').value = tomorrow.toISOString().split('T')[0];
+      showToast('Task dispatched to factory department!', 'success');
+      window.location.href = 'production.html';
     } catch (err) {
       showToast(err.message, 'error');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.innerText = 'Assign Task';
     }
   });
 });
 
-async function loadDepartmentsDropdown() {
-  const deptSelect = document.getElementById('task-department');
+async function loadDepartments() {
+  const select = document.getElementById('task-dept');
+  if (!select) return;
+
   try {
     const depts = await apiFetch('/departments');
-    deptSelect.innerHTML = `
-      <option value="">Select a department...</option>
-      ${depts.map(d => `<option value="${escapeHtml(d.name)}">${escapeHtml(d.name)}</option>`).join('')}
-    `;
+    select.innerHTML = (depts || []).map(d => `
+      <option value="${d.name}">${d.name}</option>
+    `).join('');
   } catch (err) {
-    showToast('Failed to load departments', 'error');
+    console.error('Error loading departments:', err);
   }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }

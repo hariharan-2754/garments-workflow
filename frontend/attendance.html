@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance & Leave Management — GarmentFlow ERP</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col">
+
+  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 shadow-2xs">
+    <div class="flex items-center space-x-2">
+      <span class="text-xl">🧵</span>
+      <span class="font-extrabold text-gray-900 text-lg">GarmentFlow ERP</span>
+    </div>
+    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none">☰</button>
+  </header>
+
+  <div class="flex flex-1 min-h-screen">
+    
+    <aside id="erp-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200/90 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out shrink-0 shadow-sm"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc] overflow-y-auto">
+      
+      <!-- Top Bar -->
+      <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
+        <div>
+          <h1 class="text-xl font-black text-gray-950 tracking-tight">Factory Attendance & Leave Register</h1>
+          <p class="text-xs text-gray-500 font-medium">Daily clock-in logs, late detection, overtime hours, and leave approval pipeline</p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button id="open-mark-modal" class="px-3.5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span>+</span>
+            <span>Mark Attendance</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+        <!-- Tabs: Attendance Register vs Leave Requests -->
+        <div class="flex items-center border-b border-gray-200 gap-4">
+          <button id="tab-attendance" class="pb-3 text-xs font-bold border-b-2 border-[#124b4f] text-[#124b4f] flex items-center gap-2">
+            <span>⏱️</span>
+            <span>Daily Attendance Register</span>
+          </button>
+          <button id="tab-leaves" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900 flex items-center gap-2">
+            <span>🏖️</span>
+            <span>Leave Requests Pipeline</span>
+            <span id="pending-leaves-badge" class="px-1.5 py-0.2 bg-amber-100 text-amber-800 text-[10px] rounded-full hidden">0</span>
+          </button>
+        </div>
+
+        <!-- ================= ATTENDANCE SECTION ================= -->
+        <div id="attendance-section" class="space-y-4">
+          
+          <!-- Filters Bar -->
+          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <div>
+                <label class="text-[11px] font-bold text-gray-500 block mb-1">Date</label>
+                <input type="date" id="filter-date" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-700" />
+              </div>
+              <div>
+                <label class="text-[11px] font-bold text-gray-500 block mb-1">Department</label>
+                <select id="filter-dept" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none">
+                  <option value="">All Departments</option>
+                  <option value="Cutting">Cutting</option>
+                  <option value="Stitching">Stitching</option>
+                  <option value="Printing">Printing</option>
+                  <option value="Embroidery">Embroidery</option>
+                  <option value="Quality Check">Quality Check</option>
+                  <option value="Packing">Packing</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[11px] font-bold text-gray-500 block mb-1">Status</label>
+                <select id="filter-status" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none">
+                  <option value="">All Statuses</option>
+                  <option value="Present">Present</option>
+                  <option value="Late">Late</option>
+                  <option value="Absent">Absent</option>
+                  <option value="Half Day">Half Day</option>
+                  <option value="Leave">Leave</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="reset-filters" class="px-3 py-1.5 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-xl">Reset</button>
+            </div>
+          </div>
+
+          <!-- Attendance Records Table -->
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Employee</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4">Date</th>
+                  <th class="py-3 px-4">Check In</th>
+                  <th class="py-3 px-4">Check Out</th>
+                  <th class="py-3 px-4">Working Hours</th>
+                  <th class="py-3 px-4">Overtime</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4">Marked By</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="9" class="py-6 text-center text-gray-400">Loading attendance data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= LEAVES SECTION ================= -->
+        <div id="leaves-section" class="space-y-4 hidden">
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Employee</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4">Leave Type</th>
+                  <th class="py-3 px-4">Duration</th>
+                  <th class="py-3 px-4">Reason</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leaves-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="7" class="py-6 text-center text-gray-400">Loading leave requests...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MARK ATTENDANCE MODAL -->
+  <div id="mark-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Mark Employee Attendance</h3>
+        <button id="close-mark-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="mark-attendance-form" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Select Employee</label>
+          <select id="modal-employee-select" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></select>
+        </div>
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Date</label>
+          <input type="date" id="modal-date" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+        </div>
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Attendance Status</label>
+          <select id="modal-status" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+            <option value="Present">Present</option>
+            <option value="Late">Late</option>
+            <option value="Half Day">Half Day</option>
+            <option value="Absent">Absent</option>
+            <option value="Holiday">Holiday</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Check In Time</label>
+            <input type="time" id="modal-checkin" value="09:00" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Check Out Time</label>
+            <input type="time" id="modal-checkout" value="18:00" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Remarks</label>
+          <input type="text" id="modal-remarks" placeholder="Optional notes" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="cancel-mark-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Save Attendance</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/attendance.js"></script>
+</body>
+</html>

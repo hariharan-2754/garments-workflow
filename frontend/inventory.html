@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Material & Inventory Management — GarmentFlow ERP</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-gray-800 antialiased min-h-screen flex flex-col">
+
+  <header class="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 shadow-2xs">
+    <div class="flex items-center space-x-2">
+      <span class="text-xl">🧵</span>
+      <span class="font-extrabold text-gray-900 text-lg">GarmentFlow ERP</span>
+    </div>
+    <button id="mobile-menu-toggle" class="p-2 border border-gray-200 rounded-lg text-gray-600 focus:outline-none">☰</button>
+  </header>
+
+  <div class="flex flex-1 min-h-screen">
+    
+    <aside id="erp-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200/90 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out shrink-0 shadow-sm"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#f8fafc] overflow-y-auto">
+      
+      <!-- Top Bar -->
+      <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
+        <div>
+          <h1 class="text-xl font-black text-gray-950 tracking-tight">Raw Materials & Inventory Management</h1>
+          <p class="text-xs text-gray-500 font-medium">Stock ledger, reorder levels, stock movements, and Bill of Materials (BOM)</p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button id="open-material-modal" class="px-3.5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span>+</span>
+            <span>Add Material SKU</span>
+          </button>
+          <button id="open-movement-modal" class="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 text-xs font-bold rounded-xl shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
+            <span>🔄</span>
+            <span>Stock In / Out</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+        <!-- Tabs: Material Directory vs Inventory Ledger vs BOM -->
+        <div class="flex items-center border-b border-gray-200 gap-4">
+          <button id="tab-materials" class="pb-3 text-xs font-bold border-b-2 border-[#124b4f] text-[#124b4f]">
+            📦 Raw Materials SKU Directory
+          </button>
+          <button id="tab-ledger" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900">
+            📑 Inventory Ledger & Movement History
+          </button>
+          <button id="tab-bom" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900">
+            📐 Bill of Materials (BOM)
+          </button>
+        </div>
+
+        <!-- ================= 1. MATERIALS DIRECTORY ================= -->
+        <div id="materials-section" class="space-y-4">
+          
+          <!-- Filters -->
+          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-3">
+              <input type="text" id="search-material" placeholder="Search by SKU or material name..." class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs w-64 focus:outline-none" />
+              <select id="filter-category" class="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none">
+                <option value="">All Categories</option>
+                <option value="Fabric">Fabric</option>
+                <option value="Thread">Thread</option>
+                <option value="Buttons">Buttons</option>
+                <option value="Zippers">Zippers</option>
+                <option value="Labels">Labels</option>
+                <option value="Packaging">Packaging</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Dyes">Dyes</option>
+              </select>
+              <label class="flex items-center gap-2 text-xs font-bold text-red-700 cursor-pointer">
+                <input type="checkbox" id="filter-lowstock" class="rounded text-red-600 focus:ring-0" />
+                <span>Low Stock Only</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Materials Table -->
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">SKU</th>
+                  <th class="py-3 px-4">Material Name</th>
+                  <th class="py-3 px-4">Category</th>
+                  <th class="py-3 px-4">Current Stock</th>
+                  <th class="py-3 px-4">Unit</th>
+                  <th class="py-3 px-4">Min / Reorder</th>
+                  <th class="py-3 px-4">Cost / Unit</th>
+                  <th class="py-3 px-4">Location</th>
+                  <th class="py-3 px-4">Status</th>
+                </tr>
+              </thead>
+              <tbody id="materials-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="9" class="py-6 text-center text-gray-400">Loading raw materials...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= 2. INVENTORY LEDGER ================= -->
+        <div id="ledger-section" class="space-y-4 hidden">
+          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
+                <tr>
+                  <th class="py-3 px-4">Timestamp</th>
+                  <th class="py-3 px-4">SKU & Material</th>
+                  <th class="py-3 px-4">Movement Type</th>
+                  <th class="py-3 px-4">Quantity</th>
+                  <th class="py-3 px-4">Balance After</th>
+                  <th class="py-3 px-4">Reason / Reference</th>
+                  <th class="py-3 px-4">Performed By</th>
+                </tr>
+              </thead>
+              <tbody id="ledger-tbody" class="divide-y divide-gray-100 font-medium">
+                <tr><td colspan="7" class="py-6 text-center text-gray-400">Loading inventory ledger...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= 3. BILL OF MATERIALS (BOM) ================= -->
+        <div id="bom-section" class="space-y-4 hidden">
+          <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-gray-200/80">
+            <div>
+              <h3 class="font-extrabold text-gray-950 text-sm">Product BOM Configurations</h3>
+              <p class="text-xs text-gray-500">Material consumption formulas automatically applied when starting production</p>
+            </div>
+          </div>
+          <div id="bom-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ADD MATERIAL MODAL -->
+  <div id="material-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Add New Material SKU</h3>
+        <button id="close-mat-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="material-form" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">SKU Code</label>
+            <input type="text" id="mat-sku" required placeholder="e.g. FAB-COT-180" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl uppercase font-mono font-bold focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Category</label>
+            <select id="mat-category" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+              <option value="Fabric">Fabric</option>
+              <option value="Thread">Thread</option>
+              <option value="Buttons">Buttons</option>
+              <option value="Zippers">Zippers</option>
+              <option value="Labels">Labels</option>
+              <option value="Packaging">Packaging</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Dyes">Dyes</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Material Name / Description</label>
+          <input type="text" id="mat-name" required placeholder="e.g. 100% Combed Cotton Single Jersey (180 GSM)" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Unit of Measure</label>
+            <select id="mat-unit" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+              <option value="Meter">Meter</option>
+              <option value="Kg">Kg</option>
+              <option value="Piece">Piece</option>
+              <option value="Roll">Roll</option>
+              <option value="Packet">Packet</option>
+              <option value="Box">Box</option>
+              <option value="Liter">Liter</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Initial Stock</label>
+            <input type="number" id="mat-qty" step="any" value="100" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Cost Per Unit (₹)</label>
+            <input type="number" id="mat-cost" step="any" value="150" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Minimum Stock Alert</label>
+            <input type="number" id="mat-min" step="any" value="20" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Reorder Level</label>
+            <input type="number" id="mat-reorder" step="any" value="50" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Warehouse Location</label>
+            <input type="text" id="mat-location" value="Main Factory Store" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Primary Supplier</label>
+            <input type="text" id="mat-supplier" placeholder="e.g. Vardhman Textiles" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-mat-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Save Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- STOCK MOVEMENT MODAL -->
+  <div id="movement-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Record Stock Movement</h3>
+        <button id="close-move-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
+
+      <form id="movement-form" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Material SKU</label>
+          <select id="move-material-select" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Movement Type</label>
+            <select id="move-type" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+              <option value="Stock In">Stock In (+)</option>
+              <option value="Stock Out">Stock Out (-)</option>
+              <option value="Consumption">Consumption (-)</option>
+              <option value="Adjustment">Adjustment (Set)</option>
+              <option value="Return">Return (+)</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Quantity</label>
+            <input type="number" id="move-qty" step="any" required min="0.1" value="10" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Reason / Notes</label>
+          <input type="text" id="move-reason" required placeholder="e.g. Issue to cutting floor or supplier receipt" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-move-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Record Movement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/inventory.js"></script>
+</body>
+</html>

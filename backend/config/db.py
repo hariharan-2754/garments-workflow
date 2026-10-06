@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from uuid import uuid4
 from pymongo.errors import DuplicateKeyError
+from config.settings import settings
 
 DB_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "db.json")
 
@@ -27,63 +28,93 @@ class MockCollection:
     def _get_items(self):
         return self.db.data.setdefault(self.name, [])
 
+    def _match_field(self, val, criterion):
+        if isinstance(criterion, dict):
+            for op, target in criterion.items():
+                if op == "$regex":
+                    flags = criterion.get("$options", "")
+                    import re
+                    reg_flags = re.IGNORECASE if "i" in flags else 0
+                    if not re.search(str(target), str(val or ""), reg_flags):
+                        return False
+                elif op == "$options":
+                    continue
+                elif op == "$in":
+                    if val not in target:
+                        return False
+                elif op == "$nin":
+                    if val in target:
+                        return False
+                elif op == "$ne":
+                    if val == target:
+                        return False
+                elif op == "$gt":
+                    if val is None or val <= target:
+                        return False
+                elif op == "$gte":
+                    if val is None or val < target:
+                        return False
+                elif op == "$lt":
+                    if val is None or val >= target:
+                        return False
+                elif op == "$lte":
+                    if val is None or val > target:
+                        return False
+                elif op == "$exists":
+                    if bool(val is not None) != bool(target):
+                        return False
+            return True
+        return val == criterion
+
+    def _matches(self, doc, query):
+        if not query:
+            return True
+        if "$or" in query:
+            or_matched = False
+            for sub_q in query["$or"]:
+                if self._matches(doc, sub_q):
+                    or_matched = True
+                    break
+            if not or_matched:
+                return False
+
+        for k, v in query.items():
+            if k == "$or":
+                continue
+            if k == "_id":
+                doc_id = str(doc.get("_id"))
+                if isinstance(v, dict):
+                    if not self._match_field(doc_id, v):
+                        return False
+                elif isinstance(v, (list, tuple)):
+                    if doc_id not in [str(x) for x in v]:
+                        return False
+                else:
+                    if doc_id != str(v):
+                        return False
+            else:
+                doc_val = doc.get(k)
+                if not self._match_field(doc_val, v):
+                    return False
+        return True
+
     async def create_index(self, *args, **kwargs):
         pass
 
     async def count_documents(self, query):
         items = self._get_items()
-        if not query:
-            return len(items)
-        count = 0
-        for item in items:
-            match = True
-            for k, v in query.items():
-                if item.get(k) != v:
-                    match = False
-                    break
-            if match:
-                count += 1
-        return count
+        return sum(1 for item in items if self._matches(item, query))
 
     async def find_one(self, query):
         items = self._get_items()
         for item in items:
-            match = True
-            for k, v in query.items():
-                if k == "_id":
-                    v_str = str(v)
-                    if str(item.get("_id")) != v_str:
-                        match = False
-                        break
-                elif item.get(k) != v:
-                    match = False
-                    break
-            if match:
+            if self._matches(item, query):
                 return dict(item)
         return None
 
-    def find(self, query):
+    def find(self, query=None):
         items = self._get_items()
-        matched = []
-        for item in items:
-            match = True
-            for k, v in query.items():
-                if k == "department" and isinstance(v, dict) and "$regex" in v:
-                    # case-insensitive check
-                    pattern = v["$regex"].replace("^", "").replace("$", "").lower()
-                    if (item.get("department") or "").strip().lower() != pattern:
-                        match = False
-                        break
-                elif k == "_id":
-                    v_str = str(v)
-                    if str(item.get("_id")) != v_str:
-                        match = False
-                        break
-                elif item.get(k) != v:
-                    match = False
-                    break
-            if match:
-                matched.append(item)
+        matched = [dict(item) for item in items if self._matches(item, query)]
         return MockCursor(matched)
 
     async def insert_one(self, doc):
@@ -112,11 +143,17 @@ class MockCollection:
                 modified_count = 0
             return Result()
         
-        sets = update.get("$set", {})
         for item in items:
             if str(item.get("_id")) == str(target["_id"]):
-                for k, v in sets.items():
-                    item[k] = v
+                if "$set" in update:
+                    for k, v in update["$set"].items():
+                        item[k] = v
+                if "$inc" in update:
+                    for k, v in update["$inc"].items():
+                        item[k] = (item.get(k) or 0) + v
+                if "$push" in update:
+                    for k, v in update["$push"].items():
+                        item.setdefault(k, []).append(v)
                 break
         
         self.db.save()
@@ -144,29 +181,12 @@ class MockCollection:
 
     async def delete_many(self, query):
         items = self._get_items()
-        to_delete = []
-        for item in items:
-            match = True
-            for k, v in query.items():
-                if isinstance(v, dict):
-                    if "$ne" in v:
-                        if item.get(k) == v["$ne"]:
-                            match = False
-                            break
-                    elif "$nin" in v:
-                        if item.get(k) in v["$nin"]:
-                            match = False
-                            break
-                elif item.get(k) != v:
-                    match = False
-                    break
-            if match:
-                to_delete.append(item)
-        
+        to_delete = [item for item in items if self._matches(item, query)]
         count = 0
         for item in to_delete:
-            items.remove(item)
-            count += 1
+            if item in items:
+                items.remove(item)
+                count += 1
         
         if count > 0:
             self.db.save()

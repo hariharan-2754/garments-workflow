@@ -3,14 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Worker Portal — GarmentFlow</title>
+  <title>Operator Portal — GarmentFlow ERP</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <script>
@@ -36,71 +33,45 @@
       background-color: #f4f6f9;
       color: #0f172a;
     }
-    .status-pill-pending {
-      background-color: #fef3c7;
-      color: #92400e;
-      border: 1px solid #fde68a;
-    }
-    .status-pill-completed {
-      background-color: #dcfce7;
-      color: #166534;
-      border: 1px solid #bbf7d0;
-    }
-    .status-pill-not-completed {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
     .filter-tab.active {
       background-color: #124b4f !important;
       color: #ffffff !important;
       box-shadow: 0 4px 12px rgba(18, 75, 79, 0.25);
     }
-    .task-card-hover {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .task-card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
-      border-color: #cbd5e1;
-    }
   </style>
 </head>
 <body class="bg-[#f4f6f9] text-gray-800 antialiased min-h-screen flex flex-col selection:bg-teal-900 selection:text-white">
 
-  <!-- ================= WORKER TOP NAVBAR ================= -->
+  <!-- WORKER TOP NAVBAR -->
   <header class="bg-white border-b border-gray-200/90 sticky top-0 z-40 shadow-2xs backdrop-blur-md bg-white/95">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       
-      <!-- Brand & Department Badge -->
       <div class="flex items-center gap-3">
-        <a href="worker-home.html" class="flex items-center gap-2 group">
-          <div class="w-8 h-8 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-base group-hover:scale-105 transition-transform">
-            🧵
-          </div>
+        <a href="worker-home.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-base">🧵</div>
           <div class="flex flex-col">
             <span class="font-extrabold text-gray-950 text-base sm:text-lg tracking-tight leading-none">GarmentFlow</span>
-            <span class="text-[9.5px] font-bold uppercase tracking-widest text-[#124b4f] mt-0.5">Operator Portal</span>
+            <span class="text-[9.5px] font-bold uppercase tracking-widest text-[#124b4f] mt-0.5">Operator Station</span>
           </div>
         </a>
-        <span id="worker-dept-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-[#124b4f] border border-teal-100">
-          <span class="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse"></span>
-          <span id="worker-dept-text">Cutting Station</span>
+        <span id="worker-dept-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-[#124b4f] border border-teal-100">
+          <span id="worker-dept-text">Production Floor</span>
         </span>
       </div>
 
-      <!-- Worker Profile & Logout -->
       <div class="flex items-center gap-3 sm:gap-4">
+        <button id="open-leave-modal" class="px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer flex items-center gap-1">
+          <span>🏖️</span>
+          <span class="hidden sm:inline">Apply Leave</span>
+        </button>
+
         <div class="flex items-center gap-2.5 bg-gray-50/80 pl-2 pr-3 py-1 rounded-full border border-gray-200/80">
-          <img 
-            id="worker-avatar-img"
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
-            alt="Worker" 
-            class="w-7 h-7 rounded-full object-cover ring-2 ring-white"
-          />
+          <div class="w-7 h-7 rounded-full bg-teal-100 text-[#124b4f] flex items-center justify-center font-bold text-xs">
+            <span id="worker-avatar-initial">W</span>
+          </div>
           <div class="text-left">
             <div id="worker-header-name" class="text-xs font-bold text-gray-900 leading-tight">Worker</div>
-            <div id="worker-header-role" class="text-[9.5px] text-gray-400 font-semibold leading-none">Floor Specialist</div>
+            <div id="worker-header-role" class="text-[9.5px] text-gray-400 font-semibold leading-none">Specialist</div>
           </div>
         </div>
 
@@ -113,50 +84,64 @@
     </div>
   </header>
 
-  <!-- ================= WORKER MAIN CONTAINER ================= -->
   <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-    
-    <!-- GREETING & METRICS HERO CARD -->
-    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
-      
-      <!-- Subtle top background accent -->
-      <div class="absolute -right-12 -top-12 w-48 h-48 bg-teal-50/50 rounded-full blur-2xl pointer-events-none"></div>
 
-      <div class="relative z-10">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-[#124b4f] rounded-full text-xs font-bold mb-2 border border-teal-100/60">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span>Live Production Line Connected</span>
+    <!-- ATTENDANCE CLOCK IN/OUT BAR -->
+    <div class="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-2xl bg-teal-50 text-[#124b4f] flex items-center justify-center text-xl font-bold">
+          ⏱️
         </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-extrabold text-gray-950">Daily Factory Shift Attendance</span>
+            <span id="att-status-badge" class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Checking...</span>
+          </div>
+          <p id="att-time-info" class="text-xs text-gray-500 font-medium mt-0.5">Shift: 09:00 AM - 06:00 PM</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 w-full sm:w-auto">
+        <button id="btn-clockin" class="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <span>🟢</span>
+          <span>Clock In</span>
+        </button>
+        <button id="btn-clockout" disabled class="flex-1 sm:flex-none px-5 py-2.5 bg-rose-700 hover:bg-rose-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <span>🔴</span>
+          <span>Clock Out</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GREETING & PIECE-RATE KPI CARDS -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/90 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+      <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight">
           Welcome back, <span id="worker-greeting-name" class="text-[#124b4f]">Operator</span> 👋
         </h1>
         <p class="text-xs sm:text-sm text-gray-500 font-medium mt-1 max-w-xl">
-          Here is your live production queue. Select a job card to view technical specifications, track progress, or submit piece completion.
+          Here is your assigned manufacturing queue. Execute tasks, enter completed pieces, and upload quality proof.
         </p>
       </div>
 
-      <!-- Quick KPI Cards Grid -->
-      <div class="grid grid-cols-3 gap-2.5 w-full md:w-auto text-center shrink-0 relative z-10">
-        <div class="bg-gray-50/90 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
-          <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Active</div>
+      <div class="grid grid-cols-3 gap-2.5 w-full md:w-auto text-center shrink-0">
+        <div class="bg-gray-50 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
+          <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Active Tasks</div>
           <div id="stat-pending" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-0.5">0</div>
         </div>
-        <div class="bg-gray-50/90 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
+        <div class="bg-gray-50 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
           <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Completed</div>
           <div id="stat-completed" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-0.5">0</div>
         </div>
-        <div class="bg-gray-50/90 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
-          <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Efficiency</div>
-          <div id="stat-efficiency" class="text-xl sm:text-2xl font-extrabold text-[#124b4f] mt-0.5">99.4%</div>
+        <div class="bg-gray-50 p-3 sm:px-4 sm:py-3.5 rounded-2xl border border-gray-200/80 min-w-[95px]">
+          <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Piece Earnings</div>
+          <div id="stat-earnings" class="text-lg sm:text-xl font-extrabold text-[#124b4f] mt-0.5">₹0</div>
         </div>
       </div>
-
     </div>
 
     <!-- FILTER & SEARCH BAR -->
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-      
-      <!-- Filter Tabs -->
       <div class="flex items-center gap-1 bg-white p-1 rounded-2xl border border-gray-200/90 shadow-2xs overflow-x-auto text-xs font-bold text-gray-600">
         <button id="tab-all" class="filter-tab active px-4 py-2 rounded-xl text-gray-600 hover:text-gray-900 transition-all cursor-pointer">
           All Tasks (<span id="count-all">0</span>)
@@ -169,19 +154,14 @@
         </button>
       </div>
 
-      <!-- Search Input -->
       <div class="relative w-full sm:w-72">
         <input 
           type="text" 
           id="task-search-input"
           placeholder="Search batches, garments, specs..." 
-          class="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#124b4f] focus:ring-1 focus:ring-[#124b4f] shadow-2xs transition-all"
+          class="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#124b4f]"
         />
-        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
       </div>
-
     </div>
 
     <!-- TASK CARDS LIST CONTAINER -->
@@ -194,8 +174,50 @@
 
   </main>
 
-  <script type="module" src="js/worker-home.js"></script>
+  <!-- APPLY LEAVE MODAL -->
+  <div id="leave-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <h3 class="font-extrabold text-gray-950 text-sm">Apply for Leave</h3>
+        <button id="close-leave-modal" class="text-gray-400 hover:text-gray-900 font-bold">✕</button>
+      </div>
 
+      <form id="leave-form" class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Leave Type</label>
+          <select id="leave-type" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none">
+            <option value="Casual Leave">Casual Leave</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Emergency Leave">Emergency Leave</option>
+            <option value="Paid Leave">Paid Leave</option>
+            <option value="Unpaid Leave">Unpaid Leave</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">Start Date</label>
+            <input type="date" id="leave-start" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+          <div>
+            <label class="font-bold text-gray-700 block mb-1">End Date</label>
+            <input type="date" id="leave-end" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-gray-700 block mb-1">Reason for Leave</label>
+          <textarea id="leave-reason" required rows="2" placeholder="State reason..." class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+          <button type="button" id="cancel-leave-btn" class="px-4 py-2 border border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white font-bold rounded-xl shadow-xs">Submit Leave Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/worker-home.js"></script>
 </body>
 </html>
-
