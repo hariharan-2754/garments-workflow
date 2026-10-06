@@ -149,13 +149,11 @@ export function renderERPNavigation(activeKey) {
     { key: 'assign-task', label: 'Assign Tasks / Jobs', icon: '✍️', href: 'assign-task.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
     { key: 'machines', label: 'Machinery & Equipment', icon: '⚙️', href: 'machines.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
 
-    { section: 'SUPPLY CHAIN' },
+    { section: 'INVENTORY & PROCUREMENT' },
     { key: 'inventory', label: 'Material & Inventory', icon: '📦', href: 'inventory.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
     { key: 'purchasing', label: 'Suppliers & Purchases', icon: '🛒', href: 'purchasing.html', roles: ['ADMIN', 'MANAGER'] },
-    { key: 'orders-dispatch', label: 'Sales & Logistics', icon: '🚚', href: 'orders-dispatch.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
 
-    { section: 'FINANCE & REPORTS' },
-    { key: 'finance', label: 'Financial Ledger', icon: '💳', href: 'finance.html', roles: ['ADMIN', 'MANAGER'] },
+    { section: 'REPORTS' },
     { key: 'reports', label: 'Reports & Exports', icon: '📈', href: 'reports.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] }
   ];
 

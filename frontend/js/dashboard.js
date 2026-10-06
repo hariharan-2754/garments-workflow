@@ -21,24 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Hide financial P&L card for supervisors
-  if (user.role === 'SUPERVISOR') {
-    const profitCard = document.getElementById('stat-net-profit')?.closest('.kpi-card-container') || document.getElementById('stat-net-profit')?.parentElement;
-    if (profitCard) {
-      profitCard.classList.add('hidden');
-    }
-    const financeSection = document.getElementById('recent-txns-tbody')?.closest('section') || document.getElementById('recent-txns-tbody')?.closest('.bg-white');
-    if (financeSection) {
-      financeSection.classList.add('hidden');
-    }
-  }
-
   await loadDashboardKPIs(user);
   await loadDispatchedTasks();
   await loadStockAlerts();
-  if (user.role !== 'SUPERVISOR') {
-    await loadRecentTransactions();
-  }
 });
 
 async function loadDashboardKPIs(user) {
@@ -60,11 +45,6 @@ async function loadDashboardKPIs(user) {
 
     const machEl = document.getElementById('stat-machines-down');
     if (machEl) machEl.innerText = kpis.machinesDown || 0;
-    
-    const profitEl = document.getElementById('stat-net-profit');
-    if (profitEl && user.role !== 'SUPERVISOR') {
-      profitEl.innerText = formatCurrency(kpis.netProfit || 0);
-    }
 
     // Render Department Throughput
     const deptContainer = document.getElementById('dept-throughput-container');
@@ -182,40 +162,5 @@ async function loadStockAlerts() {
     `).join('');
   } catch (err) {
     container.innerHTML = `<p class="text-xs text-gray-400">Unable to load inventory alerts.</p>`;
-  }
-}
-
-async function loadRecentTransactions() {
-  const tbody = document.getElementById('recent-txns-tbody');
-  if (!tbody) return;
-
-  try {
-    const txns = await apiFetch('/transactions/ledger');
-    if (!txns || txns.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-400">No recorded financial transactions yet.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = txns.slice(0, 5).map(t => {
-      const isInc = t.type === 'Income';
-      return `
-        <tr class="hover:bg-gray-50/70">
-          <td class="py-2.5 px-4 font-mono font-bold text-gray-900">${t.transactionNumber}</td>
-          <td class="py-2.5 px-4 text-gray-600">${t.date}</td>
-          <td class="py-2.5 px-4">
-            <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-md ${isInc ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">
-              ${t.type}
-            </span>
-          </td>
-          <td class="py-2.5 px-4 font-medium text-gray-700">${t.category}</td>
-          <td class="py-2.5 px-4 font-semibold text-gray-900">${t.partyName || '-'}</td>
-          <td class="py-2.5 px-4 text-right font-black ${isInc ? 'text-emerald-700' : 'text-gray-900'}">
-            ${isInc ? '+' : '-'}${formatCurrency(t.amount)}
-          </td>
-        </tr>
-      `;
-    }).join('');
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-400">No transactions to display.</td></tr>`;
   }
 }

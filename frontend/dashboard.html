@@ -70,7 +70,7 @@
             <span>ERP Command Center</span>
             <span class="text-xs font-semibold px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">Live Factory Ops</span>
           </h1>
-          <p class="text-xs text-gray-500 font-medium">Real-time task dispatch, workforce attendance, inventory status, and financial overview</p>
+          <p class="text-xs text-gray-500 font-medium">Real-time task dispatch, workforce attendance, equipment status, and inventory alerts</p>
         </div>
 
         <!-- Quick Action Buttons -->
@@ -89,49 +89,40 @@
       <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
 
         <!-- ================= 1. PRIMARY KPI STATS CARDS ================= -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5" id="kpi-cards-grid">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-cards-grid">
           <!-- Card 1: Pending Tasks -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Pending Jobs</span>
             <div class="flex items-baseline justify-between">
               <span id="stat-pending-tasks" class="text-2xl font-black text-amber-600">0</span>
-              <span class="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Queue</span>
+              <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg">Queue</span>
             </div>
           </div>
 
           <!-- Card 2: Attendance Today -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Present Today</span>
             <div class="flex items-baseline justify-between">
               <span id="stat-present-workers" class="text-2xl font-black text-emerald-600">0</span>
-              <span id="stat-att-rate" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">0%</span>
+              <span id="stat-att-rate" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg">0%</span>
             </div>
           </div>
 
           <!-- Card 3: Low Stock SKUs -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Low Stock</span>
             <div class="flex items-baseline justify-between">
               <span id="stat-low-stock" class="text-2xl font-black text-red-600">0</span>
-              <span class="text-xs font-bold text-red-700 bg-red-50 px-1.5 py-0.5 rounded">SKUs</span>
+              <span class="text-xs font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-lg">SKUs</span>
             </div>
           </div>
 
           <!-- Card 4: Machines Down -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Machines Down</span>
             <div class="flex items-baseline justify-between">
               <span id="stat-machines-down" class="text-2xl font-black text-purple-600">0</span>
-              <span class="text-xs font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">Maint</span>
-            </div>
-          </div>
-
-          <!-- Card 5: Net Profit -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
-            <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Net Profit</span>
-            <div class="flex items-baseline justify-between">
-              <span id="stat-net-profit" class="text-xl font-black text-gray-950">₹0</span>
-              <span class="text-xs font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded">P&L</span>
+              <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-lg">Maint</span>
             </div>
           </div>
         </div>
@@ -194,37 +185,6 @@
             </div>
           </div>
 
-        </div>
-
-        <!-- ================= 4. RECENT FINANCIAL TRANSACTIONS ================= -->
-        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-extrabold text-gray-950">Recent Income & Expenses</h3>
-              <p class="text-xs text-gray-500">Latest material purchases, customer invoice receipts, and maintenance costs</p>
-            </div>
-            <a href="finance.html" class="text-xs font-bold text-[#124b4f] hover:underline">View Ledger →</a>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
-                <tr>
-                  <th class="py-2.5 px-4">Txn #</th>
-                  <th class="py-2.5 px-4">Date</th>
-                  <th class="py-2.5 px-4">Type</th>
-                  <th class="py-2.5 px-4">Category</th>
-                  <th class="py-2.5 px-4">Party</th>
-                  <th class="py-2.5 px-4 text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody id="recent-txns-tbody" class="divide-y divide-gray-100 font-medium">
-                <tr>
-                  <td colspan="6" class="py-4 text-center text-gray-400">Loading transactions...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
 
       </div>

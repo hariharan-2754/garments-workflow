@@ -32,18 +32,18 @@
       <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
         <div>
           <h1 class="text-xl font-black text-gray-950 tracking-tight">Factory Reports & Export Center</h1>
-          <p class="text-xs text-gray-500 font-medium">Download CSV audits and review aggregate records for Attendance, Inventory, and Financials</p>
+          <p class="text-xs text-gray-500 font-medium">Download CSV audits and review aggregate records for Attendance and Material Inventory</p>
         </div>
       </div>
 
       <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
 
         <!-- Report Download Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl">
           
           <!-- Card 1: Attendance & Overtime Report -->
-          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
-            <div class="space-y-1.5">
+          <div class="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-2xs space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
               <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-lg font-bold">⏱️</div>
               <h3 class="font-extrabold text-gray-950 text-base">Workforce Attendance Report</h3>
               <p class="text-xs text-gray-500">Daily check-in and check-out logs, working hours calculations, overtime tracking, and leave absences.</p>
@@ -55,8 +55,8 @@
           </div>
 
           <!-- Card 2: Inventory Stock Report -->
-          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
-            <div class="space-y-1.5">
+          <div class="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-2xs space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
               <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center text-lg font-bold">📦</div>
               <h3 class="font-extrabold text-gray-950 text-base">Material Inventory & Stock</h3>
               <p class="text-xs text-gray-500">Raw fabrics, trims, buttons, thread inventory balances, reorder warnings, unit costs and supplier links.</p>
@@ -64,19 +64,6 @@
             <button data-type="inventory" class="export-btn w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
               <span>📥</span>
               <span>Export Inventory CSV</span>
-            </button>
-          </div>
-
-          <!-- Card 3: Financial Income & Expense Report -->
-          <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
-            <div class="space-y-1.5">
-              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center text-lg font-bold">💳</div>
-              <h3 class="font-extrabold text-gray-950 text-base">Financial Transactions Ledger</h3>
-              <p class="text-xs text-gray-500">Sales revenue, raw material expenses, equipment purchases, and operating costs.</p>
-            </div>
-            <button data-type="financial" class="export-btn w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
-              <span>📥</span>
-              <span>Export Financial CSV</span>
             </button>
           </div>
 
