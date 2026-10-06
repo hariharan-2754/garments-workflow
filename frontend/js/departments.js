@@ -64,7 +64,7 @@ async function loadDepartments() {
         </div>
 
         <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-          <a href="production.html" class="text-xs font-bold text-[#124b4f] hover:underline">View Active Jobs →</a>
+          <a href="assign-task.html" class="text-xs font-bold text-[#124b4f] hover:underline">Assign Tasks →</a>
           <a href="workers.html" class="text-xs font-semibold text-gray-500 hover:text-gray-900">Roster →</a>
         </div>
       </div>

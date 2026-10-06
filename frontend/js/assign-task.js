@@ -45,7 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         body: formData
       });
       showToast('Task dispatched to factory department!', 'success');
-      window.location.href = 'production.html';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 500);
     } catch (err) {
       showToast(err.message, 'error');
     }

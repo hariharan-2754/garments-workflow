@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finance & Piece-Rate Management — GarmentFlow ERP</title>
+  <title>Financial Ledger & P&L — GarmentFlow ERP</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,8 +31,8 @@
       
       <div class="bg-white border-b border-gray-200/80 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-20 shadow-2xs">
         <div>
-          <h1 class="text-xl font-black text-gray-950 tracking-tight">Finance & Piece-Rate Wage Settlement</h1>
-          <p class="text-xs text-gray-500 font-medium">Income/expense ledger, factory P&L summary, and worker piece-rate production earnings</p>
+          <h1 class="text-xl font-black text-gray-950 tracking-tight">Financial Ledger & Transactions</h1>
+          <p class="text-xs text-gray-500 font-medium">Income/expense journal, P&L cashflow summary, and double-entry transaction records</p>
         </div>
 
         <div class="flex items-center gap-2.5">
@@ -61,19 +61,15 @@
           </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex items-center border-b border-gray-200 gap-4">
-          <button id="tab-txns" class="pb-3 text-xs font-bold border-b-2 border-[#124b4f] text-[#124b4f]">
-            💳 Financial Ledger & Invoices
-          </button>
-          <button id="tab-piecerate" class="pb-3 text-xs font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900">
-            🧵 Piece-Rate Worker Payouts
-          </button>
-        </div>
-
-        <!-- ================= 1. TRANSACTIONS LEDGER ================= -->
+        <!-- ================= TRANSACTIONS LEDGER ================= -->
         <div id="txns-section" class="space-y-4">
           <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h3 class="font-extrabold text-gray-950 text-sm">Income & Expense Transactions</h3>
+                <p class="text-xs text-gray-500">Chronological financial audit journal and recorded ledger payments</p>
+              </div>
+            </div>
             <table class="w-full text-left text-xs">
               <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
                 <tr>
@@ -88,30 +84,6 @@
               </thead>
               <tbody id="txns-tbody" class="divide-y divide-gray-100 font-medium">
                 <tr><td colspan="7" class="py-6 text-center text-gray-400">Loading transactions...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ================= 2. PIECE-RATE LEDGER ================= -->
-        <div id="piecerate-section" class="space-y-4 hidden">
-          <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
-                <tr>
-                  <th class="py-3 px-4">Worker Name</th>
-                  <th class="py-3 px-4">Job Card</th>
-                  <th class="py-3 px-4">Department</th>
-                  <th class="py-3 px-4">Completed Qty</th>
-                  <th class="py-3 px-4">Accepted Qty</th>
-                  <th class="py-3 px-4">Rate / Pc</th>
-                  <th class="py-3 px-4">Payout Amount</th>
-                  <th class="py-3 px-4">Status</th>
-                  <th class="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="piecerate-tbody" class="divide-y divide-gray-100 font-medium">
-                <tr><td colspan="9" class="py-6 text-center text-gray-400">Loading piece-rate wage logs...</td></tr>
               </tbody>
             </table>
           </div>

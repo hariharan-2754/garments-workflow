@@ -70,14 +70,14 @@
             <span>ERP Command Center</span>
             <span class="text-xs font-semibold px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">Live Factory Ops</span>
           </h1>
-          <p class="text-xs text-gray-500 font-medium">Real-time production pipeline, workforce attendance, and financial overview</p>
+          <p class="text-xs text-gray-500 font-medium">Real-time task dispatch, workforce attendance, inventory status, and financial overview</p>
         </div>
 
         <!-- Quick Action Buttons -->
         <div class="flex items-center gap-2.5">
-          <a href="production.html" class="px-3.5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+          <a href="assign-task.html" class="px-3.5 py-2 bg-[#124b4f] hover:bg-[#0c383b] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
             <span>+</span>
-            <span>New Production Order</span>
+            <span>Assign New Task</span>
           </a>
           <a href="attendance.html" class="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 text-xs font-bold rounded-xl shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
             <span>⏱️</span>
@@ -89,17 +89,8 @@
       <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
 
         <!-- ================= 1. PRIMARY KPI STATS CARDS ================= -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5" id="kpi-cards-grid">
-          <!-- Card 1: Active Orders -->
-          <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
-            <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Active Orders</span>
-            <div class="flex items-baseline justify-between">
-              <span id="stat-active-orders" class="text-2xl font-black text-gray-950">0</span>
-              <span class="text-xs font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded">In Prod</span>
-            </div>
-          </div>
-
-          <!-- Card 2: Pending Tasks -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5" id="kpi-cards-grid">
+          <!-- Card 1: Pending Tasks -->
           <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Pending Jobs</span>
             <div class="flex items-baseline justify-between">
@@ -108,7 +99,7 @@
             </div>
           </div>
 
-          <!-- Card 3: Attendance Today -->
+          <!-- Card 2: Attendance Today -->
           <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Present Today</span>
             <div class="flex items-baseline justify-between">
@@ -117,7 +108,7 @@
             </div>
           </div>
 
-          <!-- Card 4: Low Stock SKUs -->
+          <!-- Card 3: Low Stock SKUs -->
           <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Low Stock</span>
             <div class="flex items-baseline justify-between">
@@ -126,7 +117,7 @@
             </div>
           </div>
 
-          <!-- Card 5: Machines Down -->
+          <!-- Card 4: Machines Down -->
           <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Machines Down</span>
             <div class="flex items-baseline justify-between">
@@ -135,7 +126,7 @@
             </div>
           </div>
 
-          <!-- Card 6: Net Profit -->
+          <!-- Card 5: Net Profit -->
           <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
             <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Net Profit</span>
             <div class="flex items-baseline justify-between">
@@ -145,33 +136,31 @@
           </div>
         </div>
 
-        <!-- ================= 2. LIVE PRODUCTION PIPELINE ================= -->
+        <!-- ================= 2. DISPATCHED TASKS & OPERATIONAL QUEUE ================= -->
         <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-base font-extrabold text-gray-950">Active Factory Production Orders</h2>
-              <p class="text-xs text-gray-500">Live order progress across Cutting, Stitching, Printing, Embroidery, QC, and Packing</p>
+              <h2 class="text-base font-extrabold text-gray-950">Dispatched Tasks & Operation Queue</h2>
+              <p class="text-xs text-gray-500">Live task assignments, department workloads, priorities, and deadlines</p>
             </div>
-            <a href="production.html" class="text-xs font-bold text-[#124b4f] hover:underline">View All Orders →</a>
+            <a href="assign-task.html" class="text-xs font-bold text-[#124b4f] hover:underline">+ Assign Task →</a>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
               <thead class="bg-gray-50/80 text-gray-600 font-bold border-b border-gray-100">
                 <tr>
-                  <th class="py-3 px-4">Order #</th>
-                  <th class="py-3 px-4">Client</th>
-                  <th class="py-3 px-4">Garment / Product</th>
-                  <th class="py-3 px-4">Quantity</th>
-                  <th class="py-3 px-4">Current Stage</th>
-                  <th class="py-3 px-4">Progress</th>
-                  <th class="py-3 px-4">Due Date</th>
-                  <th class="py-3 px-4 text-right">Actions</th>
+                  <th class="py-3 px-4">Task / Operation</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4">Priority</th>
+                  <th class="py-3 px-4">Target Deadline</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody id="production-orders-tbody" class="divide-y divide-gray-100 font-medium">
+              <tbody id="dashboard-tasks-tbody" class="divide-y divide-gray-100 font-medium">
                 <tr>
-                  <td colspan="8" class="py-6 text-center text-gray-400">Loading live production orders...</td>
+                  <td colspan="6" class="py-6 text-center text-gray-400">Loading factory task queue...</td>
                 </tr>
               </tbody>
             </table>

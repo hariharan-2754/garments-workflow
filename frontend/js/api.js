@@ -145,11 +145,9 @@ export function renderERPNavigation(activeKey) {
     { key: 'workers', label: 'Employee Directory', icon: '👥', href: 'workers.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
     { key: 'departments', label: 'Departments', icon: '🏢', href: 'departments.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
 
-    { section: 'MANUFACTURING' },
-    { key: 'production', label: 'Production Orders', icon: '🧵', href: 'production.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
-    { key: 'assign-task', label: 'Dispatch Task / Job', icon: '✍️', href: 'assign-task.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
-    { key: 'qc', label: 'Quality Control (QC)', icon: '🛡️', href: 'qc.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
-    { key: 'machines', label: 'Machinery & Downtime', icon: '⚙️', href: 'machines.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
+    { section: 'OPERATIONS' },
+    { key: 'assign-task', label: 'Assign Tasks / Jobs', icon: '✍️', href: 'assign-task.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
+    { key: 'machines', label: 'Machinery & Equipment', icon: '⚙️', href: 'machines.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
 
     { section: 'SUPPLY CHAIN' },
     { key: 'inventory', label: 'Material & Inventory', icon: '📦', href: 'inventory.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
@@ -157,9 +155,8 @@ export function renderERPNavigation(activeKey) {
     { key: 'orders-dispatch', label: 'Sales & Logistics', icon: '🚚', href: 'orders-dispatch.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
 
     { section: 'FINANCE & REPORTS' },
-    { key: 'finance', label: 'Finance & Piece-Rate', icon: '💳', href: 'finance.html', roles: ['ADMIN', 'MANAGER'] },
-    { key: 'reports', label: 'Reports & Exports', icon: '📈', href: 'reports.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] },
-    { key: 'settings', label: 'Settings & Audit Logs', icon: '🔧', href: 'audit-settings.html', roles: ['ADMIN', 'MANAGER'] }
+    { key: 'finance', label: 'Financial Ledger', icon: '💳', href: 'finance.html', roles: ['ADMIN', 'MANAGER'] },
+    { key: 'reports', label: 'Reports & Exports', icon: '📈', href: 'reports.html', roles: ['ADMIN', 'MANAGER', 'SUPERVISOR'] }
   ];
 
   let html = `

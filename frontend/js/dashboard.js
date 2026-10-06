@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   await loadDashboardKPIs(user);
-  await loadLiveProductionOrders();
+  await loadDispatchedTasks();
   await loadStockAlerts();
   if (user.role !== 'SUPERVISOR') {
     await loadRecentTransactions();
@@ -46,12 +46,20 @@ async function loadDashboardKPIs(user) {
     const kpis = await apiFetch('/analytics/dashboard');
     if (!kpis) return;
     
-    document.getElementById('stat-active-orders').innerText = kpis.activeOrders || 0;
-    document.getElementById('stat-pending-tasks').innerText = kpis.pendingTasks || 0;
-    document.getElementById('stat-present-workers').innerText = kpis.presentToday || 0;
-    document.getElementById('stat-att-rate').innerText = (kpis.attendanceRate || 0) + '% Rate';
-    document.getElementById('stat-low-stock').innerText = kpis.lowStockCount || 0;
-    document.getElementById('stat-machines-down').innerText = kpis.machinesDown || 0;
+    const pendingEl = document.getElementById('stat-pending-tasks');
+    if (pendingEl) pendingEl.innerText = kpis.pendingTasks || 0;
+
+    const presentEl = document.getElementById('stat-present-workers');
+    if (presentEl) presentEl.innerText = kpis.presentToday || 0;
+
+    const attRateEl = document.getElementById('stat-att-rate');
+    if (attRateEl) attRateEl.innerText = (kpis.attendanceRate || 0) + '% Rate';
+
+    const stockEl = document.getElementById('stat-low-stock');
+    if (stockEl) stockEl.innerText = kpis.lowStockCount || 0;
+
+    const machEl = document.getElementById('stat-machines-down');
+    if (machEl) machEl.innerText = kpis.machinesDown || 0;
     
     const profitEl = document.getElementById('stat-net-profit');
     if (profitEl && user.role !== 'SUPERVISOR') {
@@ -82,54 +90,63 @@ async function loadDashboardKPIs(user) {
   }
 }
 
-async function loadLiveProductionOrders() {
-  const tbody = document.getElementById('production-orders-tbody');
+async function loadDispatchedTasks() {
+  const tbody = document.getElementById('dashboard-tasks-tbody');
   if (!tbody) return;
 
   try {
-    const orders = await apiFetch('/production/orders');
-    if (!orders || orders.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-gray-400">No active production orders found.</td></tr>`;
+    const tasks = await apiFetch('/tasks');
+    if (!tasks || tasks.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-gray-400">No factory tasks dispatched yet. Click "+ Assign Task" above.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = orders.slice(0, 6).map(o => {
-      const priorityClass = o.priority === 'High' || o.priority === 'Urgent' 
+    tbody.innerHTML = tasks.slice(0, 8).map(t => {
+      const priorityClass = t.priority === 'High' || t.priority === 'Urgent' 
         ? 'bg-red-50 text-red-700 border-red-200' 
-        : o.priority === 'Medium' 
+        : t.priority === 'Medium' 
         ? 'bg-amber-50 text-amber-700 border-amber-200' 
         : 'bg-blue-50 text-blue-700 border-blue-200';
 
+      const isCompleted = t.status === 'Completed' || t.status === 'Reviewed';
+      const statusClass = isCompleted 
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+        : t.status === 'In Progress'
+        ? 'bg-sky-50 text-sky-700 border-sky-200'
+        : 'bg-amber-50 text-amber-700 border-amber-200';
+
       return `
         <tr class="hover:bg-gray-50/70 transition-colors">
-          <td class="py-3 px-4 font-mono font-bold text-gray-900">${o.orderNumber}</td>
-          <td class="py-3 px-4 text-gray-800 font-semibold">${o.customerName}</td>
-          <td class="py-3 px-4 font-bold text-gray-950">${o.productName}</td>
-          <td class="py-3 px-4 font-bold text-gray-700">${o.quantity} pcs</td>
           <td class="py-3 px-4">
-            <span class="px-2.5 py-1 bg-teal-50 text-[#124b4f] font-bold rounded-lg border border-teal-200/80 text-[11px]">
-              ${o.currentStage}
+            <div class="font-bold text-gray-950">${t.title}</div>
+            <div class="text-[11px] text-gray-400 truncate max-w-xs">${t.description || ''}</div>
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 bg-teal-50 text-[#124b4f] font-bold rounded-lg border border-teal-200/80 text-[11px]">
+              ${t.department}
             </span>
           </td>
           <td class="py-3 px-4">
-            <div class="flex items-center gap-2">
-              <div class="w-16 bg-gray-100 rounded-full h-1.5">
-                <div class="bg-emerald-600 h-1.5 rounded-full" style="width: ${o.progressPercent}%"></div>
-              </div>
-              <span class="text-[11px] font-bold text-gray-600">${o.progressPercent}%</span>
-            </div>
+            <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${priorityClass}">
+              ${t.priority}
+            </span>
           </td>
-          <td class="py-3 px-4 font-mono text-gray-600 text-xs">${o.dueDate || 'Standard'}</td>
+          <td class="py-3 px-4 font-mono text-gray-600 text-xs">${t.dueDate || 'No date'}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${statusClass}">
+              ${t.status || 'Pending'}
+            </span>
+          </td>
           <td class="py-3 px-4 text-right">
-            <a href="production.html" class="px-2.5 py-1 bg-gray-100 hover:bg-[#124b4f] hover:text-white rounded-lg text-[11px] font-bold text-gray-700 transition-colors">
-              Manage →
+            <a href="assign-task.html" class="px-2.5 py-1 bg-gray-100 hover:bg-[#124b4f] hover:text-white rounded-lg text-[11px] font-bold text-gray-700 transition-colors">
+              Dispatch +
             </a>
           </td>
         </tr>
       `;
     }).join('');
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-red-500">Failed to load orders: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-red-500">Failed to load tasks: ${err.message}</td></tr>`;
   }
 }
 
